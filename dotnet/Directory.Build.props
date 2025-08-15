@@ -37,8 +37,9 @@
         <XunitVersion>2.9.3</XunitVersion>
         <XunitRunnerVisualStudioVersion>3.1.3</XunitRunnerVisualStudioVersion>
         <CoverletCollectorVersion>6.0.4</CoverletCollectorVersion>
-        <NSubstituteVersion>5.3.0</NSubstituteVersion>
-        <FluentAssertionsVersion>8.5.0</FluentAssertionsVersion>
+        <MoqVersion>4.20.72</MoqVersion>
+        <FluentAssertionsVersion>8.6.0</FluentAssertionsVersion>
+        <MoqVersion>4.20.70</MoqVersion>
         <!-- JWT & Auth packages -->
         <SystemIdentityModelTokensJwtVersion>8.13.0</SystemIdentityModelTokensJwtVersion>
         <MicrosoftIdentityModelTokensVersion>8.13.0</MicrosoftIdentityModelTokensVersion>

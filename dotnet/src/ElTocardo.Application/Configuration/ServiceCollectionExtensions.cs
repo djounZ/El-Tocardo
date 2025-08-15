@@ -7,7 +7,8 @@ namespace ElTocardo.Application.Configuration;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddElTocardoApplication(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddElTocardoApplication(this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.Configure<ElTocardoApplicationOptions>(configuration.GetSection(nameof(ElTocardoApplicationOptions)));
         services.AddElTocardoDomain(configuration);

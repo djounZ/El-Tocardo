@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 
-  <Sdk Name="Aspire.AppHost.Sdk" Version="$(AspireHostingAppHostCommonVersion)" />
+    <Sdk Name="Aspire.AppHost.Sdk" Version="$(AspireHostingAppHostCommonVersion)"/>
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.AppHost" Version="$(AspireHostingAppHostCommonVersion)" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ElTocardo.API\ElTocardo.API.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Aspire.Hosting.AppHost" Version="$(AspireHostingAppHostCommonVersion)"/>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\ElTocardo.API\ElTocardo.API.csproj"/>
+    </ItemGroup>
 </Project>

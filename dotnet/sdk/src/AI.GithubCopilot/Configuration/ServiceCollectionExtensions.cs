@@ -8,7 +8,6 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddAiGithubCopilot(this IServiceCollection services, IConfiguration configuration)
     {
-
         services.Configure<AiGithubOptions>(configuration.GetSection(nameof(AiGithubOptions)));
         return services;
     }

@@ -4,7 +4,7 @@
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(MicrosoftExtensionsPackagesCommonVersion)"/>
     </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ElTocardo.Infrastructure\ElTocardo.Infrastructure.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\ElTocardo.Infrastructure\ElTocardo.Infrastructure.csproj"/>
+    </ItemGroup>
 </Project>
