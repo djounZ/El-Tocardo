@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(MicrosoftExtensionsPackagesCommonVersion)"/>
+    </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ElTocardo.Infrastructure\ElTocardo.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

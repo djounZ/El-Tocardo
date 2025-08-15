@@ -1,0 +1,6 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\sdk\src\AI.GithubCopilot\AI.GithubCopilot.csproj" />
+    <ProjectReference Include="..\ElTocardo.Application\ElTocardo.Application.csproj" />
+  </ItemGroup>
+</Project>
