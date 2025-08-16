@@ -1,6 +1,4 @@
-using AI.GithubCopilot.Infrastructure.Models;
-
-namespace AI.GithubCopilot.Infrastructure.Services;
+namespace AI.GithubCopilot.Infrastructure.Services.ToMigrate;
 
 public sealed class GithubAccessTokenStore(EncryptedEnvironment encryptedEnvironment)
 {

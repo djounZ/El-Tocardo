@@ -1,3 +1,9 @@
+using AI.GithubCopilot.Domain.Services;
+using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
+using ElTocardo.Application.Services;
+using Microsoft.Extensions.AI;
+using OllamaSharp;
+
 namespace ElTocardo.API.Endpoints;
 
 public static class DevelopmentEndpoint
@@ -14,24 +20,64 @@ public static class DevelopmentEndpoint
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        app.MapGet("/", () =>
-            {
-                var forecast = Enumerable.Range(1, 5).Select(index =>
-                        new WeatherForecast
-                        (
-                            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                            Random.Shared.Next(-20, 55),
-                            summaries[Random.Shared.Next(summaries.Length)]
-                        ))
-                    .ToArray();
-                return forecast;
-            })
+        app.MapGet("/",() => WeatherForecasts(summaries))
             .WithName("GetWeatherForecast")
             .WithSummary("Get weather forecast")
             .WithDescription("Returns a 5-day weather forecast")
             .WithOpenApi();
 
+        app.MapGet("/configuration",(IConfiguration configuration) => configuration.AsDictionary())
+            .WithOpenApi();
+
+
+        app.MapGet("/github",async (
+                GithubCopilotChatClient completionsService,
+                CancellationToken cancellationToken) => await completionsService.GetResponseAsync(
+                new ChatMessage(ChatRole.User, "Hello, how are you?"), null, cancellationToken))
+            .WithOpenApi();
+
+
+        app.MapGet("/ollama",async (
+                OllamaApiClient completionsService,
+                CancellationToken cancellationToken) => await completionsService.GetResponseAsync(
+                new ChatMessage(ChatRole.User, "Hello, how are you?")
+            ,null, cancellationToken))
+            .WithOpenApi();
         return app;
+    }
+    public static string ToJson(this IConfiguration config)
+    {
+        var dict = config.AsDictionary();
+        // Using Newtonsoft.Json
+         return System.Text.Json.JsonSerializer.Serialize(dict, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+    }
+    public static IDictionary<string, object?> AsDictionary(this IConfiguration config)
+    {
+        var result = new Dictionary<string, object?>();
+        foreach (var child in config.GetChildren())
+        {
+            if (child.GetChildren().Any())
+            {
+                result[child.Key] = AsDictionary(child);
+            }
+            else
+            {
+                result[child.Key] = child.Value;
+            }
+        }
+        return result;
+    }
+    private static WeatherForecast[] WeatherForecasts(string[] summaries)
+    {
+        var forecast = Enumerable.Range(1, 5).Select(index =>
+                new WeatherForecast
+                (
+                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                    Random.Shared.Next(-20, 55),
+                    summaries[Random.Shared.Next(summaries.Length)]
+                ))
+            .ToArray();
+        return forecast;
     }
 }
 

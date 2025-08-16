@@ -11,6 +11,8 @@ namespace ElTocardo.Infrastructure.Services;
 
 public sealed class ChatClientProvider(ILogger<ChatClientProvider> logger)
 {
+
+    // should be user specific, but for now we will not filter on user
     public IChatClient GetChatClient(AiProviderEnumDto? provider)
     {
         logger.LogInformation("Retrieving chat client for provider: {Provider}", provider);

@@ -29,6 +29,7 @@
         <MicrosoftNETTestSdkVersion>17.14.1</MicrosoftNETTestSdkVersion>
         <MicrosoftCodeAnalysisAnalyzersVersion>4.14.0</MicrosoftCodeAnalysisAnalyzersVersion>
         <MicrosoftExtensionsAIPackagesCommonVersion>9.7.1</MicrosoftExtensionsAIPackagesCommonVersion>
+        <MicrosoftAspNetCorePackagesCommonVersion>2.3.0</MicrosoftAspNetCorePackagesCommonVersion>
         <!-- Logs and Telemetry packages -->
         <SerilogAspNetCoreVersion>9.0.0</SerilogAspNetCoreVersion>
         <SerilogSinksOpenTelemetryVersion>4.2.0</SerilogSinksOpenTelemetryVersion>

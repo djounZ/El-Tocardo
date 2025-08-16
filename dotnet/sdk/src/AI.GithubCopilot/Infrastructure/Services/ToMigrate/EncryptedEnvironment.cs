@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 
-namespace AI.GithubCopilot.Infrastructure.Services;
+namespace AI.GithubCopilot.Infrastructure.Services.ToMigrate;
 
 public sealed class EncryptedEnvironment(ILogger<EncryptedEnvironment> logger)
 {

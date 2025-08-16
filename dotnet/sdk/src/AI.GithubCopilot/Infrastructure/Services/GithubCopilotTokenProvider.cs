@@ -1,7 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using AI.GithubCopilot.Infrastructure.Models;
-using AI.GithubCopilot.Infrastructure.Options;
+using AI.GithubCopilot.Infrastructure.Dtos.Authorizations;
+using AI.GithubCopilot.Options;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -10,12 +11,11 @@ namespace AI.GithubCopilot.Infrastructure.Services;
 public sealed class GithubCopilotTokenProvider(
     ILogger<GithubCopilotTokenProvider> logger,
     HttpClient httpClient,
-    IOptions<GithubOptions> options,
-    GithubCopilotAccessTokenStore githubCopilotAccessTokenStore,
+    IOptions<AiGithubOptions> options,
+    IMemoryCache memoryCache,
     HttpClientRunner httpClientRunner)
 {
-    private GithubOptions Options => options.Value;
-    private readonly SemaphoreSlim _tokenSemaphore = new(1, 1);
+    private AiGithubOptions Options => options.Value;
 
 
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -24,38 +24,55 @@ public sealed class GithubCopilotTokenProvider(
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
 
-    /// <summary>
-    /// Gets a valid Copilot Bearer token, refreshing if necessary
-    /// </summary>
-    public async Task<string> GetGithubCopilotTokenAsync(CancellationToken cancellationToken)
+
+
+    public async Task<GithubCopilotAccessTokenResponseDto> GetGithubCopilotTokenAsync(string user,CancellationToken cancellationToken)
     {
-        // Check if cached token is still valid
-        if (githubCopilotAccessTokenStore.IsValid)
-        {
-            return githubCopilotAccessTokenStore.Token;
-        }
+        var orAddAsync = await GetOrAddAsync(user,
+            async ()=>
+            {
+                // Request a new token
+                var tokenResponse =
+                    await httpClientRunner.SendAndDeserializeAsync<GithubCopilotAccessTokenResponseDto>(
+                        httpClient,
+                        HttpMethod.Get,
+                        Options.CopilotTokenUrl,
+                        Options.CopilotTokenHeaders,
+                        HttpCompletionOption.ResponseHeadersRead,
+                        JsonOptions,
+                        cancellationToken,
+                        logger);
 
-        await _tokenSemaphore.WaitAsync(cancellationToken);
-        try
-        {
+                return tokenResponse;
+            });
 
-            var tokenResponse =
-                await httpClientRunner.SendAndDeserializeAsync<GithubCopilotAccessTokenResponse>(
-                    httpClient,
-                    HttpMethod.Get,
-                    Options.CopilotTokenUrl,
-                    Options.CopilotTokenHeaders,
-                    HttpCompletionOption.ResponseHeadersRead,
-                    JsonOptions,
-                    cancellationToken,
-                    logger);
+        return  orAddAsync!;
+    }
 
-            githubCopilotAccessTokenStore.SetToken(tokenResponse);
-            return githubCopilotAccessTokenStore.Token;
-        }
-        finally
-        {
-            _tokenSemaphore.Release();
-        }
+
+    private async Task<GithubCopilotAccessTokenResponseDto?> GetOrAddAsync(string key, Func<Task<GithubCopilotAccessTokenResponseDto>> func)
+    {
+
+        return await memoryCache.GetOrCreateAsync(GetCacheKey(key), entry => CreateAsync(func, entry));
+
+    }
+    private async Task<GithubCopilotAccessTokenResponseDto> CreateAsync(Func<Task<GithubCopilotAccessTokenResponseDto>> func, ICacheEntry entry)
+    {
+        var dto = await func();
+        entry.SetAbsoluteExpiration(DateTimeOffset.FromUnixTimeSeconds(dto.ExpiresAt - 300)); // Set expiration 5 minutes before actual expiration
+        entry.RegisterPostEvictionCallback(PostEvictionDelegateCallback);
+        return dto;
+    }
+
+    private void PostEvictionDelegateCallback(object key, object? value, EvictionReason reason, object? state)
+    {
+        logger.LogInformation(
+            "Cache entry with key {@Key} was evicted due to {@Reason} and {@State}.",
+            key, reason, state);
+    }
+
+    private string GetCacheKey(string user)
+    {
+        return $"{nameof(GithubCopilotAccessTokenResponseDto)}_{user}";
     }
 }

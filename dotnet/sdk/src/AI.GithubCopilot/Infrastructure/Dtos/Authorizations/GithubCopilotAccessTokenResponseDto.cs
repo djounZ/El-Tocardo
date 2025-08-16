@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace AI.GithubCopilot.Infrastructure.Dtos.Authorizations;
 
-public record GithubCopilotAccessTokenResponse(
+public record GithubCopilotAccessTokenResponseDto(
     [property: JsonPropertyName("annotations_enabled")] bool AnnotationsEnabled,
     [property: JsonPropertyName("blackbird_clientside_indexing")] bool BlackbirdClientsideIndexing,
     [property: JsonPropertyName("chat_enabled")] bool ChatEnabled,
@@ -11,7 +11,7 @@ public record GithubCopilotAccessTokenResponse(
     [property: JsonPropertyName("code_review_enabled")] bool CodeReviewEnabled,
     [property: JsonPropertyName("codesearch")] bool CodeSearch,
     [property: JsonPropertyName("copilotignore_enabled")] bool CopilotIgnoreEnabled,
-    [property: JsonPropertyName("endpoints")] Endpoints Endpoints,
+    [property: JsonPropertyName("endpoints")] EndpointDto Endpoints,
     [property: JsonPropertyName("enterprise_list")] int[] EnterpriseList,
     [property: JsonPropertyName("expires_at")] long ExpiresAt,
     [property: JsonPropertyName("individual")] bool Individual,
@@ -31,7 +31,7 @@ public record GithubCopilotAccessTokenResponse(
     [property: JsonPropertyName("xcode_chat")] bool XcodeChat
 );
 
-public record Endpoints(
+public record EndpointDto(
     [property: JsonPropertyName("api")] string Api,
     [property: JsonPropertyName("origin-tracker")] string OriginTracker,
     [property: JsonPropertyName("proxy")] string Proxy,

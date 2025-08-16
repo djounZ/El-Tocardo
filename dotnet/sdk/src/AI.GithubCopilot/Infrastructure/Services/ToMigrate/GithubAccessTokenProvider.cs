@@ -1,19 +1,18 @@
-using AI.GithubCopilot.Infrastructure.Models;
-using AI.GithubCopilot.Infrastructure.Options;
+using AI.GithubCopilot.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace AI.GithubCopilot.Infrastructure.Services;
+namespace AI.GithubCopilot.Infrastructure.Services.ToMigrate;
 
 public sealed class GithubAccessTokenProvider(
     ILogger<GithubAccessTokenProvider> logger,
     HttpClient httpClient,
-    IOptions<GithubOptions> options,
+    IOptions<AiGithubOptions> options,
     GithubAccessTokenStore githubAccessTokenStore,
     HttpClientRunner httpClientRunner,
     GithubAuthenticator githubAuthenticator)
 {
-    private GithubOptions Options => options.Value;
+    private AiGithubOptions Options => options.Value;
 
     public async Task GetGithubAccessToken(
         CancellationToken cancellationToken)

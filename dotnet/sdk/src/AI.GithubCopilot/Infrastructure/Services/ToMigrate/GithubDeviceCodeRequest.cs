@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace AI.GithubCopilot.Infrastructure.Models;
+namespace AI.GithubCopilot.Infrastructure.Services.ToMigrate;
 
 public class GithubDeviceCodeRequest
 {

@@ -5,7 +5,7 @@ using System.Text;
 using AI.GithubCopilot.Infrastructure.Models;
 using Microsoft.Extensions.Logging;
 
-namespace AI.GithubCopilot.Infrastructure.Services;
+namespace AI.GithubCopilot.Infrastructure.Services.ToMigrate;
 
 public sealed class GithubAuthenticator(ILogger<GithubAuthenticator> logger, HttpListener httpListener, TaskCompletionSource<bool> authenticationCompleted)
 {

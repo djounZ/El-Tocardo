@@ -6,17 +6,27 @@ using ElTocardo.Infrastructure.Options;
 using ElTocardo.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using OllamaSharp;
 
 namespace ElTocardo.Infrastructure.Configuration;
 
 public static class ServiceCollectionExtensions
 {
+
+
+    /// <summary>
+    /// Registers  ElTocardo Infrastructure services and options.
+    /// Requires AiGithubCopilotUserProvider to be registered in the service collection.
+    /// Requires IMemoryCache to be registered in the service collection.
+    /// </summary>
     public static IServiceCollection AddElTocardoInfrastructure(this IServiceCollection services,
         IConfiguration configuration)
     {
         services
             .AddElTocardoApplication(configuration)
             .AddAiGithubCopilot(configuration)
+            .AddOllamaApiClient(configuration)
             .AddOptions(configuration)
             .AddMappers(configuration)
             .AddServices(configuration);
@@ -24,6 +34,18 @@ public static class ServiceCollectionExtensions
     }
 
 
+
+    private static IServiceCollection AddOllamaApiClient(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<OllamaOptions>(configuration.GetSection(nameof(OllamaOptions)));
+        services.AddSingleton<OllamaApiClient>(sc =>
+        {
+            var ollamaOptions = sc.GetRequiredService<IOptions<OllamaOptions>>().Value;
+
+            return new OllamaApiClient(ollamaOptions.Uri, ollamaOptions.DefaultModel);
+        });
+        return services;
+    }
     private static IServiceCollection AddOptions(this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -34,6 +56,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddServices(this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddTransient<ChatClientProvider>();
         services.AddTransient<IChatCompletionsService, ChatCompletionsService>();
         return services;
     }
