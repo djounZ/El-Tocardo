@@ -9,7 +9,9 @@
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)"/>
         <PackageReference Include="xunit" Version="$(XunitVersion)"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitRunnerVisualStudioVersion)"/>
-    </ItemGroup>
+        <PackageReference Include="FluentAssertions" Version="$(FluentAssertionsVersion)"/>
+        <PackageReference Include="Moq" Version="$(MoqVersion)"/>
+   </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\src\AI.GithubCopilot\AI.GithubCopilot.csproj"/>
