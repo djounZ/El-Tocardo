@@ -17,6 +17,6 @@ public sealed class ChatClientProvider(ILogger<ChatClientProvider> logger, IAiPr
         var aiProviderDto = await aiProviderService.GetAsync(defaultedProvider, cancellationToken);
         return aiProviderDto == null ?
             throw new UnauthorizedAccessException("Provider not found or not authorized.")
-            : chatClientStore.GetChatClient(aiProviderDto.Name);
+            : chatClientStore.GetMcpChatClient(aiProviderDto.Name);
     }
 }
