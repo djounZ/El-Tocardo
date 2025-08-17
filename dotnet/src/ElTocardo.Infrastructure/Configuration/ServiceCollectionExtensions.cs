@@ -62,6 +62,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IAiProviderService, AiProviderService>();
         services.AddTransient<ChatClientStore>();
         services.AddTransient<ChatClientProvider>();
+        services.AddTransient<AiToolsProviderService>();
         services.AddTransient<IChatCompletionsService, ChatCompletionsService>();
         services.AddMcpServerConfigurationDto();
         services.AddTransient<IMcpServerConfigurationProviderService, McpServerConfigurationProviderService>();

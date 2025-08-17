@@ -5,7 +5,7 @@ using OllamaSharp;
 
 namespace ElTocardo.API.Endpoints;
 
-public static class DevelopmenTestsEndpoints
+public static class DevelopmentTestsEndpoints
 {
     public static WebApplication MapDevelopmentTestEndpoints(this WebApplication app)
     {

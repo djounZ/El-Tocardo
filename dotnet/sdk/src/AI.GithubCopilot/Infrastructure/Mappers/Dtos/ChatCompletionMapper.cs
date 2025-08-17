@@ -67,14 +67,10 @@ public sealed class ChatCompletionMapper(ILogger<ChatCompletionMapper> logger)
         IAsyncEnumerable<ChatCompletionResponseDto?> chatCompletionResponseDtos,
         [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        string? responseId = null;
-
         await foreach (var chatCompletionResponseDto in chatCompletionResponseDtos.WithCancellation(cancellationToken))
         {
             if (chatCompletionResponseDto != null)
             {
-                // Use the first response ID for all updates in the stream
-                responseId ??= chatCompletionResponseDto.Id;
 
                 yield return MapToChatResponseUpdate(chatCompletionResponseDto);
             }
@@ -89,7 +85,7 @@ public sealed class ChatCompletionMapper(ILogger<ChatCompletionMapper> logger)
     {
         logger.LogTrace("Mapping To ChatResponse from ChatCompletionResponseDto {@ChatRequest}", dto);
 
-        var firstChoice = dto.Choices.FirstOrDefault() ?? throw new InvalidOperationException("Invalid response: no valid choice with message found");
+        var firstChoice = dto.Choices.Count > 0 ? dto.Choices[0] : throw new InvalidOperationException("Invalid response: no valid choice with message found");
         var message = MapToChatMessage(firstChoice);
         var usageDetails = MapToUsageDetails(dto.Usage);
         var response = new ChatResponse(message)
@@ -107,10 +103,10 @@ public sealed class ChatCompletionMapper(ILogger<ChatCompletionMapper> logger)
     private ChatResponseUpdate MapToChatResponseUpdate(ChatCompletionResponseDto dto)
     {
 
-        var chatChoiceDto = dto.Choices[0];
+        var chatChoiceDto = dto.Choices.Count > 0 ? dto.Choices[0] : null;
 
-        var messageDto = chatChoiceDto.Message;
-        var chatDeltaDto = chatChoiceDto.Delta;
+        var messageDto = chatChoiceDto?.Message;
+        var chatDeltaDto = chatChoiceDto?.Delta;
 
         var contents = new List<AIContent>();
         var usageContent = MapToUsageContent(dto);
@@ -132,7 +128,7 @@ public sealed class ChatCompletionMapper(ILogger<ChatCompletionMapper> logger)
             MessageId = messageDto?.Name,
             ModelId = dto.Model,
             CreatedAt = DateTimeOffset.FromUnixTimeSeconds(dto.Created),
-            FinishReason = MapToChatFinishReason(chatChoiceDto.FinishReason),
+            FinishReason = MapToChatFinishReason(chatChoiceDto?.FinishReason),
             RawRepresentation = dto
         };
         return update;

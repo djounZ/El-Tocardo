@@ -16,8 +16,11 @@ public static class ServiceCollectionExtensions
         services.AddServiceDiscovery();
         services.ConfigureHttpClientDefaults(http =>
         {
-            // Turn on resilience by default
-            http.AddStandardResilienceHandler();
+            if (http.Name != nameof(GithubCopilotChatCompletion))
+            {
+                // Turn on resilience by default
+                http.AddStandardResilienceHandler();
+            }
 
             // Turn on service discovery by default
             http.AddServiceDiscovery();
