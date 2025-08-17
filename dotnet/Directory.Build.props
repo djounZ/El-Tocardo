@@ -30,6 +30,7 @@
         <MicrosoftCodeAnalysisAnalyzersVersion>4.14.0</MicrosoftCodeAnalysisAnalyzersVersion>
         <MicrosoftExtensionsAIPackagesCommonVersion>9.7.1</MicrosoftExtensionsAIPackagesCommonVersion>
         <MicrosoftAspNetCorePackagesCommonVersion>2.3.0</MicrosoftAspNetCorePackagesCommonVersion>
+        <MicrosoftExtensionsHttpResilienceVersion>9.8.0</MicrosoftExtensionsHttpResilienceVersion>
         <!-- Logs and Telemetry packages -->
         <SerilogAspNetCoreVersion>9.0.0</SerilogAspNetCoreVersion>
         <SerilogSinksOpenTelemetryVersion>4.2.0</SerilogSinksOpenTelemetryVersion>
@@ -47,6 +48,7 @@
         <MicrosoftIdentityModelTokensVersion>8.13.0</MicrosoftIdentityModelTokensVersion>
 
         <OllamaSharpVersion>5.3.4</OllamaSharpVersion>
+        <CommunityToolkitAspireHostingOllamaVersion>9.7.0</CommunityToolkitAspireHostingOllamaVersion>
         <ModelContextProtocolPackagesCommonVersion>0.3.0-preview.3</ModelContextProtocolPackagesCommonVersion>
 
         <!-- Aspire packages -->

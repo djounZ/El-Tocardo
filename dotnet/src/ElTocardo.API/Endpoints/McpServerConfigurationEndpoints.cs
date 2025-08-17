@@ -10,7 +10,7 @@ public static class McpServerConfigurationEndpoints
     public static WebApplication MapMcpServerConfigurationEndpoints(this WebApplication app)
     {
         app.MapGet("v1/mcp-servers",
-                ([FromServices] IMcpServerConfigurationProviderService service) => Results.Ok((object?)service.GetAllServers()))
+                ([FromServices] IMcpServerConfigurationProviderService service) => Results.Ok(service.GetAllServers()))
             .WithName("GetAllMcpServers")
             .WithSummary("Get all MCP servers")
             .WithDescription("Returns all MCP server configuration items")

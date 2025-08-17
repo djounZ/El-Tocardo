@@ -1,5 +1,7 @@
+using System.Text.Json;
 using AI.GithubCopilot.Configuration;
 using ElTocardo.Application.Configuration;
+using ElTocardo.Application.Dtos.ModelContextProtocol;
 using ElTocardo.Application.Services;
 using ElTocardo.Infrastructure.Mappers.Dtos.AI;
 using ElTocardo.Infrastructure.Options;
@@ -38,7 +40,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddOllamaApiClient(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<OllamaOptions>(configuration.GetSection(nameof(OllamaOptions)));
-        services.AddSingleton<OllamaApiClient>(sc =>
+        services.AddTransient<OllamaApiClient>(sc =>
         {
             var ollamaOptions = sc.GetRequiredService<IOptions<OllamaOptions>>().Value;
 
@@ -56,9 +58,32 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddServices(this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddTransient<IAiProviderService, AiProviderService>();
+        services.AddTransient<ChatClientStore>();
         services.AddTransient<ChatClientProvider>();
         services.AddTransient<IChatCompletionsService, ChatCompletionsService>();
+        AddMcpServerConfigurationDto(services);
+        services.AddTransient<IMcpServerConfigurationProviderService, McpServerConfigurationProviderService>();
+
         return services;
+    }
+
+    private static void AddMcpServerConfigurationDto(IServiceCollection services)
+    {
+        services.AddTransient(sc =>
+        {
+            var requiredService = sc.GetRequiredService<IOptions<ElTocardoInfrastructureOptions>>();
+            if (!File.Exists(requiredService.Value.McpServerConfigurationFile))
+            {
+                return new McpServerConfigurationDto(new Dictionary<string, McpServerConfigurationItemDto>());
+            }
+
+            using var stream = File.OpenRead(requiredService.Value.McpServerConfigurationFile);
+            var mcpServerConfiguration = JsonSerializer.Deserialize<McpServerConfigurationDto>(stream)
+                                         ?? new McpServerConfigurationDto(
+                                             new Dictionary<string, McpServerConfigurationItemDto>());
+            return mcpServerConfiguration;
+        });
     }
 
     private static IServiceCollection AddMappers(this IServiceCollection services,
