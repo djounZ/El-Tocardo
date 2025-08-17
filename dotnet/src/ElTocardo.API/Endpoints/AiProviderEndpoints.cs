@@ -1,5 +1,4 @@
-using System.Reflection;
-using System.Text.Json.Serialization;
+using ElTocardo.API.Options;
 using ElTocardo.Application.Dtos.Provider;
 using ElTocardo.Application.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +17,8 @@ public static class AiProviderEndpoints
             .WithDescription("Returns all AI Provider items")
             .WithTags(Tags)
             .Produces<AiProviderDto[]>()
-            .WithOpenApi();
+            .WithOpenApi()
+            .CacheOutput(PredefinedOutputCachingPolicy.PerUserVaryByHeaderAuthorizationLongLiving);
 
         app.MapGet("v1/ai-providers/{provider}",
                 async ([FromServices] IAiProviderService service, string provider, CancellationToken cancellationToken) =>
@@ -32,22 +32,9 @@ public static class AiProviderEndpoints
             .WithTags(Tags)
             .Produces<AiProviderDto>()
             .Produces(StatusCodes.Status404NotFound)
-            .WithOpenApi();
+            .WithOpenApi()
+            .CacheOutput(PredefinedOutputCachingPolicy.PerUserVaryByHeaderAuthorizationLongLiving);
 
         return app;
-    }
-
-
-    public static TEnum Parse<TEnum>(this string value) where TEnum : struct, Enum
-    {
-        foreach (var field in typeof(TEnum).GetFields(BindingFlags.Public | BindingFlags.Static))
-        {
-            var attr = field.GetCustomAttribute<JsonStringEnumMemberNameAttribute>();
-            if (attr != null && string.Equals(attr.Name, value, StringComparison.OrdinalIgnoreCase))
-            {
-                return (TEnum)field.GetValue(null)!;
-            }
-        }
-        throw new ArgumentOutOfRangeException(nameof(value), value, "Invalid string value for enum conversion.");
     }
 }

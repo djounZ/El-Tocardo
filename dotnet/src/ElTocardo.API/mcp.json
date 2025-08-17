@@ -1,54 +1,54 @@
 {
-	"servers": {
-		"microsoft-docs": {
-			"url": "https://learn.microsoft.com/api/mcp",
-			"type": "http"
-		},
-		"context7": {
-			"url": "https://mcp.context7.com/mcp",
-			"type": "http"
-		},
-		"fetch": {
-			"command": "uvx",
-			"args": [
-				"mcp-server-fetch"
-			],
-			"type": "stdio"
-		},
-		"time": {
-			"command": "uvx",
-			"args": [
-				"mcp-server-time"
-			],
-			"type": "stdio"
-		},
-		"everything": {
-			"command": "npx",
-			"args": [
-				"-y",
-				"@modelcontextprotocol/server-everything"
-			],
-			"type": "stdio"
-		},
-		"angular-cli": {
-			"command": "npx",
-			"args": [
-				"@angular/cli",
-				"mcp"
-			],
-			"type": "stdio"
-		},
-		"memory": {
-			"command": "docker",
-			"args": [
-				"run",
-				"-i",
-				"-v",
-				"claude-memory:/app/dist",
-				"--rm",
-				"mcp/memory"
-			],
-			"type": "stdio"
-		}
-	}
+  "servers": {
+    "microsoft-docs": {
+      "url": "https://learn.microsoft.com/api/mcp",
+      "type": "http"
+    },
+    "context7": {
+      "url": "https://mcp.context7.com/mcp",
+      "type": "http"
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch"
+      ],
+      "type": "stdio"
+    },
+    "time": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-time"
+      ],
+      "type": "stdio"
+    },
+    "everything": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-everything"
+      ],
+      "type": "stdio"
+    },
+    "angular-cli": {
+      "command": "npx",
+      "args": [
+        "@angular/cli",
+        "mcp"
+      ],
+      "type": "stdio"
+    },
+    "memory": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "-v",
+        "claude-memory:/app/dist",
+        "--rm",
+        "mcp/memory"
+      ],
+      "type": "stdio"
+    }
+  }
 }

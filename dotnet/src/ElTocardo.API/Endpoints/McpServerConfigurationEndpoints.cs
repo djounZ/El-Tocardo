@@ -1,3 +1,4 @@
+using ElTocardo.API.Options;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
 using ElTocardo.Application.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,8 @@ public static class McpServerConfigurationEndpoints
             .WithDescription("Returns all MCP server configuration items")
             .WithTags(Tags)
             .Produces<IDictionary<string, McpServerConfigurationItemDto>>()
-            .WithOpenApi();
+            .WithOpenApi()
+            .CacheOutput(PredefinedOutputCachingPolicy.PerUserVaryByHeaderAuthorizationShortLiving);
 
         app.MapGet("v1/mcp-servers/{serverName}",
                 ([FromServices] IMcpServerConfigurationProviderService service, string serverName) =>

@@ -17,13 +17,22 @@ public static class WebApplicationExtensions
 
         app.UseHttpsRedirection();
         app.UseCors("DefaultCorsPolicy");
+        app.UseCaching();
         app.MapEndpoints();
         await app.Services.UseElTocardoApiAsync(cancellationToken);
         return app;
     }
+
+    private static WebApplication UseCaching(this WebApplication app)
+    {
+        app.UseSession();
+        app.UseOutputCache();
+        return app;
+    }
+
     private static WebApplication MapEndpoints(this WebApplication app)
     {
-        app.MapWeatherEndpoints();
+        app.MapDevelopmentTestEndpoints();
         app.MapMcpServerConfigurationEndpoints();
         app.MapAiProviderEndpoints();
         return app;

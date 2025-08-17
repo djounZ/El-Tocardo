@@ -11,7 +11,7 @@
         <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitRunnerVisualStudioVersion)"/>
         <PackageReference Include="FluentAssertions" Version="$(FluentAssertionsVersion)"/>
         <PackageReference Include="Moq" Version="$(MoqVersion)"/>
-   </ItemGroup>
+    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\src\AI.GithubCopilot\AI.GithubCopilot.csproj"/>

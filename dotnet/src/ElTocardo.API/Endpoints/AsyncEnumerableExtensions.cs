@@ -1,3 +1,6 @@
+using System.Reflection;
+using System.Text.Json.Serialization;
+
 namespace ElTocardo.API.Endpoints;
 
 public static class AsyncEnumerableExtensions
@@ -21,4 +24,18 @@ public static class AsyncEnumerableExtensions
         );
     }
 
+
+
+    public static TEnum Parse<TEnum>(this string value) where TEnum : struct, Enum
+    {
+        foreach (var field in typeof(TEnum).GetFields(BindingFlags.Public | BindingFlags.Static))
+        {
+            var attr = field.GetCustomAttribute<JsonStringEnumMemberNameAttribute>();
+            if (attr != null && string.Equals(attr.Name, value, StringComparison.OrdinalIgnoreCase))
+            {
+                return (TEnum)field.GetValue(null)!;
+            }
+        }
+        throw new ArgumentOutOfRangeException(nameof(value), value, "Invalid string value for enum conversion.");
+    }
 }

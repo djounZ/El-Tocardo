@@ -1,6 +1,8 @@
 using AI.GithubCopilot.Infrastructure.Services;
 using ElTocardo.API.Options;
 using ElTocardo.Infrastructure.Configuration;
+using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.Extensions.Options;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
@@ -23,7 +25,7 @@ public static class ServiceCollectionExtensions
 
         services.Configure<ElTocardoApiOptions>(configuration.GetSection(nameof(ElTocardoApiOptions)));
         services.AddHttpContextAccessor();
-        services.AddMemoryCache();
+        services.AddCaching();
         services.AddSingleton<AiGithubCopilotUserProvider>(sc =>
         {
             return new AiGithubCopilotUserProvider(() =>
@@ -49,9 +51,20 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-
-
-
+    private static IServiceCollection AddCaching(this IServiceCollection services)
+    {
+        services.AddMemoryCache();
+        services.AddDistributedMemoryCache(); // For in-memory session storage
+        services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(20);
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+        });
+        services.AddOutputCache();
+        services.AddSingleton<IConfigureOptions<OutputCacheOptions>, OutputCacheOptionsSetup>();
+        return services;
+    }
 
     private static IServiceCollection AddOpenTelemetryExporters(this IServiceCollection services, IConfiguration configuration)
     {

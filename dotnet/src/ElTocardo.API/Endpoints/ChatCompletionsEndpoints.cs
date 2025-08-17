@@ -8,7 +8,7 @@ public static class ChatCompletionsEndpoints
 {
     private static string Tags => "Chat Completions";
 
-    public static WebApplication MapMcpToolsEndpoints(this WebApplication app)
+    public static WebApplication MapChatCompletionsEndpoints(this WebApplication app)
     {
 
         // provider

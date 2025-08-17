@@ -1,30 +1,44 @@
 using AI.GithubCopilot.Domain.Services;
-using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
-using ElTocardo.Application.Services;
+using ElTocardo.API.Options;
 using Microsoft.Extensions.AI;
 using OllamaSharp;
 
 namespace ElTocardo.API.Endpoints;
 
-public static class DevelopmentEndpoint
+public static class DevelopmenTestsEndpoints
 {
-    /// <summary>
-    ///     Maps weather forecast endpoints to the application
-    /// </summary>
-    /// <param name="app">The web application</param>
-    /// <returns>The web application for method chaining</returns>
-    public static WebApplication MapWeatherEndpoints(this WebApplication app)
+    public static WebApplication MapDevelopmentTestEndpoints(this WebApplication app)
     {
         var summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
+
+
+        app.MapGet("/test",async (
+                HttpContext context,
+                CancellationToken cancellationToken) =>
+            {
+                var s = context.Session.GetString("Test");
+                if (s == null)
+                {
+                    await Task.Delay(10000, cancellationToken);
+                    context.Session.SetString("Test", "Hello World");
+                    return "Session value set to 'Hello World'";
+                }
+                else
+                {
+                    return $"Session value: {s}";
+                }
+            })
+            .WithOpenApi();
         app.MapGet("/",() => WeatherForecasts(summaries))
             .WithName("GetWeatherForecast")
             .WithSummary("Get weather forecast")
             .WithDescription("Returns a 5-day weather forecast")
-            .WithOpenApi();
+            .WithOpenApi()
+            .CacheOutput(PredefinedOutputCachingPolicy.GlobalShortLiving);
 
         app.MapGet("/configuration",(IConfiguration configuration) => configuration.AsDictionary())
             .WithOpenApi();
@@ -51,7 +65,8 @@ public static class DevelopmentEndpoint
         // Using Newtonsoft.Json
          return System.Text.Json.JsonSerializer.Serialize(dict, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
     }
-    public static IDictionary<string, object?> AsDictionary(this IConfiguration config)
+
+    private static IDictionary<string, object?> AsDictionary(this IConfiguration config)
     {
         var result = new Dictionary<string, object?>();
         foreach (var child in config.GetChildren())
