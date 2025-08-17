@@ -36,7 +36,7 @@ public sealed class ModelContextProtocolMapper(ILogger<ModelContextProtocolMappe
         return [.. resources.Select(MapToMcpClientResourceDto)];
     }
 
-    public CallToolResultDto MapToCallToolResult(CallToolResult callToolResult)
+    public CallToolResultDto MapToCallToolResultDto(CallToolResult callToolResult)
     {
         logger.LogTrace("MapToCallToolResult called");
         IList<ContentBlockDto> contentBlocks = [];

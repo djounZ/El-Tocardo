@@ -4,6 +4,7 @@ using ElTocardo.Application.Configuration;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
 using ElTocardo.Application.Services;
 using ElTocardo.Infrastructure.Mappers.Dtos.AI;
+using ElTocardo.Infrastructure.Mappers.Dtos.ModelContextProtocol;
 using ElTocardo.Infrastructure.Options;
 using ElTocardo.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
@@ -62,13 +63,14 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ChatClientStore>();
         services.AddTransient<ChatClientProvider>();
         services.AddTransient<IChatCompletionsService, ChatCompletionsService>();
-        AddMcpServerConfigurationDto(services);
+        services.AddMcpServerConfigurationDto();
         services.AddTransient<IMcpServerConfigurationProviderService, McpServerConfigurationProviderService>();
-
+        services.AddTransient<IMcpClientToolsService, McpClientToolsService>();
+        services.AddTransient<ClientTransportFactoryService>();
         return services;
     }
 
-    private static void AddMcpServerConfigurationDto(IServiceCollection services)
+    private static void AddMcpServerConfigurationDto(this IServiceCollection services)
     {
         services.AddTransient(sc =>
         {
@@ -97,6 +99,7 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration)
     {
         services.AddAi(configuration);
+        services.AddSingleton<ModelContextProtocolMapper>();
         return services;
     }
 

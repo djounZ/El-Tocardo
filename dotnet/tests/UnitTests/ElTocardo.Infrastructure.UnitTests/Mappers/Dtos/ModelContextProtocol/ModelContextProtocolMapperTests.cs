@@ -184,7 +184,7 @@ public class ModelContextProtocolMapperTests
             CreateResourceLinkBlock()
         };
         var result = new CallToolResult { Content = blocks, StructuredContent = null, IsError = false };
-        var dto = _mapper.MapToCallToolResult(result);
+        var dto = _mapper.MapToCallToolResultDto(result);
         Assert.Equal(5, dto.Content.Count);
         Assert.Contains(dto.Content, b => b is TextContentBlockDto);
         Assert.Contains(dto.Content, b => b is ImageContentBlockDto);
