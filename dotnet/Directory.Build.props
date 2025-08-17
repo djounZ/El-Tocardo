@@ -34,6 +34,7 @@
         <SerilogAspNetCoreVersion>9.0.0</SerilogAspNetCoreVersion>
         <SerilogSinksOpenTelemetryVersion>4.2.0</SerilogSinksOpenTelemetryVersion>
         <SerilogTracingInstrumentationAspNetCoreVersion>2.3.1</SerilogTracingInstrumentationAspNetCoreVersion>
+        <OpenTelemetryPackagesCommonVersion>1.12.0</OpenTelemetryPackagesCommonVersion>
         <!-- Testing packages -->
         <XunitVersion>2.9.3</XunitVersion>
         <XunitRunnerVisualStudioVersion>3.1.3</XunitRunnerVisualStudioVersion>

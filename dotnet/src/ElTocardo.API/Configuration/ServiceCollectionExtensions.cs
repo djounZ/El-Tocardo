@@ -1,12 +1,15 @@
 using AI.GithubCopilot.Infrastructure.Services;
 using ElTocardo.API.Options;
 using ElTocardo.Infrastructure.Configuration;
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 
 namespace ElTocardo.API.Configuration;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddElTocardoApi(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddElTocardoApi(this IServiceCollection services, IConfiguration configuration, string applicationName)
     {
         services.Configure<ElTocardoApiOptions>(configuration.GetSection(nameof(ElTocardoApiOptions)));
         services.AddHttpContextAccessor();
@@ -17,6 +20,37 @@ public static class ServiceCollectionExtensions
                 sc.GetRequiredService<IHttpContextAccessor>().HttpContext?.User.Identity?.Name ?? string.Empty);
         });
         services.AddElTocardoInfrastructure(configuration);
+        services
+            .AddOpenTelemetryExporters(configuration)
+            .AddOpenTelemetry()
+            .WithMetrics(metrics =>
+            {
+                metrics.AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddRuntimeInstrumentation();
+            })
+            .WithTracing(tracing =>
+            {
+                tracing
+                    .AddSource(applicationName)
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation();
+            });
+        return services;
+    }
+
+
+
+
+
+    private static IServiceCollection AddOpenTelemetryExporters(this IServiceCollection services, IConfiguration configuration)
+    {
+        var useOtlpExporter = !string.IsNullOrWhiteSpace(configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
+        if (useOtlpExporter)
+        {
+            services.AddOpenTelemetry().UseOtlpExporter();
+        }
+
         return services;
     }
 }
