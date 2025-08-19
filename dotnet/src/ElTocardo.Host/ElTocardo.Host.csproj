@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="Aspire.Hosting.AppHost" Version="$(AspireHostingAppHostCommonVersion)"/>
+        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="$(AspireHostingAppHostCommonVersion)"/>
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\ElTocardo.API\ElTocardo.API.csproj"/>

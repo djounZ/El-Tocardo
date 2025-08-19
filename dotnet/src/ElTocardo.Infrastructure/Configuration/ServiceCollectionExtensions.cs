@@ -1,14 +1,25 @@
 using System.Text.Json;
 using AI.GithubCopilot.Configuration;
 using ElTocardo.Application.Configuration;
+using ElTocardo.Application.Commands.McpServerConfiguration;
+using ElTocardo.Application.Common.Interfaces;
+using ElTocardo.Application.Common.Models;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
+using ElTocardo.Application.Handlers.McpServerConfiguration;
+using ElTocardo.Application.Queries.McpServerConfiguration;
 using ElTocardo.Application.Services;
+using ElTocardo.Domain.Repositories;
+using ElTocardo.Infrastructure.Data;
 using ElTocardo.Infrastructure.Mappers.Dtos.AI;
 using ElTocardo.Infrastructure.Mappers.Dtos.ModelContextProtocol;
 using ElTocardo.Infrastructure.Options;
+using ElTocardo.Infrastructure.Repositories;
 using ElTocardo.Infrastructure.Services;
+using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using OllamaSharp;
 
@@ -24,16 +35,19 @@ public static class ServiceCollectionExtensions
     /// Requires IMemoryCache to be registered in the service collection.
     /// </summary>
     public static IServiceCollection AddElTocardoInfrastructure(this IServiceCollection services,
-        IConfiguration configuration)
+        IConfiguration configuration, Action<DbContextOptionsBuilder> configureDbContext)
     {
-        services
+        return services
             .AddElTocardoApplication(configuration)
             .AddAiGithubCopilot(configuration)
             .AddOllamaApiClient(configuration)
+            .AddDatabase(configureDbContext)
+            .AddRepositories()
+            .AddValidation()
+            .AddCommandQueryHandlers()
             .AddOptions(configuration)
-            .AddMappers(configuration)
-            .AddServices(configuration);
-        return services;
+            .AddMappers()
+            .AddServices();
     }
 
 
@@ -56,59 +70,71 @@ public static class ServiceCollectionExtensions
             configuration.GetSection(nameof(ElTocardoInfrastructureOptions)));
         return services;
     }
-    private static IServiceCollection AddServices(this IServiceCollection services,
-        IConfiguration configuration)
+    private static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddTransient<IAiProviderService, AiProviderService>();
         services.AddTransient<ChatClientStore>();
         services.AddTransient<ChatClientProvider>();
         services.AddTransient<AiToolsProviderService>();
         services.AddTransient<IChatCompletionsService, ChatCompletionsService>();
-        services.AddMcpServerConfigurationDto();
-        services.AddTransient<IMcpServerConfigurationProviderService, McpServerConfigurationProviderService>();
+
+        // New CQRS-based service
+        services.AddScoped<IMcpServerConfigurationService, McpServerConfigurationService>();
+
+
         services.AddTransient<IMcpClientToolsService, McpClientToolsService>();
         services.AddTransient<ClientTransportFactoryService>();
         return services;
     }
 
-    private static void AddMcpServerConfigurationDto(this IServiceCollection services)
+    private static IServiceCollection AddMappers(this IServiceCollection services)
     {
-        services.AddTransient(sc =>
-        {
-            var requiredService = sc.GetRequiredService<IOptions<ElTocardoInfrastructureOptions>>();
-            if (!File.Exists(requiredService.Value.McpServerConfigurationFile))
-            {
-                return new McpServerConfigurationDto(new Dictionary<string, McpServerConfigurationItemDto>());
-            }
-
-            using var stream = File.OpenRead(requiredService.Value.McpServerConfigurationFile);
-            var mcpServerConfiguration = JsonSerializer.Deserialize<McpServerConfigurationDto>(stream)
-                                         ?? new McpServerConfigurationDto(
-                                             new Dictionary<string, McpServerConfigurationItemDto>());
-            return mcpServerConfiguration;
-        });
+        return services.AddDtos();
     }
 
-    private static IServiceCollection AddMappers(this IServiceCollection services,
-        IConfiguration configuration)
+    private static IServiceCollection AddDtos(this IServiceCollection services)
     {
-        services.AddDtos(configuration);
+        services.AddAi()
+            .TryAddSingleton<ModelContextProtocolMapper>();
         return services;
     }
 
-    private static IServiceCollection AddDtos(this IServiceCollection services,
-        IConfiguration configuration)
+    private static IServiceCollection AddAi(this IServiceCollection services)
     {
-        services.AddAi(configuration);
-        services.AddSingleton<ModelContextProtocolMapper>();
+        services.TryAddSingleton<AiChatCompletionMapper>();
+        services.TryAddSingleton<AiContentMapper>();
         return services;
     }
 
-    private static IServiceCollection AddAi(this IServiceCollection services,
-        IConfiguration configuration)
+    private static IServiceCollection AddDatabase(this IServiceCollection services, Action<DbContextOptionsBuilder> configureDbContext)
     {
-        services.AddSingleton<AiChatCompletionMapper>();
-        services.AddSingleton<AiContentMapper>();
+        services.AddDbContext<ApplicationDbContext>(configureDbContext);
+        return services;
+    }
+
+    private static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IMcpServerConfigurationRepository, McpServerConfigurationRepository>();
+        return services;
+    }
+
+    private static IServiceCollection AddCommandQueryHandlers(this IServiceCollection services)
+    {
+        // Command handlers
+        services.AddScoped<ICommandHandler<CreateMcpServerCommand, Result<Guid>>, CreateMcpServerCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdateMcpServerCommand, Result>, UpdateMcpServerCommandHandler>();
+        services.AddScoped<ICommandHandler<DeleteMcpServerCommand, Result>, DeleteMcpServerCommandHandler>();
+
+        // Query handlers
+        services.AddScoped<IQueryHandler<GetAllMcpServersQuery, IDictionary<string, McpServerConfigurationItemDto>>, GetAllMcpServersQueryHandler>();
+        services.AddScoped<IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto?>, GetMcpServerByNameQueryHandler>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddValidation(this IServiceCollection services)
+    {
+        services.AddValidatorsFromAssemblyContaining<CreateMcpServerCommand>();
         return services;
     }
 }

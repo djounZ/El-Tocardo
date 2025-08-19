@@ -2,15 +2,19 @@ using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-// var ollama = builder.AddContainer("ollama", "ollama/ollama:latest")
-//     .WithEndpoint(port: 11435, targetPort: 11434, name:"ollama", scheme:"http")
-//     .WithEnvironment("OLLAMA_MODELS", "driaforall/tiny-agent-a:0.5b") // Download llama2 at startup
-//     .WithVolume("ollama_data", "/root/.ollama");
+// Configure PostgreSQL database with persistent storage
+var postgres = builder.AddPostgres("postgres")
+   // .WithDataVolume("el-tocardo-postgres-data") // Persistent volume for database data
+    .WithPgAdmin(); // Optional: Add pgAdmin for database management
 
+var database = postgres.AddDatabase("el-tocardo-db");
 
 
 _ = builder.AddProject<ElTocardo_API>("ElTocardoAPI")
+    .WithReference(database) // Connect the API to the database
+    .WaitFor(postgres)
     // .WithEnvironment("OllamaOptions:Uri", ollama.GetEndpoint("ollama"))
     // .WaitFor(ollama)
     .WithExternalHttpEndpoints();
+
 builder.Build().Run();

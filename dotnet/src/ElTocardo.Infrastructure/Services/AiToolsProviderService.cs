@@ -1,11 +1,15 @@
+using ElTocardo.Application.Common.Interfaces;
 using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
+using ElTocardo.Application.Queries.McpServerConfiguration;
 using Microsoft.Extensions.AI;
 using ModelContextProtocol.Client;
 
 namespace ElTocardo.Infrastructure.Services;
 
-public sealed class AiToolsProviderService(McpServerConfigurationDto mcpServerConfiguration, ClientTransportFactoryService clientTransportFactoryService)
+public sealed class AiToolsProviderService(
+    IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto?> getByNameQueryHandler,
+    ClientTransportFactoryService clientTransportFactoryService)
 {
     public async Task<IList<AITool>> GetAiToolsAsync(IDictionary<string,IList<AiToolDto>> aiToolDtosByServer, CancellationToken cancellationToken)
     {
@@ -21,8 +25,8 @@ public sealed class AiToolsProviderService(McpServerConfigurationDto mcpServerCo
 
     private async Task<IEnumerable<AITool>> GetAiToolsAsync(string server, IList<AiToolDto> aiToolDtos, CancellationToken cancellationToken)
     {
-        var mcpServerConfigurationItemDto = mcpServerConfiguration.Servers[server];
-        var clientTransport = clientTransportFactoryService.Create(mcpServerConfigurationItemDto);
+        var mcpServerConfigurationItemDto = await getByNameQueryHandler.HandleAsync(new GetMcpServerByNameQuery(server), cancellationToken);
+        var clientTransport = clientTransportFactoryService.Create(mcpServerConfigurationItemDto!);
         var client = await McpClientFactory.CreateAsync(clientTransport, cancellationToken: cancellationToken);
         var mcpClientTools = await client.ListToolsAsync(cancellationToken: cancellationToken);
         return mcpClientTools.Where(tool => aiToolDtos.Any(aiToolDto => aiToolDto.Name == tool.Name));

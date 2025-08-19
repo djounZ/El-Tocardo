@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <IsPackable>false</IsPackable>
@@ -9,14 +9,19 @@
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)"/>
         <PackageReference Include="xunit" Version="$(XunitVersion)"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitRunnerVisualStudioVersion)"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(MicrosoftExtensionsPackagesCommonVersion)" />
     </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\..\..\src\ElTocardo.Application\ElTocardo.Application.csproj"/>
-    </ItemGroup>
+
 
     <ItemGroup>
         <Using Include="Xunit"/>
+    </ItemGroup>
+
+
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\src\ElTocardo.Infrastructure\ElTocardo.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

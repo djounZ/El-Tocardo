@@ -9,6 +9,7 @@
         <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="$(OpenTelemetryPackagesCommonVersion)"/>
         <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" Version="$(AspireHostingAppHostCommonVersion)"/>
         <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="$(MicrosoftExtensionsHttpResilienceVersion)"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(NpgsqlEntityFrameworkCorePostgreSQLVersion)"/>
     </ItemGroup>
 
     <ItemGroup>

@@ -25,12 +25,16 @@
     <!-- Package Versions -->
     <PropertyGroup>
         <!-- Microsoft packages -->
-        <MicrosoftExtensionsPackagesCommonVersion>9.0.7</MicrosoftExtensionsPackagesCommonVersion>
+        <MicrosoftExtensionsPackagesCommonVersion>9.0.8</MicrosoftExtensionsPackagesCommonVersion>
         <MicrosoftNETTestSdkVersion>17.14.1</MicrosoftNETTestSdkVersion>
         <MicrosoftCodeAnalysisAnalyzersVersion>4.14.0</MicrosoftCodeAnalysisAnalyzersVersion>
         <MicrosoftExtensionsAIPackagesCommonVersion>9.7.1</MicrosoftExtensionsAIPackagesCommonVersion>
         <MicrosoftAspNetCorePackagesCommonVersion>2.3.0</MicrosoftAspNetCorePackagesCommonVersion>
         <MicrosoftExtensionsHttpResilienceVersion>9.8.0</MicrosoftExtensionsHttpResilienceVersion>
+
+        <FluentValidationCommonPackagesVersion>12.0.0</FluentValidationCommonPackagesVersion>
+        <NpgsqlEntityFrameworkCorePostgreSQLVersion>9.0.4</NpgsqlEntityFrameworkCorePostgreSQLVersion>
+
         <!-- Logs and Telemetry packages -->
         <SerilogAspNetCoreVersion>9.0.0</SerilogAspNetCoreVersion>
         <SerilogSinksOpenTelemetryVersion>4.2.0</SerilogSinksOpenTelemetryVersion>

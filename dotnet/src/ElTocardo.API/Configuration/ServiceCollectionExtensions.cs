@@ -2,6 +2,7 @@ using AI.GithubCopilot.Infrastructure.Services;
 using ElTocardo.API.Options;
 using ElTocardo.Infrastructure.Configuration;
 using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
@@ -28,15 +29,18 @@ public static class ServiceCollectionExtensions
 
         services.Configure<ElTocardoApiOptions>(configuration.GetSection(nameof(ElTocardoApiOptions)));
         services.AddHttpContextAccessor();
-        services.AddCaching();
-        services.AddSingleton<AiGithubCopilotUserProvider>(sc =>
+        services.AddCaching()
+            .AddSingleton<AiGithubCopilotUserProvider>(sc =>
         {
             return new AiGithubCopilotUserProvider(() =>
                 sc.GetRequiredService<IHttpContextAccessor>().HttpContext?.User.Identity?.Name ?? string.Empty);
         });
-        services.AddElTocardoInfrastructure(configuration);
+
         services
-            .AddOpenTelemetryExporters(configuration)
+            .AddElTocardoInfrastructure(configuration,
+                options => options.UseNpgsql(configuration.GetConnectionString("el-tocardo-db")));
+
+        services.AddOpenTelemetryExporters(configuration)
             .AddOpenTelemetry()
             .WithMetrics(metrics =>
             {
@@ -79,4 +83,7 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
+
+
+
 }

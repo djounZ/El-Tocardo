@@ -11,7 +11,8 @@ public static class McpServerConfigurationEndpoints
     public static WebApplication MapMcpServerConfigurationEndpoints(this WebApplication app)
     {
         app.MapGet("v1/mcp-servers",
-                ([FromServices] IMcpServerConfigurationProviderService service) => Results.Ok(service.GetAllServers()))
+                async ([FromServices] IMcpServerConfigurationService service, CancellationToken cancellationToken) =>
+                    Results.Ok(await service.GetAllServersAsync(cancellationToken)))
             .WithName("GetAllMcpServers")
             .WithSummary("Get all MCP servers")
             .WithDescription("Returns all MCP server configuration items")
@@ -21,9 +22,9 @@ public static class McpServerConfigurationEndpoints
             .CacheOutput(PredefinedOutputCachingPolicy.PerUserVaryByHeaderAuthorizationShortLiving);
 
         app.MapGet("v1/mcp-servers/{serverName}",
-                ([FromServices] IMcpServerConfigurationProviderService service, string serverName) =>
+                async ([FromServices] IMcpServerConfigurationService service, string serverName, CancellationToken cancellationToken) =>
                 {
-                    var item = service.GetServer(serverName);
+                    var item = await service.GetServerAsync(serverName, cancellationToken);
                     return item is not null ? Results.Ok(item) : Results.NotFound();
                 })
             .WithName("GetMcpServerByName")
@@ -34,13 +35,13 @@ public static class McpServerConfigurationEndpoints
             .Produces(StatusCodes.Status404NotFound)
             .WithOpenApi();
 
-        app.MapPost("v1/mcp-servers/{serverName}", ([FromServices] IMcpServerConfigurationProviderService service,
-                string serverName, [FromBody] McpServerConfigurationItemDto item) =>
+        app.MapPost("v1/mcp-servers/{serverName}", async ([FromServices] IMcpServerConfigurationService service,
+                string serverName, [FromBody] McpServerConfigurationItemDto item, CancellationToken cancellationToken) =>
             {
-                var created = service.CreateServer(serverName, item);
-                return created
-                    ? Results.Created($"/mcp-servers/{serverName}", item)
-                    : Results.Conflict($"Server '{serverName}' already exists.");
+                var result = await service.CreateServerAsync(serverName, item, cancellationToken);
+                return result.IsSuccess
+                    ? Results.Created($"/v1/mcp-servers/{serverName}", item)
+                    : Results.Conflict(result.Error);
             })
             .WithName("CreateMcpServer")
             .WithSummary("Create MCP server")
@@ -50,11 +51,13 @@ public static class McpServerConfigurationEndpoints
             .Produces(StatusCodes.Status409Conflict)
             .WithOpenApi();
 
-        app.MapPut("v1/mcp-servers/{serverName}", ([FromServices] IMcpServerConfigurationProviderService service,
-                string serverName, [FromBody] McpServerConfigurationItemDto item) =>
+        app.MapPut("v1/mcp-servers/{serverName}", async ([FromServices] IMcpServerConfigurationService service,
+                string serverName, [FromBody] McpServerConfigurationItemDto item, CancellationToken cancellationToken) =>
             {
-                var updated = service.UpdateServer(serverName, item);
-                return updated ? Results.Ok(item) : Results.NotFound($"Server '{serverName}' not found.");
+                var result = await service.UpdateServerAsync(serverName, item, cancellationToken);
+                return result.IsSuccess
+                    ? Results.Ok(item)
+                    : Results.NotFound(result.Error);
             })
             .WithName("UpdateMcpServer")
             .WithSummary("Update MCP server")
@@ -65,10 +68,10 @@ public static class McpServerConfigurationEndpoints
             .WithOpenApi();
 
         app.MapDelete("v1/mcp-servers/{serverName}",
-                ([FromServices] IMcpServerConfigurationProviderService service, string serverName) =>
+                async ([FromServices] IMcpServerConfigurationService service, string serverName, CancellationToken cancellationToken) =>
                 {
-                    var deleted = service.DeleteServer(serverName);
-                    return deleted ? Results.NoContent() : Results.NotFound($"Server '{serverName}' not found.");
+                    var result = await service.DeleteServerAsync(serverName, cancellationToken);
+                    return result.IsSuccess ? Results.NoContent() : Results.NotFound(result.Error);
                 })
             .WithName("DeleteMcpServer")
             .WithSummary("Delete MCP server")

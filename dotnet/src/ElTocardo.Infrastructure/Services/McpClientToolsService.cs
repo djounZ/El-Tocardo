@@ -1,4 +1,6 @@
+using ElTocardo.Application.Common.Interfaces;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
+using ElTocardo.Application.Queries.McpServerConfiguration;
 using ElTocardo.Application.Services;
 using ElTocardo.Infrastructure.Mappers.Dtos.ModelContextProtocol;
 using Microsoft.Extensions.Logging;
@@ -7,13 +9,16 @@ using ModelContextProtocol.Client;
 
 namespace ElTocardo.Infrastructure.Services;
 
-public sealed class McpClientToolsService(ILogger<McpClientToolsService> logger, McpServerConfigurationDto mcpServerConfiguration, ClientTransportFactoryService clientTransportFactoryService, ModelContextProtocolMapper modelContextProtocolMapper ) : IMcpClientToolsService
+public sealed class McpClientToolsService(ILogger<McpClientToolsService> logger,
+    IQueryHandler<GetAllMcpServersQuery, IDictionary<string, McpServerConfigurationItemDto>> getAllQueryHandler,
+    IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto?> getByNameQueryHandler,
+    ClientTransportFactoryService clientTransportFactoryService, ModelContextProtocolMapper modelContextProtocolMapper ) : IMcpClientToolsService
 {
     public async Task<IDictionary<string, IList<McpClientToolDto>>> GetAll(CancellationToken cancellationToken)
     {
 
         var mcpToolDescriptions = new Dictionary<string, IList<McpClientToolDto>>();
-        var servers =  mcpServerConfiguration.Servers;
+        var servers =  await getAllQueryHandler.HandleAsync(GetAllMcpServersQuery.Instance ,cancellationToken);
 
         foreach (var (serverName, serverConfiguration) in servers)
         {
@@ -29,8 +34,8 @@ public sealed class McpClientToolsService(ILogger<McpClientToolsService> logger,
 
     public async Task<CallToolResultDto> CallToolAsync(McpClientToolRequestDto request, CancellationToken cancellationToken)
     {
-        McpServerConfigurationItemDto mcpServerConfigurationItem = mcpServerConfiguration.Servers[request.ServerName];
-        await using var client = await CreateMcpClientAsync(mcpServerConfigurationItem, cancellationToken: cancellationToken);
+        var mcpServerConfigurationItem = await getByNameQueryHandler.HandleAsync(new GetMcpServerByNameQuery(request.ServerName), cancellationToken);
+        await using var client = await CreateMcpClientAsync(mcpServerConfigurationItem!, cancellationToken: cancellationToken);
 
         var callToolResult = await client.CallToolAsync(request.ToolName, request.Arguments, _progress, null, cancellationToken);
         return modelContextProtocolMapper.MapToCallToolResultDto(callToolResult);

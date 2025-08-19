@@ -7,6 +7,7 @@
     <ItemGroup>
         <PackageReference Include="OllamaSharp" Version="$(OllamaSharpVersion)"/>
         <PackageReference Include="ModelContextProtocol.Core" Version="$(ModelContextProtocolPackagesCommonVersion)"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftExtensionsPackagesCommonVersion)" />
     </ItemGroup>
 
 </Project>

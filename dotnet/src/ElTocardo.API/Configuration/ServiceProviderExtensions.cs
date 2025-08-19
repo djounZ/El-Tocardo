@@ -7,6 +7,6 @@ public static class ServiceProviderExtensions
     public static async Task UseElTocardoApiAsync(this IServiceProvider serviceProvider,
         CancellationToken cancellationToken)
     {
-        await serviceProvider.UseAddElTocardoInfrastructureAsync(cancellationToken);
+        await serviceProvider.UseElTocardoInfrastructureAsync(cancellationToken);
     }
 }
