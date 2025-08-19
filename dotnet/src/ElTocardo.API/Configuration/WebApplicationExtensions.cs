@@ -37,6 +37,7 @@ public static class WebApplicationExtensions
         app.MapAiProviderEndpoints();
         app.MapMcpClientToolsEndpoints();
         app.MapChatCompletionsEndpoints();
+        app.MapPresetChatOptionsEndpoints();
         return app;
     }
 }

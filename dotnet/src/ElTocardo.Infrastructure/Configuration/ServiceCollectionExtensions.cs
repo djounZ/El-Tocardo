@@ -1,6 +1,10 @@
 using AI.GithubCopilot.Configuration;
 using ElTocardo.Application.Configuration;
 using ElTocardo.Application.Commands.McpServerConfiguration;
+using ElTocardo.Application.Commands.PresetChatOptions;
+using ElTocardo.Application.Handlers.PresetChatOptions;
+using ElTocardo.Application.Queries.PresetChatOptions;
+using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Common.Interfaces;
 using ElTocardo.Application.Common.Models;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
@@ -77,9 +81,9 @@ public static class ServiceCollectionExtensions
         services.AddTransient<AiToolsProviderService>();
         services.AddTransient<IChatCompletionsService, ChatCompletionsService>();
 
-        // New CQRS-based service
+        // New CQRS-based services
         services.AddScoped<IMcpServerConfigurationService, McpServerConfigurationService>();
-
+        services.AddScoped<IPresetChatOptionsService, PresetChatOptionsService>();
 
         services.AddTransient<IMcpClientToolsService, McpClientToolsService>();
         services.AddTransient<ClientTransportFactoryService>();
@@ -114,19 +118,29 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IMcpServerConfigurationRepository, McpServerConfigurationRepository>();
+        services.AddScoped<IPresetChatOptionsRepository, PresetChatOptionsRepository>();
         return services;
     }
 
     private static IServiceCollection AddCommandQueryHandlers(this IServiceCollection services)
     {
-        // Command handlers
+        // MCP Command handlers
         services.AddScoped<ICommandHandler<CreateMcpServerCommand, Result<Guid>>, CreateMcpServerCommandHandler>();
         services.AddScoped<ICommandHandler<UpdateMcpServerCommand, VoidResult>, UpdateMcpServerCommandHandler>();
         services.AddScoped<ICommandHandler<DeleteMcpServerCommand, VoidResult>, DeleteMcpServerCommandHandler>();
 
-        // Query handlers
+        // MCP Query handlers
         services.AddScoped<IQueryHandler<GetAllMcpServersQuery, IDictionary<string, McpServerConfigurationItemDto>>, GetAllMcpServersQueryHandler>();
         services.AddScoped<IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto?>, GetMcpServerByNameQueryHandler>();
+
+        // PresetChatOptions Command handlers
+        services.AddScoped<ICommandHandler<CreatePresetChatOptionsCommand, Guid>, CreatePresetChatOptionsCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdatePresetChatOptionsCommand, bool>, UpdatePresetChatOptionsCommandHandler>();
+        services.AddScoped<ICommandHandler<DeletePresetChatOptionsCommand, bool>, DeletePresetChatOptionsCommandHandler>();
+
+        // PresetChatOptions Query handlers
+        services.AddScoped<IQueryHandler<GetAllPresetChatOptionsQuery, IEnumerable<PresetChatOptionsDto>>, GetAllPresetChatOptionsQueryHandler>();
+        services.AddScoped<IQueryHandler<GetPresetChatOptionsByNameQuery, PresetChatOptionsDto?>, GetPresetChatOptionsByNameQueryHandler>();
 
         return services;
     }

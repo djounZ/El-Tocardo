@@ -568,7 +568,9 @@ public async Task GetChatCompletionStreamAsync_WithVisionMessage_SetsVisionHeade
         await foreach (var item in resultStream)
         {
             if (item != null)
+            {
                 results.Add(item);
+            }
         }
 
         results.Should().HaveCount(1);

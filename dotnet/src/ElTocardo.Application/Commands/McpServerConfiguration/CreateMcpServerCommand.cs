@@ -2,7 +2,7 @@ using ElTocardo.Domain.ValueObjects;
 
 namespace ElTocardo.Application.Commands.McpServerConfiguration;
 
-public record CreateMcpServerCommand(
+public sealed record CreateMcpServerCommand(
     string ServerName,
     string? Category,
     string? Command,

@@ -1,6 +1,6 @@
 namespace ElTocardo.Application.Queries.McpServerConfiguration;
 
-public record GetAllMcpServersQuery
+public sealed record GetAllMcpServersQuery
 {
     private GetAllMcpServersQuery()
     {
