@@ -34,8 +34,8 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
         // Add handlers and repositories (simplified for test)
         services.AddScoped<ElTocardo.Domain.Repositories.IMcpServerConfigurationRepository, ElTocardo.Infrastructure.Repositories.McpServerConfigurationRepository>();
         services.AddScoped<ICommandHandler<CreateMcpServerCommand, Result<Guid>>, ElTocardo.Application.Handlers.McpServerConfiguration.CreateMcpServerCommandHandler>();
-        services.AddScoped<ICommandHandler<UpdateMcpServerCommand, Result>, ElTocardo.Application.Handlers.McpServerConfiguration.UpdateMcpServerCommandHandler>();
-        services.AddScoped<ICommandHandler<DeleteMcpServerCommand, Result>, ElTocardo.Application.Handlers.McpServerConfiguration.DeleteMcpServerCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdateMcpServerCommand, VoidResult>, ElTocardo.Application.Handlers.McpServerConfiguration.UpdateMcpServerCommandHandler>();
+        services.AddScoped<ICommandHandler<DeleteMcpServerCommand, VoidResult>, ElTocardo.Application.Handlers.McpServerConfiguration.DeleteMcpServerCommandHandler>();
         services.AddScoped<IQueryHandler<GetAllMcpServersQuery, IDictionary<string, McpServerConfigurationItemDto>>, ElTocardo.Application.Handlers.McpServerConfiguration.GetAllMcpServersQueryHandler>();
         services.AddScoped<IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto?>, ElTocardo.Application.Handlers.McpServerConfiguration.GetMcpServerByNameQueryHandler>();
 
@@ -71,7 +71,7 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
 
         // Assert
         Assert.True(result.IsSuccess);
-        Assert.NotEqual(Guid.Empty, result.Value);
+        Assert.NotEqual(Guid.Empty, result.ReadValue());
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Contains("already exists", result.Error);
+        Assert.Contains("already exists", result.ReadError().Message);
     }
 
     [Fact]
@@ -146,7 +146,7 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Contains("Validation failed", result.Error);
+        Assert.Contains("Validation failed", result.ReadError().Message);
     }
 
     public async ValueTask DisposeAsync()

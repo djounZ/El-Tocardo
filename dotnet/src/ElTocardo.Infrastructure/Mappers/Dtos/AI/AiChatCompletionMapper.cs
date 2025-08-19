@@ -1,7 +1,7 @@
 using System.Text.Json;
 using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.AI.ChatCompletion.Response;
-using ElTocardo.Application.Dtos.Provider;
+using ElTocardo.Application.Dtos.Configuration;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 

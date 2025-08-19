@@ -1,5 +1,5 @@
 using AI.GithubCopilot.Infrastructure.Services;
-using ElTocardo.Application.Dtos.Provider;
+using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Services;
 using Microsoft.Extensions.Logging;
 using OllamaSharp;

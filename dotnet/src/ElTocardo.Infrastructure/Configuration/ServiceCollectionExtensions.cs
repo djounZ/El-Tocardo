@@ -1,4 +1,3 @@
-using System.Text.Json;
 using AI.GithubCopilot.Configuration;
 using ElTocardo.Application.Configuration;
 using ElTocardo.Application.Commands.McpServerConfiguration;
@@ -122,8 +121,8 @@ public static class ServiceCollectionExtensions
     {
         // Command handlers
         services.AddScoped<ICommandHandler<CreateMcpServerCommand, Result<Guid>>, CreateMcpServerCommandHandler>();
-        services.AddScoped<ICommandHandler<UpdateMcpServerCommand, Result>, UpdateMcpServerCommandHandler>();
-        services.AddScoped<ICommandHandler<DeleteMcpServerCommand, Result>, DeleteMcpServerCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdateMcpServerCommand, VoidResult>, UpdateMcpServerCommandHandler>();
+        services.AddScoped<ICommandHandler<DeleteMcpServerCommand, VoidResult>, DeleteMcpServerCommandHandler>();
 
         // Query handlers
         services.AddScoped<IQueryHandler<GetAllMcpServersQuery, IDictionary<string, McpServerConfigurationItemDto>>, GetAllMcpServersQueryHandler>();

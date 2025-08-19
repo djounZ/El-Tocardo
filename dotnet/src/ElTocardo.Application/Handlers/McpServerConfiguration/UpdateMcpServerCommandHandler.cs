@@ -11,9 +11,9 @@ public class UpdateMcpServerCommandHandler(
     IMcpServerConfigurationRepository repository,
     ILogger<UpdateMcpServerCommandHandler> logger,
     IValidator<UpdateMcpServerCommand> validator)
-    : ICommandHandler<UpdateMcpServerCommand, Result>
+    : ICommandHandler<UpdateMcpServerCommand, VoidResult>
 {
-    public async Task<Result> HandleAsync(UpdateMcpServerCommand command, CancellationToken cancellationToken = default)
+    public async Task<VoidResult> HandleAsync(UpdateMcpServerCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -26,7 +26,7 @@ public class UpdateMcpServerCommandHandler(
                 var errors = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage));
                 logger.LogWarning("Validation failed for MCP server update: {ServerName}. Errors: {Errors}",
                     command.ServerName, errors);
-                return Result.Failure($"Validation failed: {errors}");
+                return $"Validation failed: {errors}";
             }
 
             // Get existing configuration
@@ -34,7 +34,7 @@ public class UpdateMcpServerCommandHandler(
             if (configuration == null)
             {
                 logger.LogWarning("MCP server not found: {ServerName}", command.ServerName);
-                return Result.Failure($"Server '{command.ServerName}' not found");
+                return $"Server '{command.ServerName}' not found";
             }
 
             // Update configuration
@@ -52,12 +52,12 @@ public class UpdateMcpServerCommandHandler(
 
             logger.LogInformation("MCP server configuration updated successfully: {ServerName}", command.ServerName);
 
-            return Result.Success();
+            return VoidResult.Success;
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to update MCP server configuration: {ServerName}", command.ServerName);
-            return Result.Failure("Failed to update MCP server configuration", ex);
+            return ex;
         }
     }
 }

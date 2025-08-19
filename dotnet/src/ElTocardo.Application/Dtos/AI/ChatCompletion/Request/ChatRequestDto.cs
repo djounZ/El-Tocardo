@@ -1,4 +1,4 @@
-using ElTocardo.Application.Dtos.Provider;
+using ElTocardo.Application.Dtos.Configuration;
 
 namespace ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 

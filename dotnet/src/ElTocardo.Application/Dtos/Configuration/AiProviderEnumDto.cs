@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace ElTocardo.Application.Dtos.Provider;
+namespace ElTocardo.Application.Dtos.Configuration;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum AiProviderEnumDto

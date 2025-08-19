@@ -13,8 +13,8 @@ public class McpServerConfigurationService(
     IQueryHandler<GetAllMcpServersQuery, IDictionary<string, McpServerConfigurationItemDto>> getAllQueryHandler,
     IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto?> getByNameQueryHandler,
     ICommandHandler<CreateMcpServerCommand, Result<Guid>> createCommandHandler,
-    ICommandHandler<UpdateMcpServerCommand, Result> updateCommandHandler,
-    ICommandHandler<DeleteMcpServerCommand, Result> deleteCommandHandler)
+    ICommandHandler<UpdateMcpServerCommand, VoidResult> updateCommandHandler,
+    ICommandHandler<DeleteMcpServerCommand, VoidResult> deleteCommandHandler)
     : IMcpServerConfigurationService
 {
 
@@ -42,7 +42,7 @@ public class McpServerConfigurationService(
         return await createCommandHandler.HandleAsync(command, cancellationToken);
     }
 
-    public async Task<Result> UpdateServerAsync(string serverName, McpServerConfigurationItemDto item, CancellationToken cancellationToken = default)
+    public async Task<VoidResult> UpdateServerAsync(string serverName, McpServerConfigurationItemDto item, CancellationToken cancellationToken = default)
     {
         var command = new UpdateMcpServerCommand(
             serverName,
@@ -56,7 +56,7 @@ public class McpServerConfigurationService(
         return await updateCommandHandler.HandleAsync(command, cancellationToken);
     }
 
-    public async Task<Result> DeleteServerAsync(string serverName, CancellationToken cancellationToken = default)
+    public async Task<VoidResult> DeleteServerAsync(string serverName, CancellationToken cancellationToken = default)
     {
         var command = new DeleteMcpServerCommand(serverName);
         return await deleteCommandHandler.HandleAsync(command, cancellationToken);

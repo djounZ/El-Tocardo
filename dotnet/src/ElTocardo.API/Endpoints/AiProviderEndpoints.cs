@@ -1,5 +1,5 @@
 using ElTocardo.API.Options;
-using ElTocardo.Application.Dtos.Provider;
+using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 

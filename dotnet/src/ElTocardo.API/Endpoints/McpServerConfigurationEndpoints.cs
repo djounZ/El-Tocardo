@@ -41,7 +41,7 @@ public static class McpServerConfigurationEndpoints
                 var result = await service.CreateServerAsync(serverName, item, cancellationToken);
                 return result.IsSuccess
                     ? Results.Created($"/v1/mcp-servers/{serverName}", item)
-                    : Results.Conflict(result.Error);
+                    : Results.Conflict(result.ReadError().Message);
             })
             .WithName("CreateMcpServer")
             .WithSummary("Create MCP server")
@@ -57,7 +57,7 @@ public static class McpServerConfigurationEndpoints
                 var result = await service.UpdateServerAsync(serverName, item, cancellationToken);
                 return result.IsSuccess
                     ? Results.Ok(item)
-                    : Results.NotFound(result.Error);
+                    : Results.NotFound(result.ReadError().Message);
             })
             .WithName("UpdateMcpServer")
             .WithSummary("Update MCP server")
@@ -71,7 +71,7 @@ public static class McpServerConfigurationEndpoints
                 async ([FromServices] IMcpServerConfigurationService service, string serverName, CancellationToken cancellationToken) =>
                 {
                     var result = await service.DeleteServerAsync(serverName, cancellationToken);
-                    return result.IsSuccess ? Results.NoContent() : Results.NotFound(result.Error);
+                    return result.IsSuccess ? Results.NoContent() : Results.NotFound(result.ReadError().Message);
                 })
             .WithName("DeleteMcpServer")
             .WithSummary("Delete MCP server")

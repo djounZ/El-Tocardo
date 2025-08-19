@@ -9,9 +9,9 @@ namespace ElTocardo.Application.Handlers.McpServerConfiguration;
 public class DeleteMcpServerCommandHandler(
     IMcpServerConfigurationRepository repository,
     ILogger<DeleteMcpServerCommandHandler> logger)
-    : ICommandHandler<DeleteMcpServerCommand, Result>
+    : ICommandHandler<DeleteMcpServerCommand, VoidResult>
 {
-    public async Task<Result> HandleAsync(DeleteMcpServerCommand command, CancellationToken cancellationToken = default)
+    public async Task<VoidResult> HandleAsync(DeleteMcpServerCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -22,7 +22,7 @@ public class DeleteMcpServerCommandHandler(
             if (configuration == null)
             {
                 logger.LogWarning("MCP server not found: {ServerName}", command.ServerName);
-                return Result.Failure($"Server '{command.ServerName}' not found");
+                return $"Server '{command.ServerName}' not found";
             }
 
             // Delete configuration
@@ -31,12 +31,12 @@ public class DeleteMcpServerCommandHandler(
 
             logger.LogInformation("MCP server configuration deleted successfully: {ServerName}", command.ServerName);
 
-            return Result.Success();
+            return VoidResult.Success;
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to delete MCP server configuration: {ServerName}", command.ServerName);
-            return Result.Failure("Failed to delete MCP server configuration", ex);
+            return ex;
         }
     }
 }

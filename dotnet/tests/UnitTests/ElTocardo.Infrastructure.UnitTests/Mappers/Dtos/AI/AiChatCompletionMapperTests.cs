@@ -1,4 +1,5 @@
 using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
+using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Infrastructure.Mappers.Dtos.AI;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -84,7 +85,7 @@ public class AiChatCompletionMapperTests
 			AllowMultipleToolCalls = true
 		};
 		var aiRequest = new AiChatCompletionMapper.AiChatClientRequest(aiMessages, options);
-		var provider = Application.Dtos.Provider.AiProviderEnumDto.GithubCopilot;
+		var provider = AiProviderEnumDto.GithubCopilot;
 
 		// Act
 		var dto = _mapper.MapToChatClientRequestDto(aiRequest, provider);
@@ -125,7 +126,7 @@ public class AiChatCompletionMapperTests
             ])
 		};
 		var aiRequest = new AiChatCompletionMapper.AiChatClientRequest(aiMessages);
-		var provider = Application.Dtos.Provider.AiProviderEnumDto.GithubCopilot;
+		var provider = AiProviderEnumDto.GithubCopilot;
 		var dto = _mapper.MapToChatClientRequestDto(aiRequest, provider);
 		dto.Options.Should().BeNull();
 	}

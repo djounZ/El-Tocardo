@@ -26,14 +26,14 @@ public class CreateMcpServerCommandHandler(
                 var errors = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage));
                 logger.LogWarning("Validation failed for MCP server creation: {ServerName}. Errors: {Errors}",
                     command.ServerName, errors);
-                return Result<Guid>.Failure($"Validation failed: {errors}");
+                return $"Validation failed: {errors}";
             }
 
             // Check if server already exists
             if (await repository.ExistsAsync(command.ServerName, cancellationToken))
             {
                 logger.LogWarning("MCP server already exists: {ServerName}", command.ServerName);
-                return Result<Guid>.Failure($"Server '{command.ServerName}' already exists");
+                return $"Server '{command.ServerName}' already exists";
             }
 
             // Create domain entity
@@ -53,12 +53,12 @@ public class CreateMcpServerCommandHandler(
             logger.LogInformation("MCP server configuration created successfully: {ServerName} with ID: {Id}",
                 command.ServerName, configuration.Id);
 
-            return Result<Guid>.Success(configuration.Id);
+            return configuration.Id;
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to create MCP server configuration: {ServerName}", command.ServerName);
-            return Result<Guid>.Failure("Failed to create MCP server configuration", ex);
+            return ex;
         }
     }
 }

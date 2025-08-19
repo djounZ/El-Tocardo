@@ -1,61 +1,42 @@
 namespace ElTocardo.Application.Common.Models;
 
-public class Result<T>
+public class Result<T> : VoidResult
 {
-    public bool IsSuccess { get; private set; }
-    public T? Value { get; private set; }
-    public string? Error { get; private set; }
-    public Exception? Exception { get; private set; }
 
-    private Result(bool isSuccess, T? value, string? error, Exception? exception = null)
+    private readonly T? _value;
+    protected Result(Exception exception) : base(exception)
     {
-        IsSuccess = isSuccess;
-        Value = value;
-        Error = error;
-        Exception = exception;
     }
 
-    public static Result<T> Success(T value)
+    protected Result(T value) : base(null)
     {
-        return new Result<T>(true, value, null);
+        _value = value;
     }
 
-    public static Result<T> Failure(string error)
+
+    public T ReadValue()
     {
-        return new Result<T>(false, default, error);
+        if (_value != null && IsSuccess)
+        {
+            return _value;
+        }
+
+        throw new InvalidOperationException("Cannot ReadValue On Invalid Result", Exception);
     }
 
-    public static Result<T> Failure(string error, Exception exception)
+    public static implicit operator Result<T>(T value)
     {
-        return new Result<T>(false, default, error, exception);
-    }
-}
-
-public class Result
-{
-    public bool IsSuccess { get; private set; }
-    public string? Error { get; private set; }
-    public Exception? Exception { get; private set; }
-
-    private Result(bool isSuccess, string? error, Exception? exception = null)
-    {
-        IsSuccess = isSuccess;
-        Error = error;
-        Exception = exception;
+        return new Result<T>(value);
     }
 
-    public static Result Success()
+    public static implicit operator Result<T>(Exception exception)
     {
-        return new Result(true, null);
+        return new Result<T>(exception);
     }
 
-    public static Result Failure(string error)
-    {
-        return new Result(false, error);
-    }
 
-    public static Result Failure(string error, Exception exception)
+    public static implicit operator Result<T>(string errorMessage)
     {
-        return new Result(false, error, exception);
+        return new ArgumentException(errorMessage);
     }
 }
