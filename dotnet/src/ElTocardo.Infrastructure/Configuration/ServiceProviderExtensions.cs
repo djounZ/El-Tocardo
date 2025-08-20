@@ -2,7 +2,6 @@ using System.Text.Json;
 using AI.GithubCopilot.Configuration;
 using ElTocardo.Application.Configuration;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
-using ElTocardo.Domain.Entities;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.ValueObjects;
 using ElTocardo.Infrastructure.Mediator.Data;

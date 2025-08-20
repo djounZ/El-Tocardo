@@ -11,7 +11,10 @@ public static class PresetChatOptionsEndpoints
     {
         app.MapGet("v1/preset-chat-options",
                 async ([FromServices] IPresetChatOptionsService service, CancellationToken cancellationToken) =>
-                    Results.Ok(await service.GetAllAsync(cancellationToken)))
+                {
+                    var result = await service.GetAllAsync(cancellationToken);
+                    return result.IsSuccess ? Results.Ok(result.ReadValue()) : Results.InternalServerError(result.ReadError());
+                })
             .WithName("GetAllPresetChatOptions")
             .WithSummary("Get all preset chat options")
             .WithDescription("Returns all preset chat options items")
@@ -22,8 +25,8 @@ public static class PresetChatOptionsEndpoints
         app.MapGet("v1/preset-chat-options/{name}",
                 async ([FromServices] IPresetChatOptionsService service, string name, CancellationToken cancellationToken) =>
                 {
-                    var item = await service.GetByNameAsync(name, cancellationToken);
-                    return item is not null ? Results.Ok(item) : Results.NotFound();
+                    var result = await service.GetByNameAsync(name, cancellationToken);
+                    return result.IsSuccess ? Results.Ok(result.ReadValue()) : Results.NotFound(result.ReadError());
                 })
             .WithName("GetPresetChatOptionsByName")
             .WithSummary("Get preset chat options by name")
@@ -36,24 +39,26 @@ public static class PresetChatOptionsEndpoints
         app.MapPost("v1/preset-chat-options/{name}", async ([FromServices] IPresetChatOptionsService service,
                 string name, [FromBody] PresetChatOptionsDto item, CancellationToken cancellationToken) =>
             {
-                var id = await service.CreateAsync(item, cancellationToken);
-                // For simplicity, always return Created. You can add conflict logic if needed.
-                return Results.Created($"/v1/preset-chat-options/{name}", item);
+                var result = await service.CreateAsync(item, cancellationToken);
+                return result.IsSuccess
+                    ? Results.Created($"/v1/preset-chat-options/{name}", item)
+                    : Results.Conflict(result.ReadError().Message);
             })
             .WithName("CreatePresetChatOptions")
             .WithSummary("Create preset chat options")
             .WithDescription("Creates a new preset chat options item")
             .WithTags(Tags)
             .Produces<PresetChatOptionsDto>(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status409Conflict)
             .WithOpenApi();
 
         app.MapPut("v1/preset-chat-options/{name}", async ([FromServices] IPresetChatOptionsService service,
                 string name, [FromBody] PresetChatOptionsDto item, CancellationToken cancellationToken) =>
             {
                 var result = await service.UpdateAsync(name, item, cancellationToken);
-                return result
+                return result.IsSuccess
                     ? Results.Ok(item)
-                    : Results.NotFound();
+                    : Results.NotFound(result.ReadError());
             })
             .WithName("UpdatePresetChatOptions")
             .WithSummary("Update preset chat options")
@@ -67,7 +72,7 @@ public static class PresetChatOptionsEndpoints
                 async ([FromServices] IPresetChatOptionsService service, string name, CancellationToken cancellationToken) =>
                 {
                     var result = await service.DeleteAsync(name, cancellationToken);
-                    return result ? Results.NoContent() : Results.NotFound();
+                    return result.IsSuccess ? Results.NoContent() : Results.NotFound(result.ReadError());
                 })
             .WithName("DeletePresetChatOptions")
             .WithSummary("Delete preset chat options")

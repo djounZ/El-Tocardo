@@ -1,9 +1,7 @@
 using AI.GithubCopilot.Configuration;
-using ElTocardo.Application.Commands.PresetChatOptions;
 using ElTocardo.Application.Configuration;
 using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
-using ElTocardo.Application.Handlers.PresetChatOptions;
 using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Commands;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers;
@@ -11,10 +9,14 @@ using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Com
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Queries;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Mappers;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Queries;
-using ElTocardo.Application.Queries.PresetChatOptions;
+using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Commands;
+using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Handlers.Commands;
+using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Handlers.Queries;
+using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Mappers;
+using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Queries;
 using ElTocardo.Application.Services;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
-using ElTocardo.Domain.Repositories;
+using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Repositories;
 using ElTocardo.Infrastructure.Mappers.Dtos.AI;
 using ElTocardo.Infrastructure.Mappers.Dtos.ModelContextProtocol;
 using ElTocardo.Infrastructure.Mediator.Data;
@@ -120,16 +122,23 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IMcpServerConfigurationRepository, McpServerConfigurationRepository>();
-        services.AddScoped<IPresetChatOptionsRepository, PresetChatOptionsRepository>();
+        services.AddScoped<ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Repositories.IPresetChatOptionsRepository, PresetChatOptionsRepository>();
         return services;
     }
 
     private static IServiceCollection AddCommandQueryHandlers(this IServiceCollection services)
     {
+        // MCP Mappers
         services.AddSingleton<McpServerConfigurationDomainGetDtoMapper>();
         services.AddSingleton<McpServerConfigurationDomainGetAllDtoMapper>();
         services.AddSingleton<McpServerConfigurationDomainUpdateCommandMapper>();
         services.AddSingleton<McpServerConfigurationDomainCreateCommandMapper>();
+
+        // PresetChatOptions Mappers
+        services.AddSingleton<PresetChatOptionsDomainGetDtoMapper>();
+        services.AddSingleton<PresetChatOptionsDomainGetAllDtoMapper>();
+        services.AddSingleton<PresetChatOptionsDomainUpdateCommandMapper>();
+        services.AddSingleton<PresetChatOptionsDomainCreateCommandMapper>();
 
         // MCP Command handlers
         services.AddScoped<ICommandHandler<CreateMcpServerCommand, Guid>, CreateMcpServerCommandHandler>();
@@ -146,19 +155,19 @@ public static class ServiceCollectionExtensions
 
         // PresetChatOptions Command handlers
         services
-            .AddScoped<ICommandHandler<CreatePresetChatOptionsCommand, Guid>, CreatePresetChatOptionsCommandHandler>();
+            .AddScoped<ICommandHandler<ElTocardo.Application.Mediator.PresetChatOptionsMediator.Commands.CreatePresetChatOptionsCommand, Guid>, ElTocardo.Application.Mediator.PresetChatOptionsMediator.Handlers.Commands.CreatePresetChatOptionsCommandHandler>();
         services
-            .AddScoped<ICommandHandler<UpdatePresetChatOptionsCommand, bool>, UpdatePresetChatOptionsCommandHandler>();
+            .AddScoped<ICommandHandler<ElTocardo.Application.Mediator.PresetChatOptionsMediator.Commands.UpdatePresetChatOptionsCommand>, ElTocardo.Application.Mediator.PresetChatOptionsMediator.Handlers.Commands.UpdatePresetChatOptionsCommandHandler>();
         services
-            .AddScoped<ICommandHandler<DeletePresetChatOptionsCommand, bool>, DeletePresetChatOptionsCommandHandler>();
+            .AddScoped<ICommandHandler<ElTocardo.Application.Mediator.PresetChatOptionsMediator.Commands.DeletePresetChatOptionsCommand>, ElTocardo.Application.Mediator.PresetChatOptionsMediator.Handlers.Commands.DeletePresetChatOptionsCommandHandler>();
 
         // PresetChatOptions Query handlers
         services
-            .AddScoped<IQueryHandler<GetAllPresetChatOptionsQuery, List<PresetChatOptionsDto>>,
-                GetAllPresetChatOptionsQueryHandler>();
+            .AddScoped<IQueryHandler<ElTocardo.Application.Mediator.PresetChatOptionsMediator.Queries.GetAllPresetChatOptionsQuery, List<PresetChatOptionsDto>>,
+                ElTocardo.Application.Mediator.PresetChatOptionsMediator.Handlers.Queries.GetAllPresetChatOptionsQueryHandler>();
         services
-            .AddScoped<IQueryHandler<GetPresetChatOptionsByNameQuery, PresetChatOptionsDto>,
-                GetPresetChatOptionsByNameQueryHandler>();
+            .AddScoped<IQueryHandler<ElTocardo.Application.Mediator.PresetChatOptionsMediator.Queries.GetPresetChatOptionsByNameQuery, PresetChatOptionsDto>,
+                ElTocardo.Application.Mediator.PresetChatOptionsMediator.Handlers.Queries.GetPresetChatOptionsByNameQueryHandler>();
 
         return services;
     }

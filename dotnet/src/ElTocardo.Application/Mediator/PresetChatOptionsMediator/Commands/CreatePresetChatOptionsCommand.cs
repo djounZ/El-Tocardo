@@ -1,6 +1,7 @@
-namespace ElTocardo.Application.Commands.PresetChatOptions;
 
-public sealed record UpdatePresetChatOptionsCommand(
+namespace ElTocardo.Application.Mediator.PresetChatOptionsMediator.Commands;
+
+public record CreatePresetChatOptionsCommand(
     string Name,
     string? ConversationId,
     string? Instructions,
@@ -13,9 +14,7 @@ public sealed record UpdatePresetChatOptionsCommand(
     long? Seed,
     string? ResponseFormat,
     string? ModelId,
-    IList<string>? StopSequences,
+    string? StopSequences,
     bool? AllowMultipleToolCalls,
     string? ToolMode,
-    string? Tools,
-    string? RequiredFunctionName
-);
+    string? Tools);

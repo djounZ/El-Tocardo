@@ -1,128 +1,87 @@
 using System.Text.Json;
 using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.Configuration;
+using ElTocardo.Application.Mediator.Common.Interfaces;
+using ElTocardo.Application.Mediator.Common.Models;
+using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Commands;
+using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Queries;
 using ElTocardo.Application.Services;
-using ElTocardo.Domain.Entities;
-using ElTocardo.Domain.Repositories;
 
 namespace ElTocardo.Infrastructure.Services;
 
-public class PresetChatOptionsService(IPresetChatOptionsRepository repository) : IPresetChatOptionsService
+public class PresetChatOptionsService(
+    IQueryHandler<GetAllPresetChatOptionsQuery, List<PresetChatOptionsDto>> getAllQueryHandler,
+    IQueryHandler<GetPresetChatOptionsByNameQuery, PresetChatOptionsDto> getByNameQueryHandler,
+    ICommandHandler<CreatePresetChatOptionsCommand, Guid> createCommandHandler,
+    ICommandHandler<UpdatePresetChatOptionsCommand> updateCommandHandler,
+    ICommandHandler<DeletePresetChatOptionsCommand> deleteCommandHandler)
+    : IPresetChatOptionsService
 {
-    public async Task<List<PresetChatOptionsDto>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<List<PresetChatOptionsDto>>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var entities = await repository.GetAllAsync(cancellationToken);
-        return entities.Select(ToDto).ToList();
+        return await getAllQueryHandler.HandleAsync(GetAllPresetChatOptionsQuery.Instance, cancellationToken);
     }
 
-    public async Task<PresetChatOptionsDto?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
+    public async Task<Result<PresetChatOptionsDto>> GetByNameAsync(string name, CancellationToken cancellationToken = default)
     {
-        var entity = await repository.GetByNameAsync(name, cancellationToken);
-        return entity is null ? null : ToDto(entity);
+        return await getByNameQueryHandler.HandleAsync(new GetPresetChatOptionsByNameQuery(name), cancellationToken);
     }
 
-    public async Task<Guid> CreateAsync(PresetChatOptionsDto dto, CancellationToken cancellationToken = default)
+    public async Task<Result<Guid>> CreateAsync(PresetChatOptionsDto dto, CancellationToken cancellationToken = default)
     {
-        var entity = FromDto(dto);
-        entity.Id = Guid.NewGuid();
-        await repository.AddAsync(entity, cancellationToken);
-        await repository.SaveChangesAsync(cancellationToken);
-        return entity.Id;
-    }
-
-    public async Task<bool> UpdateAsync(string name, PresetChatOptionsDto dto,
-        CancellationToken cancellationToken = default)
-    {
-        var entity = await repository.GetByNameAsync(name, cancellationToken);
-        if (entity is null)
-        {
-            return false;
-        }
-
-        var updated = FromDto(dto);
-        entity.ConversationId = updated.ConversationId;
-        entity.Instructions = updated.Instructions;
-        entity.Temperature = updated.Temperature;
-        entity.MaxOutputTokens = updated.MaxOutputTokens;
-        entity.TopP = updated.TopP;
-        entity.TopK = updated.TopK;
-        entity.FrequencyPenalty = updated.FrequencyPenalty;
-        entity.PresencePenalty = updated.PresencePenalty;
-        entity.Seed = updated.Seed;
-        entity.ResponseFormat = updated.ResponseFormat;
-        entity.ModelId = updated.ModelId;
-        entity.StopSequences = updated.StopSequences;
-        entity.AllowMultipleToolCalls = updated.AllowMultipleToolCalls;
-        entity.ToolMode = updated.ToolMode;
-        entity.Tools = updated.Tools;
-        await repository.UpdateAsync(entity, cancellationToken);
-        await repository.SaveChangesAsync(cancellationToken);
-        return true;
-    }
-
-    public async Task<bool> DeleteAsync(string name, CancellationToken cancellationToken = default)
-    {
-        var entity = await repository.GetByNameAsync(name, cancellationToken);
-        if (entity is null)
-        {
-            return false;
-        }
-
-        await repository.DeleteAsync(entity, cancellationToken);
-        await repository.SaveChangesAsync(cancellationToken);
-        return true;
-    }
-
-    private static PresetChatOptionsDto ToDto(PresetChatOptions entity)
-    {
-        var chatOptions = new ChatOptionsDto(
-            entity.ConversationId,
-            entity.Instructions,
-            entity.Temperature,
-            entity.MaxOutputTokens,
-            entity.TopP,
-            entity.TopK,
-            entity.FrequencyPenalty,
-            entity.PresencePenalty,
-            entity.Seed,
-            entity.ResponseFormat is not null
-                ? JsonSerializer.Deserialize<ChatResponseFormatDto>(entity.ResponseFormat)
+        var command = new CreatePresetChatOptionsCommand(
+            dto.Name,
+            dto.ChatOptions.ConversationId,
+            dto.ChatOptions.Instructions,
+            dto.ChatOptions.Temperature,
+            dto.ChatOptions.MaxOutputTokens,
+            dto.ChatOptions.TopP,
+            dto.ChatOptions.TopK,
+            dto.ChatOptions.FrequencyPenalty,
+            dto.ChatOptions.PresencePenalty,
+            dto.ChatOptions.Seed,
+            dto.ChatOptions.ResponseFormat is not null
+                ? JsonSerializer.Serialize(dto.ChatOptions.ResponseFormat)
                 : null,
-            entity.ModelId,
-            entity.StopSequences?.Split(",").ToList(),
-            entity.AllowMultipleToolCalls,
-            entity.ToolMode is not null ? JsonSerializer.Deserialize<ChatToolModeDto>(entity.ToolMode) : null,
-            entity.Tools is not null
-                ? JsonSerializer.Deserialize<IDictionary<string, IList<AiToolDto>>>(entity.Tools)
-                : null
+            dto.ChatOptions.ModelId,
+            dto.ChatOptions.StopSequences is not null ? string.Join(",", dto.ChatOptions.StopSequences) : null,
+            dto.ChatOptions.AllowMultipleToolCalls,
+            dto.ChatOptions.ToolMode?.ToString(),
+            dto.ChatOptions.Tools is not null ? JsonSerializer.Serialize(dto.ChatOptions.Tools) : null
         );
-        return new PresetChatOptionsDto(entity.Name, chatOptions);
+
+        return await createCommandHandler.HandleAsync(command, cancellationToken);
     }
 
-    private static PresetChatOptions FromDto(PresetChatOptionsDto dto)
+    public async Task<VoidResult> UpdateAsync(string name, PresetChatOptionsDto dto, CancellationToken cancellationToken = default)
     {
-        return new PresetChatOptions
-        {
-            Name = dto.Name,
-            ConversationId = dto.ChatOptions.ConversationId,
-            Instructions = dto.ChatOptions.Instructions,
-            Temperature = dto.ChatOptions.Temperature,
-            MaxOutputTokens = dto.ChatOptions.MaxOutputTokens,
-            TopP = dto.ChatOptions.TopP,
-            TopK = dto.ChatOptions.TopK,
-            FrequencyPenalty = dto.ChatOptions.FrequencyPenalty,
-            PresencePenalty = dto.ChatOptions.PresencePenalty,
-            Seed = dto.ChatOptions.Seed,
-            ResponseFormat =
-                dto.ChatOptions.ResponseFormat is not null
-                    ? JsonSerializer.Serialize(dto.ChatOptions.ResponseFormat)
-                    : null,
-            ModelId = dto.ChatOptions.ModelId,
-            StopSequences =
-                dto.ChatOptions.StopSequences is not null ? string.Join(",", dto.ChatOptions.StopSequences) : null,
-            AllowMultipleToolCalls = dto.ChatOptions.AllowMultipleToolCalls,
-            ToolMode = dto.ChatOptions.ToolMode?.ToString(),
-            Tools = dto.ChatOptions.Tools is not null ? JsonSerializer.Serialize(dto.ChatOptions.Tools) : null
-        };
+        var command = new UpdatePresetChatOptionsCommand(
+            name,
+            dto.ChatOptions.ConversationId,
+            dto.ChatOptions.Instructions,
+            dto.ChatOptions.Temperature,
+            dto.ChatOptions.MaxOutputTokens,
+            dto.ChatOptions.TopP,
+            dto.ChatOptions.TopK,
+            dto.ChatOptions.FrequencyPenalty,
+            dto.ChatOptions.PresencePenalty,
+            dto.ChatOptions.Seed,
+            dto.ChatOptions.ResponseFormat is not null
+                ? JsonSerializer.Serialize(dto.ChatOptions.ResponseFormat)
+                : null,
+            dto.ChatOptions.ModelId,
+            dto.ChatOptions.StopSequences is not null ? string.Join(",", dto.ChatOptions.StopSequences) : null,
+            dto.ChatOptions.AllowMultipleToolCalls,
+            dto.ChatOptions.ToolMode?.ToString(),
+            dto.ChatOptions.Tools is not null ? JsonSerializer.Serialize(dto.ChatOptions.Tools) : null
+        );
+
+        return await updateCommandHandler.HandleAsync(command, cancellationToken);
+    }
+
+    public async Task<VoidResult> DeleteAsync(string name, CancellationToken cancellationToken = default)
+    {
+        var command = new DeletePresetChatOptionsCommand(name);
+        return await deleteCommandHandler.HandleAsync(command, cancellationToken);
     }
 }

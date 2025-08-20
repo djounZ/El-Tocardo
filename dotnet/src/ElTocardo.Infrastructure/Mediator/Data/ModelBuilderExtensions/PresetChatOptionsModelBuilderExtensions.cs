@@ -1,4 +1,4 @@
-using ElTocardo.Domain.Entities;
+using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ElTocardo.Infrastructure.Mediator.Data.ModelBuilderExtensions;
@@ -27,6 +27,8 @@ public static class PresetChatOptionsModelBuilderExtensions
             entity.Property(e => e.AllowMultipleToolCalls);
             entity.Property(e => e.ToolMode).HasMaxLength(500);
             entity.Property(e => e.Tools); // JSON
+            entity.Property(e => e.CreatedAt).IsRequired();
+            entity.Property(e => e.UpdatedAt).IsRequired();
         });
         return modelBuilder;
     }
