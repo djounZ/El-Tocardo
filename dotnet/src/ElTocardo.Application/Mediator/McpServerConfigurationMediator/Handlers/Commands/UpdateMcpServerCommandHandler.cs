@@ -11,7 +11,7 @@ public class UpdateMcpServerCommandHandler(
     IMcpServerConfigurationRepository repository,
     ILogger<UpdateMcpServerCommandHandler> logger,
     IValidator<UpdateMcpServerCommand> validator,
-    McpServerConfigurationDomainCommandMapper mapper)
+    McpServerConfigurationDomainUpdateCommandMapper mapper)
     : CommandHandlerBase<UpdateMcpServerCommand>(logger)
 {
     protected override async Task HandleAsyncImplementation(UpdateMcpServerCommand command,

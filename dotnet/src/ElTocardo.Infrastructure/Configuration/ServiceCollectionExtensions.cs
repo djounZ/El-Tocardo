@@ -127,7 +127,8 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddCommandQueryHandlers(this IServiceCollection services)
     {
         services.AddSingleton<McpServerConfigurationDomainDtoMapper>();
-        services.AddSingleton<McpServerConfigurationDomainCommandMapper>();
+        services.AddSingleton<McpServerConfigurationDomainUpdateCommandMapper>();
+        services.AddSingleton<McpServerConfigurationDomainCreateCommandMapper>();
 
         // MCP Command handlers
         services.AddScoped<ICommandHandler<CreateMcpServerCommand, Guid>, CreateMcpServerCommandHandler>();

@@ -10,7 +10,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Mediator\Common\Commands\" />
       <Folder Include="Mediator\Common\Queries\" />
     </ItemGroup>
 </Project>
