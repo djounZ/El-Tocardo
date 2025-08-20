@@ -16,7 +16,7 @@ public static class McpServerConfigurationEndpoints
                 {
                     var allServersAsync = await service.GetAllServersAsync(cancellationToken);
                     return allServersAsync.IsSuccess
-                        ? Results.Ok(allServersAsync)
+                        ? Results.Ok(allServersAsync.ReadValue())
                         : Results.InternalServerError(allServersAsync.ReadError());
                 })
             .WithName("GetAllMcpServers")

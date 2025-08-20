@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Infrastructure.Mediator.Repositories.Common;
 
-public class EntityRepository<TEntity,  TKey>(
+public abstract class EntityRepository<TEntity,  TKey>(
     ApplicationDbContext context,
     DbSet<TEntity> dbSet,
     ILogger<EntityRepository<TEntity,  TKey>> logger) :IEntityRepository<TEntity,TKey> where TEntity: AbstractEntity<TKey>
@@ -27,9 +27,11 @@ public class EntityRepository<TEntity,  TKey>(
     {
         logger.LogDebug("Getting {@Entity} by name: {key}", EntityName, key);
 
-        return await dbSet
-            .FirstOrDefaultAsync(x => Equals(x.GetKey(), key), cancellationToken);
+        return await GetByKeyAsync(key, dbSet, cancellationToken);
     }
+
+    protected abstract Task<TEntity?> GetByKeyAsync(TKey key, DbSet<TEntity> dbSet,
+        CancellationToken cancellationToken = default);
 
     public async Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
@@ -39,14 +41,16 @@ public class EntityRepository<TEntity,  TKey>(
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
+
     public async Task<bool> ExistsAsync(TKey key, CancellationToken cancellationToken = default)
     {
         logger.LogDebug("Checking if {@Entity} exists: {key}", EntityName, key);
 
-        return await dbSet
-            .AnyAsync(x => Equals(x.GetKey(), key), cancellationToken);
+        return await ExistsAsync(key, dbSet, cancellationToken);
     }
 
+    protected abstract  Task<bool> ExistsAsync(TKey key,
+        DbSet<TEntity> dbSet, CancellationToken cancellationToken = default);
     public async Task AddAsync(TEntity configuration, CancellationToken cancellationToken = default)
     {
         logger.LogDebug("Adding {@Entity}: {key}", EntityName, configuration.GetKey());

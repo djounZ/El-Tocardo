@@ -11,7 +11,7 @@ namespace ElTocardo.Infrastructure.Services;
 
 public sealed class McpClientToolsService(
     ILogger<McpClientToolsService> logger,
-    IQueryHandler<GetAllMcpServersQuery, IDictionary<string, McpServerConfigurationItemDto>> getAllQueryHandler,
+    IQueryHandler<GetAllMcpServersQuery, Dictionary<string, McpServerConfigurationItemDto>> getAllQueryHandler,
     IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto> getByNameQueryHandler,
     ClientTransportFactoryService clientTransportFactoryService,
     ModelContextProtocolMapper modelContextProtocolMapper) : IMcpClientToolsService
