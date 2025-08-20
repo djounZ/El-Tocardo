@@ -1,11 +1,10 @@
-using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Application.Mediator.Common.Mappers;
 using ElTocardo.Domain.Mediator.Common.Entities;
 using ElTocardo.Domain.Mediator.Common.Repositories;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 
-namespace ElTocardo.Application.Mediator.Common.Commands;
+namespace ElTocardo.Application.Mediator.Common.Handlers.Commands;
 
 public class CreateEntityCommandHandler<TEntity,  TKey, TCommand>(
     IEntityRepository<TEntity, TKey> repository,

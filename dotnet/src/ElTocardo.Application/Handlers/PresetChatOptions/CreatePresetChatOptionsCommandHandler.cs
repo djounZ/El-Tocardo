@@ -2,6 +2,7 @@ using System.Text.Json;
 using ElTocardo.Application.Commands.PresetChatOptions;
 using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.Configuration;
+using ElTocardo.Application.Mediator.Common.Handlers;
 using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Application.Services;
 using Microsoft.Extensions.Logging;
