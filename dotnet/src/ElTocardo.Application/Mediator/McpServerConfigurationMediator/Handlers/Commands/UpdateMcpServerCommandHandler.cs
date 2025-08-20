@@ -1,11 +1,11 @@
-using ElTocardo.Application.Mediator.Common.Interfaces;
+using ElTocardo.Application.Mediator.Common.Handlers;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Commands;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Mappers;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 
-namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers;
+namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Commands;
 
 public class UpdateMcpServerCommandHandler(
     IMcpServerConfigurationRepository repository,
@@ -23,7 +23,7 @@ public class UpdateMcpServerCommandHandler(
         await validator.ValidateAndThrowAsync(command, cancellationToken);
 
         // Get existing configuration
-        var configuration = await repository.GetByNameAsync(command.ServerName, cancellationToken);
+        var configuration = await repository.GetByKeyAsync(command.ServerName, cancellationToken);
 
         // Update configuration
         mapper.UpdateFromCommand(configuration!, command);

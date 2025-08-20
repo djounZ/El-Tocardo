@@ -1,9 +1,9 @@
 using ElTocardo.Domain.Entities;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
+using ElTocardo.Infrastructure.Mediator.Data.ModelBuilderExtensions;
 using Microsoft.EntityFrameworkCore;
-using ElTocardo.Infrastructure.Data.ModelBuilderExtensions;
 
-namespace ElTocardo.Infrastructure.Data;
+namespace ElTocardo.Infrastructure.Mediator.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {

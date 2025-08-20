@@ -1,13 +1,11 @@
 using ElTocardo.Application.Dtos.ModelContextProtocol;
-using ElTocardo.Application.Mediator.Common.Interfaces;
+using ElTocardo.Application.Mediator.Common.Handlers;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Mappers;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Queries;
-using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
-using ElTocardo.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
-namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers;
+namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Queries;
 
 public class GetMcpServerByNameQueryHandler(
     IMcpServerConfigurationRepository repository,
@@ -21,7 +19,7 @@ public class GetMcpServerByNameQueryHandler(
     {
         logger.LogInformation("Getting MCP server configuration: {ServerName}", query.ServerName);
 
-        var configuration = await repository.GetByNameAsync(query.ServerName, cancellationToken);
+        var configuration = await repository.GetByKeyAsync(query.ServerName, cancellationToken);
 
         var result = mapper.MapDomainToDto(configuration!);
 

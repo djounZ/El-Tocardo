@@ -5,7 +5,7 @@ using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 
-namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers;
+namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Commands;
 
 public class CreateMcpServerCommandHandler(
     IMcpServerConfigurationRepository repository,

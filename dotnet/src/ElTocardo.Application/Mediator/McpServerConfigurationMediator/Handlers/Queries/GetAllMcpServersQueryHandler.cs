@@ -1,11 +1,11 @@
 using ElTocardo.Application.Dtos.ModelContextProtocol;
-using ElTocardo.Application.Mediator.Common.Interfaces;
+using ElTocardo.Application.Mediator.Common.Handlers;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Mappers;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Queries;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
 using Microsoft.Extensions.Logging;
 
-namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers;
+namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Queries;
 
 public class GetAllMcpServersQueryHandler(
     IMcpServerConfigurationRepository repository,

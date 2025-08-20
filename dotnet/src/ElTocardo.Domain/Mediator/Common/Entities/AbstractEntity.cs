@@ -1,4 +1,4 @@
-namespace ElTocardo.Domain.Mediator;
+namespace ElTocardo.Domain.Mediator.Common.Entities;
 
 public abstract class AbstractEntity<TKey>
 {

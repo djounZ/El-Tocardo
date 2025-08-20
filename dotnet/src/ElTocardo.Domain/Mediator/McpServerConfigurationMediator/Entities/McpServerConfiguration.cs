@@ -1,3 +1,4 @@
+using ElTocardo.Domain.Mediator.Common.Entities;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.ValueObjects;
 
 namespace ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;

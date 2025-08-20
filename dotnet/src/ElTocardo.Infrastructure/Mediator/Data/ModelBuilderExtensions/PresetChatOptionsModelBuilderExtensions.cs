@@ -1,7 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using ElTocardo.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
-namespace ElTocardo.Infrastructure.Data.ModelBuilderExtensions;
+namespace ElTocardo.Infrastructure.Mediator.Data.ModelBuilderExtensions;
 
 public static class PresetChatOptionsModelBuilderExtensions
 {

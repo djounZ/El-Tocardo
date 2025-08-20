@@ -1,9 +1,8 @@
 using System.Text.Json;
-using ElTocardo.Domain.Entities;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ElTocardo.Infrastructure.Data.ModelBuilderExtensions;
+namespace ElTocardo.Infrastructure.Mediator.Data.ModelBuilderExtensions;
 
 public static  class McpServerConfigurationModelBuilderExtensions
 {

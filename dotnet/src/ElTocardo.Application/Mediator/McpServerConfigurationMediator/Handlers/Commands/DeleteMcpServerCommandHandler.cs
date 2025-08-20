@@ -1,10 +1,9 @@
-using ElTocardo.Application.Mediator.Common.Interfaces;
+using ElTocardo.Application.Mediator.Common.Handlers;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Commands;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
-using ElTocardo.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
-namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers;
+namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Commands;
 
 public class DeleteMcpServerCommandHandler(
     IMcpServerConfigurationRepository repository,
@@ -17,7 +16,7 @@ public class DeleteMcpServerCommandHandler(
         logger.LogInformation("Deleting MCP server configuration: {ServerName}", command.ServerName);
 
         // Get existing configuration
-        var configuration = await repository.GetByNameAsync(command.ServerName, cancellationToken);
+        var configuration = await repository.GetByKeyAsync(command.ServerName, cancellationToken);
         if (configuration == null)
         {
             logger.LogWarning("MCP server not found: {ServerName}", command.ServerName);

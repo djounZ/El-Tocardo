@@ -5,7 +5,7 @@ using ElTocardo.Application.Dtos.ModelContextProtocol;
 using ElTocardo.Domain.Entities;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.ValueObjects;
-using ElTocardo.Infrastructure.Data;
+using ElTocardo.Infrastructure.Mediator.Data;
 using ElTocardo.Infrastructure.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

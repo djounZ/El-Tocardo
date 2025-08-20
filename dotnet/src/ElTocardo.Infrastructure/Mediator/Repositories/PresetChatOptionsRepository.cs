@@ -1,10 +1,10 @@
 using ElTocardo.Domain.Entities;
 using ElTocardo.Domain.Repositories;
-using ElTocardo.Infrastructure.Data;
+using ElTocardo.Infrastructure.Mediator.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace ElTocardo.Infrastructure.Repositories;
+namespace ElTocardo.Infrastructure.Mediator.Repositories;
 
 public class PresetChatOptionsRepository(
     ApplicationDbContext context,
