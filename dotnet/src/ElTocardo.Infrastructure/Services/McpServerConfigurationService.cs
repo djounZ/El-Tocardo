@@ -10,14 +10,14 @@ using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.ValueObjects;
 namespace ElTocardo.Infrastructure.Services;
 
 public class McpServerConfigurationService(
-    IQueryHandler<GetAllMcpServersQuery, IDictionary<string, McpServerConfigurationItemDto>> getAllQueryHandler,
+    IQueryHandler<GetAllMcpServersQuery, Dictionary<string, McpServerConfigurationItemDto>> getAllQueryHandler,
     IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto> getByNameQueryHandler,
     ICommandHandler<CreateMcpServerCommand, Guid> createCommandHandler,
     ICommandHandler<UpdateMcpServerCommand> updateCommandHandler,
     ICommandHandler<DeleteMcpServerCommand> deleteCommandHandler)
     : IMcpServerConfigurationService
 {
-    public async Task<Result<IDictionary<string, McpServerConfigurationItemDto>>> GetAllServersAsync(
+    public async Task<Result<Dictionary<string, McpServerConfigurationItemDto>>> GetAllServersAsync(
         CancellationToken cancellationToken = default)
     {
         return await getAllQueryHandler.HandleAsync(GetAllMcpServersQuery.Instance, cancellationToken);

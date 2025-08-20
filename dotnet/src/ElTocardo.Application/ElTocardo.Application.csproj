@@ -8,10 +8,5 @@
         <PackageReference Include="FluentValidation" Version="$(FluentValidationCommonPackagesVersion)" />
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="$(FluentValidationCommonPackagesVersion)" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Mediator\Common\Handlers\Queries\" />
-      <Folder Include="Mediator\Common\Queries\" />
-    </ItemGroup>
 </Project>
 

@@ -10,10 +10,10 @@ namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers
 public class GetAllMcpServersQueryHandler(
     IMcpServerConfigurationRepository repository,
     ILogger<GetAllMcpServersQueryHandler> logger,
-    McpServerConfigurationDomainDtoMapper mapper)
-    : QueryHandlerBase<GetAllMcpServersQuery, IDictionary<string, McpServerConfigurationItemDto>>(logger)
+    McpServerConfigurationDomainGetAllDtoMapper mapper)
+    : QueryHandlerBase<GetAllMcpServersQuery, Dictionary<string, McpServerConfigurationItemDto>>(logger)
 {
-    protected override async Task<IDictionary<string, McpServerConfigurationItemDto>> HandleAsyncImplementation(
+    protected override async Task<Dictionary<string, McpServerConfigurationItemDto>> HandleAsyncImplementation(
         GetAllMcpServersQuery query,
         CancellationToken cancellationToken = default)
     {

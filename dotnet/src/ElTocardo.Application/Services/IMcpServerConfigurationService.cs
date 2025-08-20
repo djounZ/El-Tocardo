@@ -5,7 +5,7 @@ namespace ElTocardo.Application.Services;
 
 public interface IMcpServerConfigurationService
 {
-    public Task<Result<IDictionary<string, McpServerConfigurationItemDto>>> GetAllServersAsync(
+    public Task<Result<Dictionary<string, McpServerConfigurationItemDto>>> GetAllServersAsync(
         CancellationToken cancellationToken = default);
 
     public Task<Result<McpServerConfigurationItemDto>> GetServerAsync(string serverName,

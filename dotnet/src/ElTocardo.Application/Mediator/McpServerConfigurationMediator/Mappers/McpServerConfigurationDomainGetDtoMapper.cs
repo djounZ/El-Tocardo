@@ -5,14 +5,8 @@ using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.ValueObjects;
 
 namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Mappers;
 
-public class McpServerConfigurationDomainDtoMapper : AbstractDomainDtoMapper<McpServerConfiguration, string, McpServerConfigurationItemDto, Dictionary<string, McpServerConfigurationItemDto>>
+public class McpServerConfigurationDomainGetDtoMapper : AbstractDomainGetDtoMapper<McpServerConfiguration, string, McpServerConfigurationItemDto>
 {
-    public override Dictionary<string, McpServerConfigurationItemDto> MapDomainToDto(IEnumerable<McpServerConfiguration> configurations)
-    {
-        return configurations.ToDictionary(
-            config => config.ServerName,
-            MapDomainToDto);
-    }
     public override  McpServerConfigurationItemDto MapDomainToDto(McpServerConfiguration configuration)
     {
         return new McpServerConfigurationItemDto(

@@ -4,6 +4,7 @@ using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Commands;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Commands;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Queries;
+using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Mappers;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Queries;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Validators;
 using ElTocardo.Application.Services;
@@ -40,12 +41,16 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
         services.AddScoped<IMcpServerConfigurationService, McpServerConfigurationService>();
 
         // Add handlers and repositories (simplified for test)
+        services.AddSingleton<McpServerConfigurationDomainGetDtoMapper>();
+        services.AddSingleton<McpServerConfigurationDomainGetAllDtoMapper>();
+        services.AddSingleton<McpServerConfigurationDomainUpdateCommandMapper>();
+        services.AddSingleton<McpServerConfigurationDomainCreateCommandMapper>();
         services.AddScoped<IMcpServerConfigurationRepository, McpServerConfigurationRepository>();
         services.AddScoped<ICommandHandler<CreateMcpServerCommand, Guid>, CreateMcpServerCommandHandler>();
         services.AddScoped<ICommandHandler<UpdateMcpServerCommand>, UpdateMcpServerCommandHandler>();
         services.AddScoped<ICommandHandler<DeleteMcpServerCommand>, DeleteMcpServerCommandHandler>();
         services
-            .AddScoped<IQueryHandler<GetAllMcpServersQuery, IDictionary<string, McpServerConfigurationItemDto>>,
+            .AddScoped<IQueryHandler<GetAllMcpServersQuery, Dictionary<string, McpServerConfigurationItemDto>>,
                 GetAllMcpServersQueryHandler>();
         services
             .AddScoped<IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto>,

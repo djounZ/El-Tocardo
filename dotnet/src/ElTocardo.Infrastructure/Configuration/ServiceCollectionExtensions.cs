@@ -126,7 +126,8 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddCommandQueryHandlers(this IServiceCollection services)
     {
-        services.AddSingleton<McpServerConfigurationDomainDtoMapper>();
+        services.AddSingleton<McpServerConfigurationDomainGetDtoMapper>();
+        services.AddSingleton<McpServerConfigurationDomainGetAllDtoMapper>();
         services.AddSingleton<McpServerConfigurationDomainUpdateCommandMapper>();
         services.AddSingleton<McpServerConfigurationDomainCreateCommandMapper>();
 
@@ -137,7 +138,7 @@ public static class ServiceCollectionExtensions
 
         // MCP Query handlers
         services
-            .AddScoped<IQueryHandler<GetAllMcpServersQuery, IDictionary<string, McpServerConfigurationItemDto>>,
+            .AddScoped<IQueryHandler<GetAllMcpServersQuery, Dictionary<string, McpServerConfigurationItemDto>>,
                 GetAllMcpServersQueryHandler>();
         services
             .AddScoped<IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto>,
