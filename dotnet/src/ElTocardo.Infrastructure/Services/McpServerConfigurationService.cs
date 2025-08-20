@@ -1,11 +1,11 @@
-using ElTocardo.Application.Commands.McpServerConfiguration;
-using ElTocardo.Application.Common.Extensions;
-using ElTocardo.Application.Common.Interfaces;
-using ElTocardo.Application.Common.Models;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
-using ElTocardo.Application.Queries.McpServerConfiguration;
+using ElTocardo.Application.Mediator.Common.Interfaces;
+using ElTocardo.Application.Mediator.Common.Models;
+using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Commands;
+using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Mappers;
+using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Queries;
 using ElTocardo.Application.Services;
-using ElTocardo.Domain.ValueObjects;
+using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.ValueObjects;
 
 namespace ElTocardo.Infrastructure.Services;
 
@@ -67,6 +67,11 @@ public class McpServerConfigurationService(
 
     private static McpServerTransportType MapFromDto(McpServerTransportTypeDto transportType)
     {
-        return transportType.ToDomain();
+        return transportType switch
+        {
+            McpServerTransportTypeDto.Stdio => McpServerTransportType.Stdio,
+            McpServerTransportTypeDto.Http => McpServerTransportType.Http,
+            _ => throw new ArgumentOutOfRangeException(nameof(transportType), transportType, null)
+        };
     }
 }

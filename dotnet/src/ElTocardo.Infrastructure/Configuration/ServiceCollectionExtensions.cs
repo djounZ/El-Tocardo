@@ -1,15 +1,17 @@
 using AI.GithubCopilot.Configuration;
-using ElTocardo.Application.Commands.McpServerConfiguration;
 using ElTocardo.Application.Commands.PresetChatOptions;
-using ElTocardo.Application.Common.Interfaces;
 using ElTocardo.Application.Configuration;
 using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
-using ElTocardo.Application.Handlers.McpServerConfiguration;
 using ElTocardo.Application.Handlers.PresetChatOptions;
-using ElTocardo.Application.Queries.McpServerConfiguration;
+using ElTocardo.Application.Mediator.Common.Interfaces;
+using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Commands;
+using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers;
+using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Mappers;
+using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Queries;
 using ElTocardo.Application.Queries.PresetChatOptions;
 using ElTocardo.Application.Services;
+using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
 using ElTocardo.Domain.Repositories;
 using ElTocardo.Infrastructure.Data;
 using ElTocardo.Infrastructure.Mappers.Dtos.AI;
@@ -122,6 +124,9 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddCommandQueryHandlers(this IServiceCollection services)
     {
+        services.AddSingleton<McpServerConfigurationDomainDtoMapper>();
+        services.AddSingleton<McpServerConfigurationDomainCommandMapper>();
+
         // MCP Command handlers
         services.AddScoped<ICommandHandler<CreateMcpServerCommand, Guid>, CreateMcpServerCommandHandler>();
         services.AddScoped<ICommandHandler<UpdateMcpServerCommand>, UpdateMcpServerCommandHandler>();

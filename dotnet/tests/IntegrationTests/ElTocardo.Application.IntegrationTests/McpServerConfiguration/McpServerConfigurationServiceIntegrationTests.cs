@@ -1,10 +1,11 @@
-using ElTocardo.Application.Commands.McpServerConfiguration;
-using ElTocardo.Application.Common.Interfaces;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
-using ElTocardo.Application.Handlers.McpServerConfiguration;
-using ElTocardo.Application.Queries.McpServerConfiguration;
+using ElTocardo.Application.Mediator.Common.Interfaces;
+using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Commands;
+using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers;
+using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Queries;
+using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Validators;
 using ElTocardo.Application.Services;
-using ElTocardo.Application.Validators.McpServerConfiguration;
+using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
 using ElTocardo.Domain.Repositories;
 using ElTocardo.Infrastructure.Data;
 using ElTocardo.Infrastructure.Repositories;

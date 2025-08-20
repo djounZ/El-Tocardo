@@ -1,6 +1,6 @@
-using ElTocardo.Application.Common.Interfaces;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
-using ElTocardo.Application.Queries.McpServerConfiguration;
+using ElTocardo.Application.Mediator.Common.Interfaces;
+using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Queries;
 using ElTocardo.Application.Services;
 using ElTocardo.Infrastructure.Mappers.Dtos.ModelContextProtocol;
 using Microsoft.Extensions.Logging;

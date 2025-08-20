@@ -5,4 +5,8 @@
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftExtensionsPackagesCommonVersion)"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Mediator\McpServerConfigurationMediator\" />
+    </ItemGroup>
+
 </Project>

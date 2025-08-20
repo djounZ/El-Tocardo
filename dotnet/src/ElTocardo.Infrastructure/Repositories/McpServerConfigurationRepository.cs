@@ -1,4 +1,6 @@
 using ElTocardo.Domain.Entities;
+using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
+using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
 using ElTocardo.Domain.Repositories;
 using ElTocardo.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
