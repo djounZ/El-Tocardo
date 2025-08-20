@@ -11,7 +11,7 @@ public class PresetChatOptionsRepository(
     ILogger<PresetChatOptionsRepository> logger)
     : IPresetChatOptionsRepository
 {
-    public async Task<IEnumerable<PresetChatOptions>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<List<PresetChatOptions>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Fetching all PresetChatOptions from database");
         var result = await context.PresetChatOptions.ToListAsync(cancellationToken);

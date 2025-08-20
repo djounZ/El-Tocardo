@@ -1,10 +1,15 @@
 using ElTocardo.Application.Commands.McpServerConfiguration;
 using ElTocardo.Application.Common.Interfaces;
-using ElTocardo.Application.Common.Models;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
+using ElTocardo.Application.Handlers.McpServerConfiguration;
 using ElTocardo.Application.Queries.McpServerConfiguration;
 using ElTocardo.Application.Services;
+using ElTocardo.Application.Validators.McpServerConfiguration;
+using ElTocardo.Domain.Repositories;
 using ElTocardo.Infrastructure.Data;
+using ElTocardo.Infrastructure.Repositories;
+using ElTocardo.Infrastructure.Services;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,10 +19,10 @@ namespace ElTocardo.Application.IntegrationTests.McpServerConfiguration;
 
 public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
 {
-    private readonly ServiceProvider _serviceProvider;
     private readonly ApplicationDbContext _dbContext;
+    private readonly ServiceProvider _serviceProvider;
 
-    public McpServerConfigurationServiceIntegrationTests( ITestOutputHelper output)
+    public McpServerConfigurationServiceIntegrationTests(ITestOutputHelper output)
     {
         var services = new ServiceCollection();
 
@@ -26,31 +31,41 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
             options.UseInMemoryDatabase($"TestDb_{Guid.NewGuid()}"));
 
         // Add logging
-       //s services.AddLogging(builder => builder.AddConsole());
-       services.AddLogging();
+        //s services.AddLogging(builder => builder.AddConsole());
+        services.AddLogging();
         // Register services manually for testing
-        services.AddScoped<IMcpServerConfigurationService, ElTocardo.Infrastructure.Services.McpServerConfigurationService>();
+        services.AddScoped<IMcpServerConfigurationService, McpServerConfigurationService>();
 
         // Add handlers and repositories (simplified for test)
-        services.AddScoped<ElTocardo.Domain.Repositories.IMcpServerConfigurationRepository, ElTocardo.Infrastructure.Repositories.McpServerConfigurationRepository>();
-        services.AddScoped<ICommandHandler<CreateMcpServerCommand, Result<Guid>>, ElTocardo.Application.Handlers.McpServerConfiguration.CreateMcpServerCommandHandler>();
-        services.AddScoped<ICommandHandler<UpdateMcpServerCommand, VoidResult>, ElTocardo.Application.Handlers.McpServerConfiguration.UpdateMcpServerCommandHandler>();
-        services.AddScoped<ICommandHandler<DeleteMcpServerCommand, VoidResult>, ElTocardo.Application.Handlers.McpServerConfiguration.DeleteMcpServerCommandHandler>();
-        services.AddScoped<IQueryHandler<GetAllMcpServersQuery, IDictionary<string, McpServerConfigurationItemDto>>, ElTocardo.Application.Handlers.McpServerConfiguration.GetAllMcpServersQueryHandler>();
-        services.AddScoped<IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto?>, ElTocardo.Application.Handlers.McpServerConfiguration.GetMcpServerByNameQueryHandler>();
+        services.AddScoped<IMcpServerConfigurationRepository, McpServerConfigurationRepository>();
+        services.AddScoped<ICommandHandler<CreateMcpServerCommand, Guid>, CreateMcpServerCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdateMcpServerCommand>, UpdateMcpServerCommandHandler>();
+        services.AddScoped<ICommandHandler<DeleteMcpServerCommand>, DeleteMcpServerCommandHandler>();
+        services
+            .AddScoped<IQueryHandler<GetAllMcpServersQuery, IDictionary<string, McpServerConfigurationItemDto>>,
+                GetAllMcpServersQueryHandler>();
+        services
+            .AddScoped<IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto>,
+                GetMcpServerByNameQueryHandler>();
 
         // Add validators
-        services.AddScoped<FluentValidation.IValidator<CreateMcpServerCommand>, ElTocardo.Application.Validators.McpServerConfiguration.CreateMcpServerCommandValidator>();
-        services.AddScoped<FluentValidation.IValidator<UpdateMcpServerCommand>, ElTocardo.Application.Validators.McpServerConfiguration.UpdateMcpServerCommandValidator>();
+        services.AddScoped<IValidator<CreateMcpServerCommand>, CreateMcpServerCommandValidator>();
+        services.AddScoped<IValidator<UpdateMcpServerCommand>, UpdateMcpServerCommandValidator>();
 
         _serviceProvider = services.BuildServiceProvider();
 
-         var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
+        var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
         loggerFactory.AddProvider(new TestOutputLoggerProvider(output));
         _dbContext = _serviceProvider.GetRequiredService<ApplicationDbContext>();
 
         // Ensure database is created
         _dbContext.Database.EnsureCreated();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await _dbContext.DisposeAsync();
+        await _serviceProvider.DisposeAsync();
     }
 
     [Fact]
@@ -59,12 +74,12 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
         // Arrange
         var service = _serviceProvider.GetRequiredService<IMcpServerConfigurationService>();
         var serverDto = new McpServerConfigurationItemDto(
-            Category: "test",
-            Command: "node",
-            Arguments: new List<string> { "server.js" },
-            EnvironmentVariables: new Dictionary<string, string?> { { "NODE_ENV", "development" } },
-            Endpoint: null,
-            Type: McpServerTransportTypeDto.Stdio);
+            "test",
+            "node",
+            new List<string> { "server.js" },
+            new Dictionary<string, string?> { { "NODE_ENV", "development" } },
+            null,
+            McpServerTransportTypeDto.Stdio);
 
         // Act
         var result = await service.CreateServerAsync("test-server", serverDto);
@@ -80,12 +95,12 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
         // Arrange
         var service = _serviceProvider.GetRequiredService<IMcpServerConfigurationService>();
         var serverDto = new McpServerConfigurationItemDto(
-            Category: "test",
-            Command: "node",
-            Arguments: new List<string> { "server.js" },
-            EnvironmentVariables: null,
-            Endpoint: null,
-            Type: McpServerTransportTypeDto.Stdio);
+            "test",
+            "node",
+            new List<string> { "server.js" },
+            null,
+            null,
+            McpServerTransportTypeDto.Stdio);
 
         // Act
         await service.CreateServerAsync("duplicate-server", serverDto);
@@ -102,20 +117,20 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
         // Arrange
         var service = _serviceProvider.GetRequiredService<IMcpServerConfigurationService>();
         var serverDto1 = new McpServerConfigurationItemDto(
-            Category: "test1",
-            Command: "node",
-            Arguments: new List<string> { "server1.js" },
-            EnvironmentVariables: null,
-            Endpoint: null,
-            Type: McpServerTransportTypeDto.Stdio);
+            "test1",
+            "node",
+            new List<string> { "server1.js" },
+            null,
+            null,
+            McpServerTransportTypeDto.Stdio);
 
         var serverDto2 = new McpServerConfigurationItemDto(
-            Category: "test2",
-            Command: "python",
-            Arguments: new List<string> { "server2.py" },
-            EnvironmentVariables: null,
-            Endpoint: null,
-            Type: McpServerTransportTypeDto.Stdio);
+            "test2",
+            "python",
+            new List<string> { "server2.py" },
+            null,
+            null,
+            McpServerTransportTypeDto.Stdio);
 
         // Act
         await service.CreateServerAsync("server1", serverDto1);
@@ -123,9 +138,9 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
         var result = await service.GetAllServersAsync();
 
         // Assert
-        Assert.Equal(2, result.Count);
-        Assert.True(result.ContainsKey("server1"));
-        Assert.True(result.ContainsKey("server2"));
+        Assert.Equal(2, result.ReadValue().Count);
+        Assert.True(result.ReadValue().ContainsKey("server1"));
+        Assert.True(result.ReadValue().ContainsKey("server2"));
     }
 
     [Fact]
@@ -134,12 +149,12 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
         // Arrange
         var service = _serviceProvider.GetRequiredService<IMcpServerConfigurationService>();
         var serverDto = new McpServerConfigurationItemDto(
-            Category: "test",
-            Command: null,
-            Arguments: null,
-            EnvironmentVariables: null,
-            Endpoint: null, // Missing endpoint for HTTP transport
-            Type: McpServerTransportTypeDto.Http);
+            "test",
+            null,
+            null,
+            null,
+            null, // Missing endpoint for HTTP transport
+            McpServerTransportTypeDto.Http);
 
         // Act
         var result = await service.CreateServerAsync("http-server", serverDto);
@@ -147,11 +162,5 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Contains("Validation failed", result.ReadError().Message);
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await _dbContext.DisposeAsync();
-        await _serviceProvider.DisposeAsync();
     }
 }

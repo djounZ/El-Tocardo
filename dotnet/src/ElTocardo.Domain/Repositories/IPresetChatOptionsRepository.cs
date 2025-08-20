@@ -4,10 +4,10 @@ namespace ElTocardo.Domain.Repositories;
 
 public interface IPresetChatOptionsRepository
 {
-    Task<IEnumerable<PresetChatOptions>> GetAllAsync(CancellationToken cancellationToken = default);
-    Task<PresetChatOptions?> GetByNameAsync(string name, CancellationToken cancellationToken = default);
-    Task AddAsync(PresetChatOptions preset, CancellationToken cancellationToken = default);
-    Task UpdateAsync(PresetChatOptions preset, CancellationToken cancellationToken = default);
-    Task DeleteAsync(PresetChatOptions preset, CancellationToken cancellationToken = default);
-    Task SaveChangesAsync(CancellationToken cancellationToken = default);
+    public Task<List<PresetChatOptions>> GetAllAsync(CancellationToken cancellationToken = default);
+    public Task<PresetChatOptions?> GetByNameAsync(string name, CancellationToken cancellationToken = default);
+    public Task AddAsync(PresetChatOptions preset, CancellationToken cancellationToken = default);
+    public Task UpdateAsync(PresetChatOptions preset, CancellationToken cancellationToken = default);
+    public Task DeleteAsync(PresetChatOptions preset, CancellationToken cancellationToken = default);
+    public Task SaveChangesAsync(CancellationToken cancellationToken = default);
 }

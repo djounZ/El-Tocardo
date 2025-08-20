@@ -8,11 +8,17 @@ namespace ElTocardo.API.Endpoints;
 public static class McpServerConfigurationEndpoints
 {
     private static string Tags => "McpServerConfiguration";
+
     public static WebApplication MapMcpServerConfigurationEndpoints(this WebApplication app)
     {
         app.MapGet("v1/mcp-servers",
                 async ([FromServices] IMcpServerConfigurationService service, CancellationToken cancellationToken) =>
-                    Results.Ok(await service.GetAllServersAsync(cancellationToken)))
+                {
+                    var allServersAsync = await service.GetAllServersAsync(cancellationToken);
+                    return allServersAsync.IsSuccess
+                        ? Results.Ok(allServersAsync)
+                        : Results.InternalServerError(allServersAsync.ReadError());
+                })
             .WithName("GetAllMcpServers")
             .WithSummary("Get all MCP servers")
             .WithDescription("Returns all MCP server configuration items")
@@ -22,10 +28,11 @@ public static class McpServerConfigurationEndpoints
             .CacheOutput(PredefinedOutputCachingPolicy.PerUserVaryByHeaderAuthorizationShortLiving);
 
         app.MapGet("v1/mcp-servers/{serverName}",
-                async ([FromServices] IMcpServerConfigurationService service, string serverName, CancellationToken cancellationToken) =>
+                async ([FromServices] IMcpServerConfigurationService service, string serverName,
+                    CancellationToken cancellationToken) =>
                 {
                     var item = await service.GetServerAsync(serverName, cancellationToken);
-                    return item is not null ? Results.Ok(item) : Results.NotFound();
+                    return item.IsSuccess ? Results.Ok(item.ReadValue()) : Results.NotFound(item.ReadError());
                 })
             .WithName("GetMcpServerByName")
             .WithSummary("Get MCP server by name")
@@ -36,7 +43,8 @@ public static class McpServerConfigurationEndpoints
             .WithOpenApi();
 
         app.MapPost("v1/mcp-servers/{serverName}", async ([FromServices] IMcpServerConfigurationService service,
-                string serverName, [FromBody] McpServerConfigurationItemDto item, CancellationToken cancellationToken) =>
+                string serverName, [FromBody] McpServerConfigurationItemDto item,
+                CancellationToken cancellationToken) =>
             {
                 var result = await service.CreateServerAsync(serverName, item, cancellationToken);
                 return result.IsSuccess
@@ -52,12 +60,13 @@ public static class McpServerConfigurationEndpoints
             .WithOpenApi();
 
         app.MapPut("v1/mcp-servers/{serverName}", async ([FromServices] IMcpServerConfigurationService service,
-                string serverName, [FromBody] McpServerConfigurationItemDto item, CancellationToken cancellationToken) =>
+                string serverName, [FromBody] McpServerConfigurationItemDto item,
+                CancellationToken cancellationToken) =>
             {
                 var result = await service.UpdateServerAsync(serverName, item, cancellationToken);
                 return result.IsSuccess
                     ? Results.Ok(item)
-                    : Results.NotFound(result.ReadError().Message);
+                    : Results.NotFound(result.ReadError());
             })
             .WithName("UpdateMcpServer")
             .WithSummary("Update MCP server")
@@ -68,10 +77,11 @@ public static class McpServerConfigurationEndpoints
             .WithOpenApi();
 
         app.MapDelete("v1/mcp-servers/{serverName}",
-                async ([FromServices] IMcpServerConfigurationService service, string serverName, CancellationToken cancellationToken) =>
+                async ([FromServices] IMcpServerConfigurationService service, string serverName,
+                    CancellationToken cancellationToken) =>
                 {
                     var result = await service.DeleteServerAsync(serverName, cancellationToken);
-                    return result.IsSuccess ? Results.NoContent() : Results.NotFound(result.ReadError().Message);
+                    return result.IsSuccess ? Results.NoContent() : Results.NotFound(result.ReadError());
                 })
             .WithName("DeleteMcpServer")
             .WithSummary("Delete MCP server")

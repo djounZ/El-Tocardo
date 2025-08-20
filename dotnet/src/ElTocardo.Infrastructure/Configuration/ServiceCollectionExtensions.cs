@@ -1,15 +1,14 @@
 using AI.GithubCopilot.Configuration;
-using ElTocardo.Application.Configuration;
 using ElTocardo.Application.Commands.McpServerConfiguration;
 using ElTocardo.Application.Commands.PresetChatOptions;
-using ElTocardo.Application.Handlers.PresetChatOptions;
-using ElTocardo.Application.Queries.PresetChatOptions;
-using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Common.Interfaces;
-using ElTocardo.Application.Common.Models;
+using ElTocardo.Application.Configuration;
+using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
 using ElTocardo.Application.Handlers.McpServerConfiguration;
+using ElTocardo.Application.Handlers.PresetChatOptions;
 using ElTocardo.Application.Queries.McpServerConfiguration;
+using ElTocardo.Application.Queries.PresetChatOptions;
 using ElTocardo.Application.Services;
 using ElTocardo.Domain.Repositories;
 using ElTocardo.Infrastructure.Data;
@@ -30,12 +29,10 @@ namespace ElTocardo.Infrastructure.Configuration;
 
 public static class ServiceCollectionExtensions
 {
-
-
     /// <summary>
-    /// Registers  ElTocardo Infrastructure services and options.
-    /// Requires AiGithubCopilotUserProvider to be registered in the service collection.
-    /// Requires IMemoryCache to be registered in the service collection.
+    ///     Registers  ElTocardo Infrastructure services and options.
+    ///     Requires AiGithubCopilotUserProvider to be registered in the service collection.
+    ///     Requires IMemoryCache to be registered in the service collection.
     /// </summary>
     public static IServiceCollection AddElTocardoInfrastructure(this IServiceCollection services,
         IConfiguration configuration, Action<DbContextOptionsBuilder> configureDbContext)
@@ -53,8 +50,6 @@ public static class ServiceCollectionExtensions
             .AddServices();
     }
 
-
-
     private static IServiceCollection AddOllamaApiClient(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<OllamaOptions>(configuration.GetSection(nameof(OllamaOptions)));
@@ -66,6 +61,7 @@ public static class ServiceCollectionExtensions
         });
         return services;
     }
+
     private static IServiceCollection AddOptions(this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -73,6 +69,7 @@ public static class ServiceCollectionExtensions
             configuration.GetSection(nameof(ElTocardoInfrastructureOptions)));
         return services;
     }
+
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddTransient<IAiProviderService, AiProviderService>();
@@ -109,7 +106,8 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddDatabase(this IServiceCollection services, Action<DbContextOptionsBuilder> configureDbContext)
+    private static IServiceCollection AddDatabase(this IServiceCollection services,
+        Action<DbContextOptionsBuilder> configureDbContext)
     {
         services.AddDbContext<ApplicationDbContext>(configureDbContext);
         return services;
@@ -125,22 +123,33 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddCommandQueryHandlers(this IServiceCollection services)
     {
         // MCP Command handlers
-        services.AddScoped<ICommandHandler<CreateMcpServerCommand, Result<Guid>>, CreateMcpServerCommandHandler>();
-        services.AddScoped<ICommandHandler<UpdateMcpServerCommand, VoidResult>, UpdateMcpServerCommandHandler>();
-        services.AddScoped<ICommandHandler<DeleteMcpServerCommand, VoidResult>, DeleteMcpServerCommandHandler>();
+        services.AddScoped<ICommandHandler<CreateMcpServerCommand, Guid>, CreateMcpServerCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdateMcpServerCommand>, UpdateMcpServerCommandHandler>();
+        services.AddScoped<ICommandHandler<DeleteMcpServerCommand>, DeleteMcpServerCommandHandler>();
 
         // MCP Query handlers
-        services.AddScoped<IQueryHandler<GetAllMcpServersQuery, IDictionary<string, McpServerConfigurationItemDto>>, GetAllMcpServersQueryHandler>();
-        services.AddScoped<IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto?>, GetMcpServerByNameQueryHandler>();
+        services
+            .AddScoped<IQueryHandler<GetAllMcpServersQuery, IDictionary<string, McpServerConfigurationItemDto>>,
+                GetAllMcpServersQueryHandler>();
+        services
+            .AddScoped<IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto>,
+                GetMcpServerByNameQueryHandler>();
 
         // PresetChatOptions Command handlers
-        services.AddScoped<ICommandHandler<CreatePresetChatOptionsCommand, Guid>, CreatePresetChatOptionsCommandHandler>();
-        services.AddScoped<ICommandHandler<UpdatePresetChatOptionsCommand, bool>, UpdatePresetChatOptionsCommandHandler>();
-        services.AddScoped<ICommandHandler<DeletePresetChatOptionsCommand, bool>, DeletePresetChatOptionsCommandHandler>();
+        services
+            .AddScoped<ICommandHandler<CreatePresetChatOptionsCommand, Guid>, CreatePresetChatOptionsCommandHandler>();
+        services
+            .AddScoped<ICommandHandler<UpdatePresetChatOptionsCommand, bool>, UpdatePresetChatOptionsCommandHandler>();
+        services
+            .AddScoped<ICommandHandler<DeletePresetChatOptionsCommand, bool>, DeletePresetChatOptionsCommandHandler>();
 
         // PresetChatOptions Query handlers
-        services.AddScoped<IQueryHandler<GetAllPresetChatOptionsQuery, IEnumerable<PresetChatOptionsDto>>, GetAllPresetChatOptionsQueryHandler>();
-        services.AddScoped<IQueryHandler<GetPresetChatOptionsByNameQuery, PresetChatOptionsDto?>, GetPresetChatOptionsByNameQueryHandler>();
+        services
+            .AddScoped<IQueryHandler<GetAllPresetChatOptionsQuery, List<PresetChatOptionsDto>>,
+                GetAllPresetChatOptionsQueryHandler>();
+        services
+            .AddScoped<IQueryHandler<GetPresetChatOptionsByNameQuery, PresetChatOptionsDto>,
+                GetPresetChatOptionsByNameQueryHandler>();
 
         return services;
     }

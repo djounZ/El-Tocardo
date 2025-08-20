@@ -1,11 +1,17 @@
 using ElTocardo.Application.Commands.PresetChatOptions;
 using ElTocardo.Application.Common.Interfaces;
 using ElTocardo.Application.Services;
+using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Application.Handlers.PresetChatOptions;
 
-public class DeletePresetChatOptionsCommandHandler(IPresetChatOptionsService service) : ICommandHandler<DeletePresetChatOptionsCommand, bool>
+public class DeletePresetChatOptionsCommandHandler(
+    ILogger<DeletePresetChatOptionsCommandHandler> logger,
+    IPresetChatOptionsService service) : CommandHandlerBase<DeletePresetChatOptionsCommand, bool>(logger)
 {
-    public async Task<bool> HandleAsync(DeletePresetChatOptionsCommand command, CancellationToken cancellationToken = default)
-        => await service.DeleteAsync(command.Name, cancellationToken);
+    protected override async Task<bool> HandleAsyncImplementation(DeletePresetChatOptionsCommand command,
+        CancellationToken cancellationToken = default)
+    {
+        return await service.DeleteAsync(command.Name, cancellationToken);
+    }
 }

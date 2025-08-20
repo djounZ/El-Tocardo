@@ -10,9 +10,9 @@ namespace ElTocardo.Application.Handlers.McpServerConfiguration;
 public class GetMcpServerByNameQueryHandler(
     IMcpServerConfigurationRepository repository,
     ILogger<GetMcpServerByNameQueryHandler> logger)
-    : IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto?>
+    : QueryHandlerBase<GetMcpServerByNameQuery, McpServerConfigurationItemDto>(logger)
 {
-    public async Task<McpServerConfigurationItemDto?> HandleAsync(
+    protected override async Task<McpServerConfigurationItemDto> HandleAsyncImplementation(
         GetMcpServerByNameQuery query,
         CancellationToken cancellationToken = default)
     {
@@ -20,14 +20,8 @@ public class GetMcpServerByNameQueryHandler(
 
         var configuration = await repository.GetByNameAsync(query.ServerName, cancellationToken);
 
-        if (configuration == null)
-        {
-            logger.LogInformation("MCP server configuration not found: {ServerName}", query.ServerName);
-            return null;
-        }
-
         var result = new McpServerConfigurationItemDto(
-            configuration.Category,
+            configuration!.Category,
             configuration.Command,
             configuration.Arguments,
             configuration.EnvironmentVariables,
@@ -35,7 +29,6 @@ public class GetMcpServerByNameQueryHandler(
             configuration.TransportType.ToDto());
 
         logger.LogInformation("Retrieved MCP server configuration: {ServerName}", query.ServerName);
-
         return result;
     }
 }

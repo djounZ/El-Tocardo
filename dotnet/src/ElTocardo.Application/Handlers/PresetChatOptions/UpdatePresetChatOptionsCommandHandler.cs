@@ -1,24 +1,30 @@
+using System.Text.Json;
 using ElTocardo.Application.Commands.PresetChatOptions;
 using ElTocardo.Application.Common.Interfaces;
+using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Services;
+using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Application.Handlers.PresetChatOptions;
 
-public class UpdatePresetChatOptionsCommandHandler(IPresetChatOptionsService service) : ICommandHandler<UpdatePresetChatOptionsCommand, bool>
+public class UpdatePresetChatOptionsCommandHandler(
+    ILogger<UpdatePresetChatOptionsCommandHandler> logger,
+    IPresetChatOptionsService service) : CommandHandlerBase<UpdatePresetChatOptionsCommand, bool>(logger)
 {
-    public async Task<bool> HandleAsync(UpdatePresetChatOptionsCommand command, CancellationToken cancellationToken = default)
+    protected override async Task<bool> HandleAsyncImplementation(UpdatePresetChatOptionsCommand command,
+        CancellationToken cancellationToken = default)
     {
-        ElTocardo.Application.Dtos.AI.ChatCompletion.Request.ChatToolModeDto? toolMode = command.ToolMode?.ToLowerInvariant() switch
+        ChatToolModeDto? toolMode = command.ToolMode?.ToLowerInvariant() switch
         {
-            "none" => new ElTocardo.Application.Dtos.AI.ChatCompletion.Request.NoneChatToolModeDto(),
-            "auto" => new ElTocardo.Application.Dtos.AI.ChatCompletion.Request.AutoChatToolModeDto(),
-            "required" => new ElTocardo.Application.Dtos.AI.ChatCompletion.Request.RequiredChatToolModeDto(command.RequiredFunctionName),
+            "none" => new NoneChatToolModeDto(),
+            "auto" => new AutoChatToolModeDto(),
+            "required" => new RequiredChatToolModeDto(command.RequiredFunctionName),
             _ => null
         };
         var dto = new PresetChatOptionsDto(
             command.Name,
-            new ElTocardo.Application.Dtos.AI.ChatCompletion.Request.ChatOptionsDto(
+            new ChatOptionsDto(
                 command.ConversationId,
                 command.Instructions,
                 command.Temperature,
@@ -28,12 +34,16 @@ public class UpdatePresetChatOptionsCommandHandler(IPresetChatOptionsService ser
                 command.FrequencyPenalty,
                 command.PresencePenalty,
                 command.Seed,
-                command.ResponseFormat is not null ? System.Text.Json.JsonSerializer.Deserialize<ElTocardo.Application.Dtos.AI.ChatCompletion.Request.ChatResponseFormatDto>(command.ResponseFormat) : null,
+                command.ResponseFormat is not null
+                    ? JsonSerializer.Deserialize<ChatResponseFormatDto>(command.ResponseFormat)
+                    : null,
                 command.ModelId,
                 command.StopSequences,
                 command.AllowMultipleToolCalls,
                 toolMode,
-                command.Tools is not null ? System.Text.Json.JsonSerializer.Deserialize<System.Collections.Generic.IDictionary<string, System.Collections.Generic.IList<ElTocardo.Application.Dtos.AI.ChatCompletion.Request.AiToolDto>>>(command.Tools) : null
+                command.Tools is not null
+                    ? JsonSerializer.Deserialize<IDictionary<string, IList<AiToolDto>>>(command.Tools)
+                    : null
             )
         );
         return await service.UpdateAsync(command.Name, dto, cancellationToken);

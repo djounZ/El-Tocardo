@@ -1,18 +1,18 @@
-using ElTocardo.Application.Dtos.Configuration;
+using System.Text.Json;
 using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
+using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Services;
 using ElTocardo.Domain.Entities;
 using ElTocardo.Domain.Repositories;
-using System.Text.Json;
 
 namespace ElTocardo.Infrastructure.Services;
 
 public class PresetChatOptionsService(IPresetChatOptionsRepository repository) : IPresetChatOptionsService
 {
-    public async Task<IEnumerable<PresetChatOptionsDto>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<List<PresetChatOptionsDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var entities = await repository.GetAllAsync(cancellationToken);
-        return entities.Select(ToDto);
+        return entities.Select(ToDto).ToList();
     }
 
     public async Task<PresetChatOptionsDto?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
@@ -30,7 +30,8 @@ public class PresetChatOptionsService(IPresetChatOptionsRepository repository) :
         return entity.Id;
     }
 
-    public async Task<bool> UpdateAsync(string name, PresetChatOptionsDto dto, CancellationToken cancellationToken = default)
+    public async Task<bool> UpdateAsync(string name, PresetChatOptionsDto dto,
+        CancellationToken cancellationToken = default)
     {
         var entity = await repository.GetByNameAsync(name, cancellationToken);
         if (entity is null)
@@ -84,12 +85,16 @@ public class PresetChatOptionsService(IPresetChatOptionsRepository repository) :
             entity.FrequencyPenalty,
             entity.PresencePenalty,
             entity.Seed,
-            entity.ResponseFormat is not null ? JsonSerializer.Deserialize<ChatResponseFormatDto>(entity.ResponseFormat) : null,
+            entity.ResponseFormat is not null
+                ? JsonSerializer.Deserialize<ChatResponseFormatDto>(entity.ResponseFormat)
+                : null,
             entity.ModelId,
             entity.StopSequences?.Split(",").ToList(),
             entity.AllowMultipleToolCalls,
             entity.ToolMode is not null ? JsonSerializer.Deserialize<ChatToolModeDto>(entity.ToolMode) : null,
-            entity.Tools is not null ? JsonSerializer.Deserialize<IDictionary<string, IList<AiToolDto>>>(entity.Tools) : null
+            entity.Tools is not null
+                ? JsonSerializer.Deserialize<IDictionary<string, IList<AiToolDto>>>(entity.Tools)
+                : null
         );
         return new PresetChatOptionsDto(entity.Name, chatOptions);
     }
@@ -108,9 +113,13 @@ public class PresetChatOptionsService(IPresetChatOptionsRepository repository) :
             FrequencyPenalty = dto.ChatOptions.FrequencyPenalty,
             PresencePenalty = dto.ChatOptions.PresencePenalty,
             Seed = dto.ChatOptions.Seed,
-            ResponseFormat = dto.ChatOptions.ResponseFormat is not null ? JsonSerializer.Serialize(dto.ChatOptions.ResponseFormat) : null,
+            ResponseFormat =
+                dto.ChatOptions.ResponseFormat is not null
+                    ? JsonSerializer.Serialize(dto.ChatOptions.ResponseFormat)
+                    : null,
             ModelId = dto.ChatOptions.ModelId,
-            StopSequences = dto.ChatOptions.StopSequences is not null ? string.Join(",", dto.ChatOptions.StopSequences) : null,
+            StopSequences =
+                dto.ChatOptions.StopSequences is not null ? string.Join(",", dto.ChatOptions.StopSequences) : null,
             AllowMultipleToolCalls = dto.ChatOptions.AllowMultipleToolCalls,
             ToolMode = dto.ChatOptions.ToolMode?.ToString(),
             Tools = dto.ChatOptions.Tools is not null ? JsonSerializer.Serialize(dto.ChatOptions.Tools) : null
