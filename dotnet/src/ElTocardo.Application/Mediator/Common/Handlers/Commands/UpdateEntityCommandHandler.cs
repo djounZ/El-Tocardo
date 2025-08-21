@@ -12,7 +12,7 @@ public class UpdateEntityCommandHandler<TEntity,  TKey, TCommand>(
     ILogger<UpdateEntityCommandHandler<TEntity,  TKey, TCommand>> logger,
     IValidator<TCommand> validator,
     AbstractDomainUpdateCommandMapper<TEntity, TKey,TCommand> commandMapper)
-    : CommandHandlerBase<TCommand>(logger) where TEntity: AbstractEntity<TKey> where TCommand : UpdateCommandBase<TKey>
+    : CommandHandlerBase<TCommand>(logger) where TEntity: IEntity<TKey> where TCommand : UpdateCommandBase<TKey>
 {
 
     private string EntityName => typeof(TEntity).Name;

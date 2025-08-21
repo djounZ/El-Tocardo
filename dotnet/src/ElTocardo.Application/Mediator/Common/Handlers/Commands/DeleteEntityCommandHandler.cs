@@ -8,7 +8,7 @@ namespace ElTocardo.Application.Mediator.Common.Handlers.Commands;
 public class DeleteEntityCommandHandler<TEntity,  TKey, TCommand>(
     IEntityRepository<TEntity, TKey> repository,
     ILogger<DeleteEntityCommandHandler<TEntity,  TKey, TCommand>> logger)
-    : CommandHandlerBase<TCommand>(logger) where TEntity: AbstractEntity<TKey> where TCommand : DeleteCommandBase<TKey>
+    : CommandHandlerBase<TCommand>(logger) where TEntity: IEntity<TKey> where TCommand : DeleteCommandBase<TKey>
 {
 
     private string EntityName => typeof(TEntity).Name;

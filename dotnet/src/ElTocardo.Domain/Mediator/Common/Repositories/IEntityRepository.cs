@@ -2,7 +2,7 @@ using ElTocardo.Domain.Mediator.Common.Entities;
 
 namespace ElTocardo.Domain.Mediator.Common.Repositories;
 
-public interface IEntityRepository<TEntity, in TKey> where TEntity: AbstractEntity<TKey>
+public interface IEntityRepository<TEntity, in TKey> where TEntity: IEntity<TKey>
 {
     public Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default);
     public Task<TEntity?> GetByKeyAsync(TKey key, CancellationToken cancellationToken = default);

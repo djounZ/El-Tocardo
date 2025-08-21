@@ -11,7 +11,7 @@ public class CreateEntityCommandHandler<TEntity,  TKey, TCommand>(
     ILogger<CreateEntityCommandHandler<TEntity,  TKey, TCommand>> logger,
     IValidator<TCommand> validator,
     AbstractDomainCreateCommandMapper<TEntity, TKey,TCommand> commandMapper)
-    : CommandHandlerBase<TCommand, Guid>(logger) where TEntity: AbstractEntity<TKey>
+    : CommandHandlerBase<TCommand, Guid>(logger) where TEntity: IEntity<TKey>
 {
 
     private string EntityName => typeof(TEntity).Name;

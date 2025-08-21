@@ -8,7 +8,7 @@ namespace ElTocardo.Application.Mediator.Common.Handlers.Queries;
 public class GetAllEntitiesQueryHandler<TEntity,  TKey, TQuery, TDto>(
     IEntityRepository<TEntity, TKey> repository,
     ILogger<GetAllEntitiesQueryHandler<TEntity,  TKey, TQuery, TDto>> logger,
-    AbstractDomainGetAllDtoMapper<TEntity,TKey, TDto> commandMapper): QueryHandlerBase<TQuery, TDto>(logger) where TEntity : AbstractEntity<TKey>
+    AbstractDomainGetAllDtoMapper<TEntity,TKey, TDto> commandMapper): QueryHandlerBase<TQuery, TDto>(logger) where TEntity : IEntity<TKey>
 {
     private string EntityName => typeof(TEntity).Name;
     protected override async Task<TDto> HandleAsyncImplementation(
