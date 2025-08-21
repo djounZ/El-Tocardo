@@ -16,16 +16,12 @@ public class McpServerConfiguration : AbstractEntity<string>
         Uri? endpoint,
         McpServerTransportType transportType)
     {
-        if (string.IsNullOrWhiteSpace(serverName))
-        {
-            throw new ArgumentException("Server name cannot be null or empty", nameof(serverName));
-        }
 
         Id = Guid.NewGuid();
         ServerName = serverName;
         Category = category;
         Command = command;
-        Arguments = arguments ?? new List<string>();
+        Arguments = arguments ?? [];
         EnvironmentVariables = environmentVariables ?? new Dictionary<string, string?>();
         Endpoint = endpoint;
         TransportType = transportType;
@@ -35,7 +31,7 @@ public class McpServerConfiguration : AbstractEntity<string>
         ValidateConfiguration();
     }
 
-    public string ServerName { get; private set; } = string.Empty;
+    public string ServerName { get; } = string.Empty;
     public string? Category { get; private set; }
     public string? Command { get; private set; }
     public IList<string> Arguments { get; private set; } = new List<string>();
@@ -53,7 +49,7 @@ public class McpServerConfiguration : AbstractEntity<string>
     {
         Category = category;
         Command = command;
-        Arguments = arguments ?? new List<string>();
+        Arguments = arguments ?? [];
         EnvironmentVariables = environmentVariables ?? new Dictionary<string, string?>();
         Endpoint = endpoint;
         TransportType = transportType;
@@ -64,6 +60,11 @@ public class McpServerConfiguration : AbstractEntity<string>
 
     private void ValidateConfiguration()
     {
+
+        if (string.IsNullOrWhiteSpace(ServerName))
+        {
+            throw new ArgumentException("Server name cannot be null or empty", nameof(ServerName));
+        }
         switch (TransportType)
         {
             case McpServerTransportType.Stdio when string.IsNullOrWhiteSpace(Command):

@@ -24,11 +24,6 @@ public class PresetChatOptions : AbstractEntity<string>
         string? toolMode,
         string? tools)
     {
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            throw new ArgumentException("Name cannot be null or empty", nameof(name));
-        }
-
         Id = Guid.NewGuid();
         Name = name;
         ConversationId = conversationId;
@@ -48,6 +43,7 @@ public class PresetChatOptions : AbstractEntity<string>
         Tools = tools;
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
+        ValidateConfiguration();
     }
 
     public string Name { get; private set; } = string.Empty;
@@ -100,6 +96,15 @@ public class PresetChatOptions : AbstractEntity<string>
         ToolMode = toolMode;
         Tools = tools;
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    private void ValidateConfiguration()
+    {
+
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+            throw new ArgumentException("Name cannot be null or empty", nameof(Name));
+        }
     }
 
     public override string GetKey()
