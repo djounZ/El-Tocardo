@@ -5,10 +5,10 @@ using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Application.Mediator.Common.Handlers.Queries;
 
-public class GetAllEntitiesQueryHandler<TEntity,  TKey, TQuery, TDto>(
-    IEntityRepository<TEntity, TKey> repository,
-    ILogger<GetAllEntitiesQueryHandler<TEntity,  TKey, TQuery, TDto>> logger,
-    AbstractDomainGetAllDtoMapper<TEntity,TKey, TDto> commandMapper): QueryHandlerBase<TQuery, TDto>(logger) where TEntity : IEntity<TKey>
+public class GetAllEntitiesQueryHandler<TEntity, TId, TKey, TQuery, TDto>(
+    IEntityRepository<TEntity, TId,TKey> repository,
+    ILogger<GetAllEntitiesQueryHandler<TEntity,  TId,TKey, TQuery, TDto>> logger,
+    AbstractDomainGetAllDtoMapper<TEntity,TId,TKey, TDto> commandMapper): QueryHandlerBase<TQuery, TDto>(logger) where TEntity : IEntity<TId,TKey>
 {
     private string EntityName => typeof(TEntity).Name;
     protected override async Task<TDto> HandleAsyncImplementation(
@@ -19,7 +19,7 @@ public class GetAllEntitiesQueryHandler<TEntity,  TKey, TQuery, TDto>(
 
         var configuration = await repository.GetAllAsync( cancellationToken);
 
-        var result = commandMapper.MapDomainToDto(configuration!);
+        var result = commandMapper.MapDomainToDto(configuration);
 
 
         logger.LogInformation("Retrieved all {@Entity}",EntityName);

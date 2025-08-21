@@ -14,5 +14,5 @@ public class UpdateMcpServerCommandHandler(
     ILogger<UpdateMcpServerCommandHandler> logger,
     IValidator<UpdateMcpServerCommand> validator,
     McpServerConfigurationDomainUpdateCommandMapper mapper)
-    : UpdateEntityCommandHandler<McpServerConfiguration, string, UpdateMcpServerCommand>(repository, logger, validator,
+    : UpdateEntityCommandHandler<McpServerConfiguration, Guid, string, UpdateMcpServerCommand>(repository, logger, validator,
         mapper);

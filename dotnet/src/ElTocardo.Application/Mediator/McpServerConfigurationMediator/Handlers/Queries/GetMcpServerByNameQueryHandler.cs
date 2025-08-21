@@ -12,5 +12,5 @@ public class GetMcpServerByNameQueryHandler(
     IMcpServerConfigurationRepository repository,
     ILogger<GetMcpServerByNameQueryHandler> logger,
     McpServerConfigurationDomainGetDtoMapper mapper)
-    : GetEntityByKeyQueryHandler<McpServerConfiguration, string, GetMcpServerByNameQuery,
+    : GetEntityByKeyQueryHandler<McpServerConfiguration, Guid,string, GetMcpServerByNameQuery,
         McpServerConfigurationItemDto>(repository, logger, mapper);

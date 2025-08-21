@@ -6,13 +6,31 @@ using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Infrastructure.Mediator.Repositories.Common;
 
-public abstract class EntityRepository<TEntity,  TKey>(
+public abstract class GuidIdEntityRepository<TEntity, TKey>(
     ApplicationDbContext context,
     DbSet<TEntity> dbSet,
-    ILogger<EntityRepository<TEntity,  TKey>> logger) :IEntityRepository<TEntity,TKey> where TEntity: AbstractEntity<TKey>
+    ILogger<GuidIdEntityRepository<TEntity, TKey>> logger)
+    : EntityRepository<TEntity, Guid, TKey>(context, dbSet, logger)
+    where TEntity : AbstractEntity<Guid, TKey>
 {
 
-    private static string EntityName => typeof(TEntity).Name;
+
+    protected override async Task<TEntity?> GetByIdAsync(Guid id, DbSet<TEntity> currentDbSet, CancellationToken cancellationToken = default)
+    {
+        logger.LogDebug("Getting {@Entity} by ID: {Id}", EntityName, id);
+
+        return await currentDbSet
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }
+}
+
+public abstract class EntityRepository<TEntity, TId, TKey>(
+    ApplicationDbContext context,
+    DbSet<TEntity> dbSet,
+    ILogger<EntityRepository<TEntity,TId,  TKey>> logger) :IEntityRepository<TEntity,TId,TKey> where TEntity: AbstractEntity<TId,TKey>
+{
+
+    protected static string EntityName => typeof(TEntity).Name;
 
     public async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
     {
@@ -23,6 +41,14 @@ public abstract class EntityRepository<TEntity,  TKey>(
             .ToListAsync(cancellationToken);
     }
 
+
+    public async Task<TEntity?> GetByIdAsync(TId id, CancellationToken cancellationToken = default)
+    {
+        logger.LogDebug("Getting {@Entity} by ID: {Id}", EntityName, id);
+
+        return await GetByIdAsync(id, dbSet, cancellationToken);
+    }
+    protected abstract Task<TEntity?> GetByIdAsync(TId id, DbSet<TEntity> currentDbSet, CancellationToken cancellationToken = default);
     public async Task<TEntity?> GetByKeyAsync(TKey key, CancellationToken cancellationToken = default)
     {
         logger.LogDebug("Getting {@Entity} by name: {key}", EntityName, key);
@@ -32,14 +58,6 @@ public abstract class EntityRepository<TEntity,  TKey>(
 
     protected abstract Task<TEntity?> GetByKeyAsync(TKey key, DbSet<TEntity> dbSet,
         CancellationToken cancellationToken = default);
-
-    public async Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        logger.LogDebug("Getting {@Entity} by ID: {Id}", EntityName, id);
-
-        return await dbSet
-            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
-    }
 
 
     public async Task<bool> ExistsAsync(TKey key, CancellationToken cancellationToken = default)

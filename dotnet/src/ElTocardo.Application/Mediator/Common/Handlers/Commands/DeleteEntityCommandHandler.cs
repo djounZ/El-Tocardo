@@ -5,10 +5,10 @@ using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Application.Mediator.Common.Handlers.Commands;
 
-public class DeleteEntityCommandHandler<TEntity,  TKey, TCommand>(
-    IEntityRepository<TEntity, TKey> repository,
-    ILogger<DeleteEntityCommandHandler<TEntity,  TKey, TCommand>> logger)
-    : CommandHandlerBase<TCommand>(logger) where TEntity: IEntity<TKey> where TCommand : DeleteCommandBase<TKey>
+public class DeleteEntityCommandHandler<TEntity, TId, TKey, TCommand>(
+    IEntityRepository<TEntity,TId, TKey> repository,
+    ILogger<DeleteEntityCommandHandler<TEntity,TId,  TKey, TCommand>> logger)
+    : CommandHandlerBase<TCommand>(logger) where TEntity: IEntity<TId,TKey> where TCommand : DeleteCommandBase<TKey>
 {
 
     private string EntityName => typeof(TEntity).Name;

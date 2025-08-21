@@ -7,12 +7,12 @@ using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Application.Mediator.Common.Handlers.Commands;
 
-public class UpdateEntityCommandHandler<TEntity,  TKey, TCommand>(
-    IEntityRepository<TEntity, TKey> repository,
-    ILogger<UpdateEntityCommandHandler<TEntity,  TKey, TCommand>> logger,
+public class UpdateEntityCommandHandler<TEntity, TId, TKey, TCommand>(
+    IEntityRepository<TEntity,TId, TKey> repository,
+    ILogger<UpdateEntityCommandHandler<TEntity, TId, TKey, TCommand>> logger,
     IValidator<TCommand> validator,
-    AbstractDomainUpdateCommandMapper<TEntity, TKey,TCommand> commandMapper)
-    : CommandHandlerBase<TCommand>(logger) where TEntity: IEntity<TKey> where TCommand : UpdateCommandBase<TKey>
+    AbstractDomainUpdateCommandMapper<TEntity,TId, TKey,TCommand> commandMapper)
+    : CommandHandlerBase<TCommand>(logger) where TEntity: IEntity<TId,TKey> where TCommand : UpdateCommandBase<TKey>
 {
 
     private string EntityName => typeof(TEntity).Name;

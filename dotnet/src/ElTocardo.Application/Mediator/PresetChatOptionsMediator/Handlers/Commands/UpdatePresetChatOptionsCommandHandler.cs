@@ -13,4 +13,4 @@ public class UpdatePresetChatOptionsCommandHandler(
     ILogger<UpdatePresetChatOptionsCommandHandler> logger,
     IValidator<UpdatePresetChatOptionsCommand> validator,
     PresetChatOptionsDomainUpdateCommandMapper mapper)
-    : UpdateEntityCommandHandler<PresetChatOptions, string, UpdatePresetChatOptionsCommand>(repository, logger, validator, mapper);
+    : UpdateEntityCommandHandler<PresetChatOptions,Guid, string, UpdatePresetChatOptionsCommand>(repository, logger, validator, mapper);

@@ -10,4 +10,4 @@ namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers
 public class DeleteMcpServerCommandHandler(
     IMcpServerConfigurationRepository repository,
     ILogger<DeleteMcpServerCommandHandler> logger)
-    : DeleteEntityCommandHandler<McpServerConfiguration, string, DeleteMcpServerCommand>(repository, logger);
+    : DeleteEntityCommandHandler<McpServerConfiguration, Guid, string, DeleteMcpServerCommand>(repository, logger);

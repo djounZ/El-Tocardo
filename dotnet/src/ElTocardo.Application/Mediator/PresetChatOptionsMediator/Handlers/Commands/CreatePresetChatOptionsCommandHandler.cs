@@ -13,4 +13,4 @@ public class CreatePresetChatOptionsCommandHandler(
     ILogger<CreatePresetChatOptionsCommandHandler> logger,
     IValidator<CreatePresetChatOptionsCommand> validator,
     PresetChatOptionsDomainCreateCommandMapper mapper)
-    : CreateEntityCommandHandler<PresetChatOptions, string, CreatePresetChatOptionsCommand>(repository, logger, validator, mapper);
+    : CreateEntityCommandHandler<PresetChatOptions, Guid,string, CreatePresetChatOptionsCommand>(repository, logger, validator, mapper);

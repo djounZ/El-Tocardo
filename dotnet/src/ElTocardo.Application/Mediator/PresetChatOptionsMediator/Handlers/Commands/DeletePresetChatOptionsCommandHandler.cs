@@ -9,4 +9,4 @@ namespace ElTocardo.Application.Mediator.PresetChatOptionsMediator.Handlers.Comm
 public class DeletePresetChatOptionsCommandHandler(
     IPresetChatOptionsRepository repository,
     ILogger<DeletePresetChatOptionsCommandHandler> logger)
-    : DeleteEntityCommandHandler<PresetChatOptions, string, DeletePresetChatOptionsCommand>(repository, logger);
+    : DeleteEntityCommandHandler<PresetChatOptions, Guid,string, DeletePresetChatOptionsCommand>(repository, logger);

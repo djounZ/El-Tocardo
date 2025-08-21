@@ -3,7 +3,7 @@ using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.ValueObjects;
 
 namespace ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 
-public class McpServerConfiguration : AbstractEntity<string>
+public class McpServerConfiguration : AbstractEntity<Guid,string>
 {
     private McpServerConfiguration() { } // EF Core constructor
 
@@ -31,6 +31,7 @@ public class McpServerConfiguration : AbstractEntity<string>
         ValidateConfiguration();
     }
 
+    public override Guid Id { get; }
     public string ServerName { get; } = string.Empty;
     public string? Category { get; private set; }
     public string? Command { get; private set; }

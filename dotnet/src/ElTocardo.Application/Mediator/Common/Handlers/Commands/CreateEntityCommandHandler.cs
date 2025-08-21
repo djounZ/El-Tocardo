@@ -6,16 +6,16 @@ using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Application.Mediator.Common.Handlers.Commands;
 
-public class CreateEntityCommandHandler<TEntity,  TKey, TCommand>(
-    IEntityRepository<TEntity, TKey> repository,
-    ILogger<CreateEntityCommandHandler<TEntity,  TKey, TCommand>> logger,
+public class CreateEntityCommandHandler<TEntity, TId,  TKey, TCommand>(
+    IEntityRepository<TEntity,TId, TKey> repository,
+    ILogger<CreateEntityCommandHandler<TEntity,  TId, TKey, TCommand>> logger,
     IValidator<TCommand> validator,
-    AbstractDomainCreateCommandMapper<TEntity, TKey,TCommand> commandMapper)
-    : CommandHandlerBase<TCommand, Guid>(logger) where TEntity: IEntity<TKey>
+    AbstractDomainCreateCommandMapper<TEntity,TId,TKey,TCommand> commandMapper)
+    : CommandHandlerBase<TCommand, TId>(logger) where TEntity: IEntity<TId,TKey>
 {
 
     private string EntityName => typeof(TEntity).Name;
-    protected override async Task<Guid> HandleAsyncImplementation(TCommand command,
+    protected override async Task<TId> HandleAsyncImplementation(TCommand command,
         CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Creating {@Entity}: {ServerName}",EntityName, command);

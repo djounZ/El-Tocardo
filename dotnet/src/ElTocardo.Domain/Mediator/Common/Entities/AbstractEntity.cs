@@ -1,18 +1,18 @@
 namespace ElTocardo.Domain.Mediator.Common.Entities;
 
-public interface IEntity<out TKey>
+public interface IEntity<out TId, out TKey>
 {
-    public Guid Id { get; }
-    public DateTime CreatedAt { get; }
-    public DateTime UpdatedAt { get; }
+    public TId Id { get; }
+    public DateTimeOffset CreatedAt { get; }
+    public DateTimeOffset UpdatedAt { get; }
     public TKey GetKey();
 }
 
-public abstract class AbstractEntity<TKey> : IEntity<TKey>
+public abstract class AbstractEntity<TId,TKey> : IEntity<TId,TKey>
 {
-    public  Guid Id { get; protected init; }
-    public  DateTime CreatedAt { get; protected init; }
-    public  DateTime UpdatedAt { get; protected set; }
+    public  abstract TId Id { get; }
+    public  DateTimeOffset CreatedAt { get; protected init; }
+    public  DateTimeOffset UpdatedAt { get; protected set; }
 
     public abstract TKey GetKey();
 }

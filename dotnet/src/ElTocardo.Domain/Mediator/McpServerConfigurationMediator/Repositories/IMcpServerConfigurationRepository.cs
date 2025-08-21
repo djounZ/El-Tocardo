@@ -3,4 +3,4 @@ using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 
 namespace ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
 
-public interface IMcpServerConfigurationRepository : IEntityRepository<McpServerConfiguration, string>;
+public interface IMcpServerConfigurationRepository : IEntityRepository<McpServerConfiguration,Guid, string>;

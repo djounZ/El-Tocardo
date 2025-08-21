@@ -4,7 +4,7 @@ using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 
 namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Mappers;
 
-public class McpServerConfigurationDomainGetAllDtoMapper(McpServerConfigurationDomainGetDtoMapper mapper) : AbstractDomainGetAllDtoMapper<McpServerConfiguration, string, Dictionary<string, McpServerConfigurationItemDto>>
+public class McpServerConfigurationDomainGetAllDtoMapper(McpServerConfigurationDomainGetDtoMapper mapper) : AbstractDomainGetAllDtoMapper<McpServerConfiguration, Guid, string, Dictionary<string, McpServerConfigurationItemDto>>
 {
     public override Dictionary<string, McpServerConfigurationItemDto> MapDomainToDto(IEnumerable<McpServerConfiguration> configurations)
     {

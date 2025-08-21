@@ -1,4 +1,3 @@
-using ElTocardo.Application.Mediator.Common.Handlers.Commands;
 using ElTocardo.Application.Mediator.Common.Mappers;
 using ElTocardo.Application.Mediator.Common.Queries;
 using ElTocardo.Domain.Mediator.Common.Entities;
@@ -7,10 +6,10 @@ using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Application.Mediator.Common.Handlers.Queries;
 
-public class GetEntityByKeyQueryHandler<TEntity,  TKey, TQuery, TDto>(
-    IEntityRepository<TEntity, TKey> repository,
-    ILogger<GetEntityByKeyQueryHandler<TEntity,  TKey, TQuery, TDto>> logger,
-    AbstractDomainGetDtoMapper<TEntity,TKey, TDto> commandMapper): QueryHandlerBase<TQuery, TDto>(logger) where TQuery : GetByKeyQueryBase<TKey> where TEntity : IEntity<TKey>
+public class GetEntityByKeyQueryHandler<TEntity, TId, TKey, TQuery, TDto>(
+    IEntityRepository<TEntity,TId, TKey> repository,
+    ILogger<GetEntityByKeyQueryHandler<TEntity, TId, TKey, TQuery, TDto>> logger,
+    AbstractDomainGetDtoMapper<TEntity,TId,TKey, TDto> commandMapper): QueryHandlerBase<TQuery, TDto>(logger) where TQuery : GetByKeyQueryBase<TKey> where TEntity : IEntity<TId,TKey>
 {
     private string EntityName => typeof(TEntity).Name;
     protected override async Task<TDto> HandleAsyncImplementation(

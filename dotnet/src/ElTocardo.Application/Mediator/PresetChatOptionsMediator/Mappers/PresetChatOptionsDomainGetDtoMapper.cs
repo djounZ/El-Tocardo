@@ -6,7 +6,7 @@ using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Entities;
 
 namespace ElTocardo.Application.Mediator.PresetChatOptionsMediator.Mappers;
 
-public class PresetChatOptionsDomainGetDtoMapper : AbstractDomainGetDtoMapper<PresetChatOptions, string, PresetChatOptionsDto>
+public class PresetChatOptionsDomainGetDtoMapper : AbstractDomainGetDtoMapper<PresetChatOptions,Guid, string, PresetChatOptionsDto>
 {
     public override PresetChatOptionsDto MapDomainToDto(PresetChatOptions entity)
     {

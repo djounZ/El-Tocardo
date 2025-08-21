@@ -4,7 +4,7 @@ using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 
 namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Mappers;
 
-public class McpServerConfigurationDomainCreateCommandMapper :AbstractDomainCreateCommandMapper<McpServerConfiguration, string, CreateMcpServerCommand>
+public class McpServerConfigurationDomainCreateCommandMapper :AbstractDomainCreateCommandMapper<McpServerConfiguration, Guid, string, CreateMcpServerCommand>
 {
     public override McpServerConfiguration CreateFromCommand(CreateMcpServerCommand command)
     {

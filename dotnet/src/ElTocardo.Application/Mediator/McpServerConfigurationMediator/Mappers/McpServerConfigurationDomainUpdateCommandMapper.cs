@@ -4,7 +4,7 @@ using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 
 namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Mappers;
 
-public class McpServerConfigurationDomainUpdateCommandMapper :AbstractDomainUpdateCommandMapper<McpServerConfiguration, string, UpdateMcpServerCommand>
+public class McpServerConfigurationDomainUpdateCommandMapper :AbstractDomainUpdateCommandMapper<McpServerConfiguration, Guid, string, UpdateMcpServerCommand>
 {
 
     public override void UpdateFromCommand(McpServerConfiguration domain, UpdateMcpServerCommand command)

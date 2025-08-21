@@ -5,7 +5,7 @@ using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Entities;
 
 namespace ElTocardo.Application.Mediator.PresetChatOptionsMediator.Mappers;
 
-public class PresetChatOptionsDomainCreateCommandMapper : AbstractDomainCreateCommandMapper<PresetChatOptions, string, CreatePresetChatOptionsCommand>
+public class PresetChatOptionsDomainCreateCommandMapper : AbstractDomainCreateCommandMapper<PresetChatOptions, Guid,string, CreatePresetChatOptionsCommand>
 {
     public override PresetChatOptions CreateFromCommand(CreatePresetChatOptionsCommand command)
     {

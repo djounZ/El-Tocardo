@@ -13,5 +13,5 @@ public class GetAllMcpServersQueryHandler(
     IMcpServerConfigurationRepository repository,
     ILogger<GetAllMcpServersQueryHandler> logger,
     McpServerConfigurationDomainGetAllDtoMapper mapper)
-    : GetAllEntitiesQueryHandler<McpServerConfiguration, string, GetAllMcpServersQuery,
+    : GetAllEntitiesQueryHandler<McpServerConfiguration, Guid, string, GetAllMcpServersQuery,
         Dictionary<string, McpServerConfigurationItemDto>>(repository, logger, mapper);

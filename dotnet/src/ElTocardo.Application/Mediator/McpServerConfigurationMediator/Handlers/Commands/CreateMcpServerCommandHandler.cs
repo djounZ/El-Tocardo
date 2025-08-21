@@ -14,4 +14,4 @@ public class CreateMcpServerCommandHandler(
     ILogger<CreateMcpServerCommandHandler> logger,
     IValidator<CreateMcpServerCommand> validator,
     McpServerConfigurationDomainCreateCommandMapper createCommandMapper)
-    : CreateEntityCommandHandler<McpServerConfiguration, string, CreateMcpServerCommand>(repository, logger, validator, createCommandMapper);
+    : CreateEntityCommandHandler<McpServerConfiguration,Guid, string, CreateMcpServerCommand>(repository, logger, validator, createCommandMapper);

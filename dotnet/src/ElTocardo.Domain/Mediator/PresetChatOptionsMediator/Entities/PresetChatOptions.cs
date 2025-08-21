@@ -2,7 +2,7 @@ using ElTocardo.Domain.Mediator.Common.Entities;
 
 namespace ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Entities;
 
-public class PresetChatOptions : AbstractEntity<string>
+public class PresetChatOptions : AbstractEntity<Guid,string>
 {
     private PresetChatOptions() { } // EF Core constructor
 
@@ -46,6 +46,7 @@ public class PresetChatOptions : AbstractEntity<string>
         ValidateConfiguration();
     }
 
+    public override Guid Id { get; }
     public string Name { get; private set; } = string.Empty;
     public string? ConversationId { get; private set; }
     public string? Instructions { get; private set; }

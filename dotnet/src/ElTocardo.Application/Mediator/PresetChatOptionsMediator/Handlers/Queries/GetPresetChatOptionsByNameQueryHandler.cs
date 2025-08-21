@@ -12,5 +12,5 @@ public class GetPresetChatOptionsByNameQueryHandler(
     IPresetChatOptionsRepository repository,
     ILogger<GetPresetChatOptionsByNameQueryHandler> logger,
     PresetChatOptionsDomainGetDtoMapper mapper)
-    : GetEntityByKeyQueryHandler<PresetChatOptions, string, GetPresetChatOptionsByNameQuery,
+    : GetEntityByKeyQueryHandler<PresetChatOptions, Guid,string, GetPresetChatOptionsByNameQuery,
         PresetChatOptionsDto>(repository, logger, mapper);
