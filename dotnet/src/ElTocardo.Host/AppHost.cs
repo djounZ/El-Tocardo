@@ -11,7 +11,7 @@ var database = postgres.AddDatabase("el-tocardo-db-postgres");
 
 // Add MongoDB server resource (containerized via Docker)
 var mongo = builder.AddMongoDB("mongodb")
-    .WithDataVolume() // persists DB data across container restarts
+  //  .WithDataVolume() // persists DB data across container restarts
     .WithMongoExpress(); // optional: adds web UI for MongoDB
 
 // Add a database resource within the MongoDB server

@@ -8,6 +8,8 @@
         <PackageReference Include="OllamaSharp" Version="$(OllamaSharpVersion)"/>
         <PackageReference Include="ModelContextProtocol.Core" Version="$(ModelContextProtocolPackagesCommonVersion)"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftExtensionsPackagesCommonVersion)" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(MicrosoftExtensionsPackagesCommonVersion)" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity" Version="$(MicrosoftAspNetCoreIdentityVersion)" />
     </ItemGroup>
 
 </Project>
