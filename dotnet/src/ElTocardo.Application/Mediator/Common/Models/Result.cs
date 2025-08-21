@@ -34,9 +34,4 @@ public class Result<T> : VoidResult
         return new Result<T>(exception);
     }
 
-
-    public static implicit operator Result<T>(string errorMessage)
-    {
-        return new ArgumentException(errorMessage);
-    }
 }

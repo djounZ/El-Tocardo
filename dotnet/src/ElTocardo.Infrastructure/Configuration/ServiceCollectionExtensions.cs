@@ -83,19 +83,20 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddTransient<IAiProviderService, AiProviderService>();
-        services.AddTransient<ChatClientStore>();
-        services.AddTransient<ChatClientProvider>();
-        services.AddTransient<AiToolsProviderService>();
-        services.AddTransient<IChatCompletionsService, ChatCompletionsService>();
+    services.AddTransient<IAiProviderService, AiProviderService>();
+    services.AddTransient<ChatClientStore>();
+    services.AddTransient<ChatClientProvider>();
+    services.AddTransient<AiToolsProviderService>();
+    services.AddTransient<IChatCompletionsService, ChatCompletionsService>();
 
-        // New CQRS-based services
-        services.AddScoped<IMcpServerConfigurationService, McpServerConfigurationService>();
-        services.AddScoped<IPresetChatOptionsService, PresetChatOptionsService>();
+    // New CQRS-based services
+    services.AddScoped<IMcpServerConfigurationService, McpServerConfigurationService>();
+    services.AddScoped<IPresetChatOptionsService, PresetChatOptionsService>();
+    services.AddScoped<IUserService, UserService>();
 
-        services.AddTransient<IMcpClientToolsService, McpClientToolsService>();
-        services.AddTransient<ClientTransportFactoryService>();
-        return services;
+    services.AddTransient<IMcpClientToolsService, McpClientToolsService>();
+    services.AddTransient<ClientTransportFactoryService>();
+    return services;
     }
 
     private static IServiceCollection AddMappers(this IServiceCollection services)
@@ -144,6 +145,11 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddCommandQueryHandlers(this IServiceCollection services)
     {
+        // User Command handlers
+        services.AddScoped<ICommandHandler<ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Commands.AuthenticateUserCommand, string>, ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Handlers.Commands.AuthenticateUserCommandHandler>();
+        services.AddScoped<ICommandHandler<ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Commands.InitiatePasswordResetCommand, string>, ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Handlers.Commands.InitiatePasswordResetCommandHandler>();
+        services.AddScoped<ICommandHandler<ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Commands.ConfirmPasswordResetCommand>, ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Handlers.Commands.ConfirmPasswordResetCommandHandler>();
+        services.AddScoped<ICommandHandler<ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Commands.UnregisterUserCommand>, ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Handlers.Commands.UnregisterUserCommandHandler>();
         // MCP Mappers
         services.AddSingleton<McpServerConfigurationDomainGetDtoMapper>();
         services.AddSingleton<McpServerConfigurationDomainGetAllDtoMapper>();

@@ -1,0 +1,115 @@
+using ElTocardo.Application.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
+namespace ElTocardo.API.Endpoints;
+
+/// <summary>
+/// Minimal API endpoints for user registration, login, password reset, and unregistration.
+/// </summary>
+public static class UserEndpoints
+{
+    private static string Tags => "User";
+
+    public static WebApplication MapUserEndpoints(this WebApplication app)
+    {
+        app.MapPost("v1/users/register", async (
+            [FromServices] IUserService userService,
+            [FromBody] RegisterUserRequest request,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await userService.RegisterUserAsync(request.Username, request.Email, request.Password, cancellationToken);
+            return result.IsSuccess
+                ? Results.Created($"/v1/users/{request.Username}", new { UserId = result.ReadValue() })
+                : Results.Conflict(new ProblemDetails { Title = "Registration failed", Detail = result.ReadError().Message });
+        })
+        .WithName("RegisterUser")
+        .WithTags(Tags)
+        .WithOpenApi();
+
+        app.MapPost("v1/users/login", async (
+            [FromServices] IUserService userService,
+            [FromBody] LoginRequest request,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await userService.AuthenticateUserAsync(request.Username, request.Password, cancellationToken);
+            return result.IsSuccess
+                ? Results.Ok(new { Token = result.ReadValue() })
+                : Results.BadRequest(new ProblemDetails { Title = "Login failed", Detail = result.ReadError().Message });
+        })
+        .WithName("LoginUser")
+        .WithTags(Tags)
+        .WithOpenApi();
+
+        app.MapPost("v1/users/reset-password", async (
+            [FromServices] IUserService userService,
+            [FromBody] ResetPasswordRequest request,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await userService.InitiatePasswordResetAsync(request.Email, cancellationToken);
+            return result.IsSuccess
+                ? Results.Ok(new { Token = result.ReadValue() }) // In production, do not return token directly
+                : Results.BadRequest(new ProblemDetails { Title = "Reset password failed", Detail = result.ReadError().Message });
+        })
+        .WithName("InitiateResetPassword")
+        .WithTags(Tags)
+        .WithOpenApi();
+
+        app.MapPost("v1/users/reset-password/confirm", async (
+            [FromServices] IUserService userService,
+            [FromBody] ConfirmResetPasswordRequest request,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await userService.ConfirmPasswordResetAsync(request.Email, request.Token, request.NewPassword, cancellationToken);
+            return result.IsSuccess
+                ? Results.Ok(new { Message = "Password reset successful" })
+                : Results.BadRequest(new ProblemDetails { Title = "Password reset failed", Detail = result.ReadError().Message });
+        })
+        .WithName("ConfirmResetPassword")
+        .WithTags(Tags)
+        .WithOpenApi();
+
+        app.MapDelete("v1/users/unregister", async (
+            [FromServices] IUserService userService,
+            [FromServices] IHttpContextAccessor httpContextAccessor,
+            CancellationToken cancellationToken) =>
+        {
+            var user = httpContextAccessor.HttpContext?.User;
+            if (user is null)
+            {
+                return Results.Unauthorized();
+            }
+
+            var result = await userService.UnregisterUserAsync(user, cancellationToken);
+            return result.IsSuccess
+                ? Results.NoContent()
+                : Results.BadRequest(new ProblemDetails { Title = "Unregistration failed", Detail = result.ReadError().Message });
+        })
+        .WithName("UnregisterUser")
+        .RequireAuthorization()
+        .WithTags(Tags)
+        .WithOpenApi();
+
+        return app;
+    }
+
+    /// <summary>
+    /// Request DTO for user registration.
+    /// </summary>
+    public record RegisterUserRequest(string Username, string Email, string Password);
+
+    /// <summary>
+    /// Request DTO for user login.
+    /// </summary>
+    public record LoginRequest(string Username, string Password);
+
+    /// <summary>
+    /// Request DTO for initiating password reset.
+    /// </summary>
+    public record ResetPasswordRequest(string Email);
+
+    /// <summary>
+    /// Request DTO for confirming password reset.
+    /// </summary>
+    public record ConfirmResetPasswordRequest(string Email, string Token, string NewPassword);
+}
