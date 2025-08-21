@@ -4,7 +4,6 @@ using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
 using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Commands;
-using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Commands;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Queries;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Mappers;
@@ -20,6 +19,10 @@ using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Repositories;
 using ElTocardo.Infrastructure.Mappers.Dtos.AI;
 using ElTocardo.Infrastructure.Mappers.Dtos.ModelContextProtocol;
 using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator;
+using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Commands;
+using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Handlers.Commands;
+using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Handlers.Queries;
+using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Queries;
 using ElTocardo.Infrastructure.Mediator.Data;
 using ElTocardo.Infrastructure.Mediator.Repositories;
 using ElTocardo.Infrastructure.Options;
@@ -121,6 +124,14 @@ public static class ServiceCollectionExtensions
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+
+        // User Command handlers
+        services.AddScoped<ICommandHandler<CreateUserCommand, string>, CreateUserCommandHandler>();
+
+        // User Query handlers
+        services
+            .AddScoped<IQueryHandler<GetAllUsersQuery, ApplicationUser[]>,
+                GetAllUsersQueryHandler>();
         return services;
     }
 

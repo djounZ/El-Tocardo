@@ -26,8 +26,8 @@ public class ApplicationUser : IdentityUser, IEntity<string, string>
         }
     }
 
-    public DateTimeOffset CreatedAt { get; }
-    public DateTimeOffset UpdatedAt { get; }
+    public DateTimeOffset CreatedAt { get; private set; }
+    public DateTimeOffset UpdatedAt { get; private set; }
     public string GetKey()
     {
         return UserName ?? throw new ArgumentNullException(nameof(UserName), "UserName should not be null");

@@ -1,5 +1,9 @@
 using AI.GithubCopilot.Domain.Services;
 using ElTocardo.API.Options;
+using ElTocardo.Application.Mediator.Common.Interfaces;
+using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator;
+using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Handlers.Queries;
+using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Queries;
 using Microsoft.Extensions.AI;
 using OllamaSharp;
 
@@ -15,6 +19,20 @@ public static class DevelopmentTestsEndpoints
         };
 
 
+
+
+        app.MapGet("/users",async (
+                IQueryHandler<GetAllUsersQuery, ApplicationUser[]> queryHandler,
+                CancellationToken cancellationToken) =>
+            {
+                var handleAsync = await queryHandler.HandleAsync(GetAllUsersQuery.Instance, cancellationToken);
+                if (handleAsync.IsSuccess)
+                {
+                    return Results.Ok(handleAsync.ReadValue());
+                }
+                return Results.InternalServerError(handleAsync.ReadError().Message);
+            })
+            .WithOpenApi();
 
         app.MapGet("/test",async (
                 HttpContext context,

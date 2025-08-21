@@ -4,8 +4,10 @@ using ElTocardo.Application.Configuration;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.ValueObjects;
+using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator;
 using ElTocardo.Infrastructure.Mediator.Data;
 using ElTocardo.Infrastructure.Options;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -30,6 +32,7 @@ public static class ServiceProviderExtensions
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<ApplicationDbContext>>();
         var infrastructureOptions = scope.ServiceProvider.GetRequiredService<IOptions<ElTocardoInfrastructureOptions>>();
 
+
         try
         {
             logger.LogInformation("Ensuring database is created and up to date");
@@ -37,6 +40,34 @@ public static class ServiceProviderExtensions
 
             // Check if we need to migrate data from JSON file
             await MigrateFromJsonFileIfNeededAsync(context, infrastructureOptions.Value, logger, cancellationToken);
+
+
+            var roleManager =  scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            string[] roles = new[] { "ADMIN", "USER", "MANAGER" };
+
+            foreach (var role in roles)
+            {
+                if (!await roleManager.RoleExistsAsync(role))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(role));
+                }
+            }
+
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            var findByNameAsync = await userManager.FindByNameAsync("test");
+            if (findByNameAsync == null)
+            {
+                var identityResult = await userManager.CreateAsync(new ApplicationUser("test") { Email = "test@test.com",}, password: "Test66*");
+                if (!identityResult.Succeeded)
+                {
+                    throw new ApplicationException(identityResult.Errors.First().Description);
+                }
+
+                findByNameAsync = await userManager.FindByNameAsync("test");
+                await userManager.AddToRoleAsync(findByNameAsync!, "ADMIN");
+
+            }
 
             logger.LogInformation("Database initialization completed successfully");
         }
