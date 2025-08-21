@@ -51,11 +51,11 @@
         <MicrosoftIdentityModelTokensVersion>8.13.0</MicrosoftIdentityModelTokensVersion>
 
         <OllamaSharpVersion>5.3.6</OllamaSharpVersion>
-        <CommunityToolkitAspireHostingOllamaVersion>9.7.0</CommunityToolkitAspireHostingOllamaVersion>
         <ModelContextProtocolPackagesCommonVersion>0.3.0-preview.3</ModelContextProtocolPackagesCommonVersion>
 
         <!-- Aspire packages -->
         <AspireHostingAppHostCommonVersion>9.4.1</AspireHostingAppHostCommonVersion>
+        <CommunityToolkitAspireHostingOllamaVersion>9.7.0</CommunityToolkitAspireHostingOllamaVersion>
 
     </PropertyGroup>
 

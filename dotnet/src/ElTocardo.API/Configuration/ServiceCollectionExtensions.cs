@@ -38,7 +38,7 @@ public static class ServiceCollectionExtensions
 
         services
             .AddElTocardoInfrastructure(configuration,
-                options => options.UseNpgsql(configuration.GetConnectionString("el-tocardo-db")));
+                options => options.UseNpgsql(configuration.GetConnectionString("el-tocardo-db-postgres")));
 
         services.AddOpenTelemetryExporters(configuration)
             .AddOpenTelemetry()
