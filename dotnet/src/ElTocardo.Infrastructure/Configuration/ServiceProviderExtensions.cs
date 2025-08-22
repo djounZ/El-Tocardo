@@ -17,7 +17,7 @@ namespace ElTocardo.Infrastructure.Configuration;
 
 public static class ServiceProviderExtensions
 {
-    public static async Task UseElTocardoInfrastructureAsync(this IServiceProvider serviceProvider,
+    internal static async Task UseElTocardoInfrastructureAsync(this IServiceProvider serviceProvider,
         CancellationToken cancellationToken)
     {
         await serviceProvider.UseAiGithubCopilotAsync(cancellationToken);

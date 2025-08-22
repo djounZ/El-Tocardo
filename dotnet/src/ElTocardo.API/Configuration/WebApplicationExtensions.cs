@@ -1,4 +1,5 @@
 using ElTocardo.API.Endpoints;
+using ElTocardo.Infrastructure.Configuration;
 
 namespace ElTocardo.API.Configuration;
 
@@ -18,8 +19,8 @@ public static class WebApplicationExtensions
         app.UseHttpsRedirection();
         app.UseCors("DefaultCorsPolicy");
         app.UseCaching();
+        await app.UseElTocardoInfrastructureAsync(cancellationToken);
         app.MapEndpoints();
-        await app.Services.UseElTocardoApiAsync(cancellationToken);
         return app;
     }
 
