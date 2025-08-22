@@ -1,6 +1,5 @@
 using ElTocardo.Application.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace ElTocardo.API.Endpoints;
 
@@ -20,7 +19,7 @@ public static class UserEndpoints
         {
             var result = await userService.RegisterUserAsync(request.Username, request.Email, request.Password, cancellationToken);
             return result.IsSuccess
-                ? Results.Created($"/v1/users/{request.Username}", new { UserId = result.ReadValue() })
+                ? Results.Ok("User registered")
                 : Results.Conflict(new ProblemDetails { Title = "Registration failed", Detail = result.ReadError().Message });
         })
         .WithName("RegisterUser")

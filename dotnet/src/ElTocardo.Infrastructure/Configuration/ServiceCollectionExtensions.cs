@@ -49,16 +49,20 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration, Action<DbContextOptionsBuilder> configureDbContext)
     {
         return services
-            .AddElTocardoApplication(configuration)
-            .AddAiGithubCopilot(configuration)
-            .AddOllamaApiClient(configuration)
-            .AddDatabase(configureDbContext)
-            .AddRepositories()
-            .AddValidation()
-            .AddCommandQueryHandlers()
             .AddOptions(configuration)
+            .AddElTocardoApplication(configuration)
+            .AddAiClients(configuration)
+            .AddDbContext<ApplicationDbContext>(configureDbContext)
+            .AddValidation()
             .AddMappers()
             .AddServices();
+    }
+
+    private static IServiceCollection AddAiClients(this IServiceCollection services, IConfiguration configuration)
+    {
+        return services
+            .AddAiGithubCopilot(configuration)
+            .AddOllamaApiClient(configuration);
     }
 
     private static IServiceCollection AddOllamaApiClient(this IServiceCollection services, IConfiguration configuration)
@@ -83,20 +87,102 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
-    services.AddTransient<IAiProviderService, AiProviderService>();
-    services.AddTransient<ChatClientStore>();
-    services.AddTransient<ChatClientProvider>();
-    services.AddTransient<AiToolsProviderService>();
-    services.AddTransient<IChatCompletionsService, ChatCompletionsService>();
+        services.AddTransient<IAiProviderService, AiProviderService>();
+        services.AddTransient<ChatClientStore>();
+        services.AddTransient<ChatClientProvider>();
+        services.AddTransient<AiToolsProviderService>();
+        services.AddTransient<IChatCompletionsService, ChatCompletionsService>();
 
-    // New CQRS-based services
-    services.AddScoped<IMcpServerConfigurationService, McpServerConfigurationService>();
-    services.AddScoped<IPresetChatOptionsService, PresetChatOptionsService>();
-    services.AddScoped<IUserService, UserService>();
+        services.AddTransient<IMcpClientToolsService, McpClientToolsService>();
+        return
+            services.AddTransient<ClientTransportFactoryService>()
+                .AddUserService()
+                .AddMcpServerConfigurationService()
+                .AddPresetChatOptionsService();
+    }
 
-    services.AddTransient<IMcpClientToolsService, McpClientToolsService>();
-    services.AddTransient<ClientTransportFactoryService>();
-    return services;
+    private static IServiceCollection AddPresetChatOptionsService(this IServiceCollection services)
+    {
+        services.AddScoped<IPresetChatOptionsRepository, PresetChatOptionsRepository>();
+
+
+        // PresetChatOptions Mappers
+        services.AddSingleton<PresetChatOptionsDomainGetDtoMapper>();
+        services.AddSingleton<PresetChatOptionsDomainGetAllDtoMapper>();
+        services.AddSingleton<PresetChatOptionsDomainUpdateCommandMapper>();
+        services.AddSingleton<PresetChatOptionsDomainCreateCommandMapper>();
+
+
+        // PresetChatOptions Command handlers
+        services
+            .AddScoped<ICommandHandler<CreatePresetChatOptionsCommand, Guid>, CreatePresetChatOptionsCommandHandler>();
+        services
+            .AddScoped<ICommandHandler<UpdatePresetChatOptionsCommand>, UpdatePresetChatOptionsCommandHandler>();
+        services
+            .AddScoped<ICommandHandler<DeletePresetChatOptionsCommand>, DeletePresetChatOptionsCommandHandler>();
+
+        // PresetChatOptions Query handlers
+        services
+            .AddScoped<IQueryHandler<GetAllPresetChatOptionsQuery, List<PresetChatOptionsDto>>,
+                GetAllPresetChatOptionsQueryHandler>();
+        services
+            .AddScoped<IQueryHandler<GetPresetChatOptionsByNameQuery, PresetChatOptionsDto>,
+                GetPresetChatOptionsByNameQueryHandler>();
+
+        services.AddScoped<IPresetChatOptionsService, PresetChatOptionsService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddUserService(this IServiceCollection services)
+    {
+        services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
+        // User Command handlers
+        services.AddScoped<ICommandHandler<AuthenticateUserCommand, string>, AuthenticateUserCommandHandler>();
+        services
+            .AddScoped<ICommandHandler<InitiatePasswordResetCommand, string>, InitiatePasswordResetCommandHandler>();
+        services.AddScoped<ICommandHandler<ConfirmPasswordResetCommand>, ConfirmPasswordResetCommandHandler>();
+        services.AddScoped<ICommandHandler<UnregisterUserCommand>, UnregisterUserCommandHandler>();
+        services.AddScoped<ICommandHandler<CreateUserCommand>, CreateUserCommandHandler>();
+
+        // User Query handlers
+        services.AddScoped<IQueryHandler<GetAllUsersQuery, ApplicationUser[]>, GetAllUsersQueryHandler>();
+
+        services.AddScoped<IUserService, UserService>();
+        return services;
+    }
+
+    private static IServiceCollection AddMcpServerConfigurationService(this IServiceCollection services)
+    {
+        services.AddScoped<IMcpServerConfigurationRepository, McpServerConfigurationRepository>();
+
+
+        // MCP Mappers
+        services.AddSingleton<McpServerConfigurationDomainGetDtoMapper>();
+        services.AddSingleton<McpServerConfigurationDomainGetAllDtoMapper>();
+        services.AddSingleton<McpServerConfigurationDomainUpdateCommandMapper>();
+        services.AddSingleton<McpServerConfigurationDomainCreateCommandMapper>();
+
+
+        // MCP Command handlers
+        services.AddScoped<ICommandHandler<CreateMcpServerCommand, Guid>, CreateMcpServerCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdateMcpServerCommand>, UpdateMcpServerCommandHandler>();
+        services.AddScoped<ICommandHandler<DeleteMcpServerCommand>, DeleteMcpServerCommandHandler>();
+
+        // MCP Query handlers
+        services
+            .AddScoped<IQueryHandler<GetAllMcpServersQuery, Dictionary<string, McpServerConfigurationItemDto>>,
+                GetAllMcpServersQueryHandler>();
+        services
+            .AddScoped<IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto>,
+                GetMcpServerByNameQueryHandler>();
+
+        services.AddScoped<IMcpServerConfigurationService, McpServerConfigurationService>();
+
+        return services;
     }
 
     private static IServiceCollection AddMappers(this IServiceCollection services)
@@ -115,82 +201,6 @@ public static class ServiceCollectionExtensions
     {
         services.TryAddSingleton<AiChatCompletionMapper>();
         services.TryAddSingleton<AiContentMapper>();
-        return services;
-    }
-
-    private static IServiceCollection AddDatabase(this IServiceCollection services,
-        Action<DbContextOptionsBuilder> configureDbContext)
-    {
-        services.AddDbContext<ApplicationDbContext>(configureDbContext);
-        services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
-
-        // User Command handlers
-        services.AddScoped<ICommandHandler<CreateUserCommand, string>, CreateUserCommandHandler>();
-
-        // User Query handlers
-        services
-            .AddScoped<IQueryHandler<GetAllUsersQuery, ApplicationUser[]>,
-                GetAllUsersQueryHandler>();
-        return services;
-    }
-
-    private static IServiceCollection AddRepositories(this IServiceCollection services)
-    {
-        services.AddScoped<IMcpServerConfigurationRepository, McpServerConfigurationRepository>();
-        services.AddScoped<IPresetChatOptionsRepository, PresetChatOptionsRepository>();
-        return services;
-    }
-
-    private static IServiceCollection AddCommandQueryHandlers(this IServiceCollection services)
-    {
-        // User Command handlers
-        services.AddScoped<ICommandHandler<ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Commands.AuthenticateUserCommand, string>, ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Handlers.Commands.AuthenticateUserCommandHandler>();
-        services.AddScoped<ICommandHandler<ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Commands.InitiatePasswordResetCommand, string>, ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Handlers.Commands.InitiatePasswordResetCommandHandler>();
-        services.AddScoped<ICommandHandler<ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Commands.ConfirmPasswordResetCommand>, ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Handlers.Commands.ConfirmPasswordResetCommandHandler>();
-        services.AddScoped<ICommandHandler<ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Commands.UnregisterUserCommand>, ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Handlers.Commands.UnregisterUserCommandHandler>();
-        // MCP Mappers
-        services.AddSingleton<McpServerConfigurationDomainGetDtoMapper>();
-        services.AddSingleton<McpServerConfigurationDomainGetAllDtoMapper>();
-        services.AddSingleton<McpServerConfigurationDomainUpdateCommandMapper>();
-        services.AddSingleton<McpServerConfigurationDomainCreateCommandMapper>();
-
-        // PresetChatOptions Mappers
-        services.AddSingleton<PresetChatOptionsDomainGetDtoMapper>();
-        services.AddSingleton<PresetChatOptionsDomainGetAllDtoMapper>();
-        services.AddSingleton<PresetChatOptionsDomainUpdateCommandMapper>();
-        services.AddSingleton<PresetChatOptionsDomainCreateCommandMapper>();
-
-        // MCP Command handlers
-        services.AddScoped<ICommandHandler<CreateMcpServerCommand, Guid>, CreateMcpServerCommandHandler>();
-        services.AddScoped<ICommandHandler<UpdateMcpServerCommand>, UpdateMcpServerCommandHandler>();
-        services.AddScoped<ICommandHandler<DeleteMcpServerCommand>, DeleteMcpServerCommandHandler>();
-
-        // MCP Query handlers
-        services
-            .AddScoped<IQueryHandler<GetAllMcpServersQuery, Dictionary<string, McpServerConfigurationItemDto>>,
-                GetAllMcpServersQueryHandler>();
-        services
-            .AddScoped<IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto>,
-                GetMcpServerByNameQueryHandler>();
-
-        // PresetChatOptions Command handlers
-        services
-            .AddScoped<ICommandHandler<CreatePresetChatOptionsCommand, Guid>, CreatePresetChatOptionsCommandHandler>();
-        services
-            .AddScoped<ICommandHandler<UpdatePresetChatOptionsCommand>, UpdatePresetChatOptionsCommandHandler>();
-        services
-            .AddScoped<ICommandHandler<DeletePresetChatOptionsCommand>, DeletePresetChatOptionsCommandHandler>();
-
-        // PresetChatOptions Query handlers
-        services
-            .AddScoped<IQueryHandler<GetAllPresetChatOptionsQuery, List<PresetChatOptionsDto>>,
-                GetAllPresetChatOptionsQueryHandler>();
-        services
-            .AddScoped<IQueryHandler<GetPresetChatOptionsByNameQuery, PresetChatOptionsDto>,
-                GetPresetChatOptionsByNameQueryHandler>();
-
         return services;
     }
 

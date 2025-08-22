@@ -1,4 +1,3 @@
-using System.Text.Json;
 using ElTocardo.Application.Mediator.Common.Mappers;
 using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Commands;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Entities;

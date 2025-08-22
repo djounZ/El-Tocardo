@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace ElTocardo.API.Configuration;
 
 public static class WebApplicationBuilderExtensions

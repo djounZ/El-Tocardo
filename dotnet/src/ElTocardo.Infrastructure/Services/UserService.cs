@@ -20,7 +20,7 @@ public class UserService(
     /// <summary>
     /// Registers a new user by delegating to the CreateUserCommand handler.
     /// </summary>
-    public async Task<Result<string>> RegisterUserAsync(string username, string email, string password, CancellationToken cancellationToken = default)
+    public async Task<VoidResult> RegisterUserAsync(string username, string email, string password, CancellationToken cancellationToken = default)
     {
         var command = new CreateUserCommand(username, email, password);
         return await createUserHandler.HandleAsync(command, cancellationToken);

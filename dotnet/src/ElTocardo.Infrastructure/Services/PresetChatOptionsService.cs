@@ -1,5 +1,4 @@
 using System.Text.Json;
-using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Application.Mediator.Common.Models;

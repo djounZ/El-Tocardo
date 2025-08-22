@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
-using AI.GithubCopilot.Infrastructure.Models;
 using Microsoft.Extensions.Logging;
 
 namespace AI.GithubCopilot.Infrastructure.Services.ToMigrate;

@@ -10,7 +10,7 @@ public interface IUserService
     /// <summary>
     /// Registers a new user by delegating to the CreateUserCommand handler.
     /// </summary>
-    public Task<Result<string>> RegisterUserAsync(string username, string email, string password, CancellationToken cancellationToken = default);
+    public Task<VoidResult> RegisterUserAsync(string username, string email, string password, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Authenticates a user and returns a JWT token by delegating to the AuthenticateUserCommand handler.

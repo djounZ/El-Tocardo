@@ -1,37 +1,33 @@
-using ElTocardo.Application.Mediator.Common.Interfaces;
-using ElTocardo.Application.Mediator.Common.Models;
 using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Commands;
 using Microsoft.AspNetCore.Identity;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Linq;
+using ElTocardo.Application.Mediator.Common.Handlers;
+using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Handlers.Commands;
 
 /// <summary>
 /// Handler for ConfirmPasswordResetCommand.
 /// </summary>
-public class ConfirmPasswordResetCommandHandler : ICommandHandler<ConfirmPasswordResetCommand>
+public class ConfirmPasswordResetCommandHandler(ILogger<ConfirmPasswordResetCommandHandler> logger,  UserManager<ApplicationUser> userManager)
+    : CommandHandlerBase<ConfirmPasswordResetCommand>(logger)
 {
-    private readonly UserManager<ApplicationUser> userManager;
-
-    public ConfirmPasswordResetCommandHandler(UserManager<ApplicationUser> userManager)
+    protected override async Task HandleAsyncImplementation(ConfirmPasswordResetCommand command,
+        CancellationToken cancellationToken = default)
     {
-        this.userManager = userManager;
-    }
-
-    public async Task<VoidResult> HandleAsync(ConfirmPasswordResetCommand command, CancellationToken cancellationToken = default)
-    {
-        var user = await userManager.FindByEmailAsync(command.Email);
-        if (user is null)
-        {
-            return new ArgumentException("User not found");
-        }
+        var user = await userManager.FindByEmailAsync(command.Email) ?? throw new ArgumentException($"Email not found: {command.Email}", nameof(command));
         var result = await userManager.ResetPasswordAsync(user, command.Token, command.NewPassword);
+
         if (result.Succeeded)
         {
-            return VoidResult.Success;
+            return;
         }
-        return string.Join(", ", result.Errors.Select(e => e.Description));
+
+        var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+        var invalidOperationException =
+            new InvalidOperationException($"Failed to reset password for email: {command.Email}. Errors: {errors}");
+        invalidOperationException.Data.Add("IdentityResult", result);
+        logger.LogError(invalidOperationException, "Failed to reset password for email: {Email}. Errors: {Errors}",
+            command.Email, errors);
+        throw invalidOperationException;
     }
 }

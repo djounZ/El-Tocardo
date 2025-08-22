@@ -3,41 +3,35 @@ using ElTocardo.Application.Mediator.Common.Models;
 using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Commands;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Linq;
+using ElTocardo.Application.Mediator.Common.Handlers;
+using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Handlers.Commands;
 
 /// <summary>
 /// Handler for UnregisterUserCommand.
 /// </summary>
-public class UnregisterUserCommandHandler : ICommandHandler<UnregisterUserCommand>
+public class UnregisterUserCommandHandler(ILogger<UnregisterUserCommandHandler> logger, UserManager<ApplicationUser> userManager)
+    : CommandHandlerBase<UnregisterUserCommand>(logger)
 {
-    private readonly UserManager<ApplicationUser> userManager;
-
-    public UnregisterUserCommandHandler(UserManager<ApplicationUser> userManager)
+    protected override async Task HandleAsyncImplementation(UnregisterUserCommand command, CancellationToken cancellationToken = default)
     {
-        this.userManager = userManager;
-    }
+        var userId = command.User.FindFirstValue(ClaimTypes.NameIdentifier)
+                     ?? throw new ArgumentException($"Unauthorized User {command.User} - No UserId claim found", nameof(command));
+        var user = await userManager.FindByIdAsync(userId)
+                   ?? throw new ArgumentException($"User {command.User} not found", nameof(command));
 
-    public async Task<VoidResult> HandleAsync(UnregisterUserCommand command, CancellationToken cancellationToken = default)
-    {
-        var userId = command.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userId is null)
-        {
-            return new ArgumentException("Unauthorized");
-        }
-        var user = await userManager.FindByIdAsync(userId);
-        if (user is null)
-        {
-            return new ArgumentException("User not found");
-        }
         var result = await userManager.DeleteAsync(user);
         if (result.Succeeded)
         {
-            return VoidResult.Success;
+            return;
         }
-        return string.Join(", ", result.Errors.Select(e => e.Description));
+        var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+        var invalidOperationException =
+            new InvalidOperationException($"Failed to unregister user: {command.User}. Errors: {errors}");
+        invalidOperationException.Data.Add("IdentityResult", result);
+        logger.LogError(invalidOperationException, "Failed to unregister user: {User}. Errors: {Errors}",
+            command.User, errors);
+        throw invalidOperationException;
     }
 }
