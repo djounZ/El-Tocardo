@@ -10,7 +10,7 @@ namespace ElTocardo.Infrastructure.Services;
 /// Service for user management operations, orchestrating command and query handlers.
 /// </summary>
 public class UserService(
-    ICommandHandler<CreateUserCommand, string> createUserHandler,
+    ICommandHandler<CreateUserCommand> createUserHandler,
     ICommandHandler<AuthenticateUserCommand, string> authenticateUserHandler,
     ICommandHandler<InitiatePasswordResetCommand, string> initiatePasswordResetHandler,
     ICommandHandler<ConfirmPasswordResetCommand> confirmPasswordResetHandler,
