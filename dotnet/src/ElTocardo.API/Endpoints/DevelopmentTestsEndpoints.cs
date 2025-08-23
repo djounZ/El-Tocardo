@@ -20,7 +20,7 @@ public static class DevelopmentTestsEndpoints
 
 
 
-        app.MapGet("/users",async (
+        app.MapGet("/users", async (
                 IQueryHandler<GetAllUsersQuery, ApplicationUser[]> queryHandler,
                 CancellationToken cancellationToken) =>
             {
@@ -29,8 +29,10 @@ public static class DevelopmentTestsEndpoints
                 {
                     return Results.Ok(handleAsync.ReadValue());
                 }
+
                 return Results.InternalServerError(handleAsync.ReadError().Message);
             })
+            .RequireAuthorization()
             .WithOpenApi();
 
         app.MapGet("/test",async (

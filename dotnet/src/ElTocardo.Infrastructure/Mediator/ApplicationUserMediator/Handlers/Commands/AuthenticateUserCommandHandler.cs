@@ -22,7 +22,7 @@ public class AuthenticateUserCommandHandler(ILogger<AuthenticateUserCommandHandl
         var signInResult = await signInManager.CheckPasswordSignInAsync(user, command.Password, lockoutOnFailure: false);
         if (!signInResult.Succeeded)
         {
-            throw new ArgumentException(signInResult.ToString());
+            throw new InvalidOperationException(signInResult.ToString());
         }
     }
 }
