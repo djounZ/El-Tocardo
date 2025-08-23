@@ -1,5 +1,4 @@
 using ElTocardo.API.Endpoints;
-using ElTocardo.Infrastructure.Configuration;
 
 namespace ElTocardo.API.Configuration;
 
@@ -19,7 +18,9 @@ public static class WebApplicationExtensions
         app.UseHttpsRedirection();
         app.UseCors("DefaultCorsPolicy");
         app.UseCaching();
-        await app.UseElTocardoInfrastructureAsync(cancellationToken);
+        await app.Services.UseElTocardoApiAsync(cancellationToken);
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.MapEndpoints();
         return app;
     }
@@ -31,14 +32,15 @@ public static class WebApplicationExtensions
         return app;
     }
 
-    private static WebApplication MapEndpoints(this WebApplication app)
+    private static void MapEndpoints(this WebApplication app)
     {
-        app.MapDevelopmentTestEndpoints();
-        app.MapMcpServerConfigurationEndpoints();
-        app.MapAiProviderEndpoints();
-        app.MapMcpClientToolsEndpoints();
-        app.MapChatCompletionsEndpoints();
-        app.MapPresetChatOptionsEndpoints();
-        return app;
+        app.MapAuthorizationEndpoints()
+            .MapRegistrationEndpoints()
+            .MapDevelopmentTestEndpoints()
+            .MapMcpServerConfigurationEndpoints()
+            .MapAiProviderEndpoints()
+            .MapMcpClientToolsEndpoints()
+            .MapChatCompletionsEndpoints()
+            .MapPresetChatOptionsEndpoints();
     }
 }

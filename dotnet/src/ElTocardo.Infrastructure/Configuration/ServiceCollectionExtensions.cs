@@ -28,7 +28,6 @@ using ElTocardo.Infrastructure.Mediator.Repositories;
 using ElTocardo.Infrastructure.Options;
 using ElTocardo.Infrastructure.Services;
 using FluentValidation;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -56,23 +55,7 @@ public static class ServiceCollectionExtensions
             .AddDbContext<ApplicationDbContext>(configureDbContext)
             .AddValidation()
             .AddMappers()
-            .AddJwtBearerAuthentication()
             .AddServices();
-    }
-
-
-    private static IServiceCollection AddJwtBearerAuthentication(this IServiceCollection services)
-    {
-        services.AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
-        services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer();
-        services.AddAuthorization();
-
-        return services;
     }
     private static IServiceCollection AddAiClients(this IServiceCollection services, IConfiguration configuration)
     {
@@ -158,7 +141,7 @@ public static class ServiceCollectionExtensions
             .AddDefaultTokenProviders();
 
         // User Command handlers
-        services.AddScoped<ICommandHandler<AuthenticateUserCommand, string>, AuthenticateUserCommandHandler>();
+        services.AddScoped<ICommandHandler<AuthenticateUserCommand>, AuthenticateUserCommandHandler>();
         services
             .AddScoped<ICommandHandler<InitiatePasswordResetCommand, string>, InitiatePasswordResetCommandHandler>();
         services.AddScoped<ICommandHandler<ConfirmPasswordResetCommand>, ConfirmPasswordResetCommandHandler>();

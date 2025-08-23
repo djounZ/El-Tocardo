@@ -50,6 +50,7 @@
         <SystemIdentityModelTokensJwtVersion>8.13.0</SystemIdentityModelTokensJwtVersion>
         <MicrosoftIdentityModelTokensVersion>8.13.0</MicrosoftIdentityModelTokensVersion>
         <MicrosoftAspNetCoreIdentityVersion>2.3.1</MicrosoftAspNetCoreIdentityVersion>
+        <OpenIddictCommonPackagesVersion>7.0.0</OpenIddictCommonPackagesVersion>
 
         <OllamaSharpVersion>5.3.6</OllamaSharpVersion>
         <ModelContextProtocolPackagesCommonVersion>0.3.0-preview.3</ModelContextProtocolPackagesCommonVersion>

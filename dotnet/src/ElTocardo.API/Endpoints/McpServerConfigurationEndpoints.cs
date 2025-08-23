@@ -9,7 +9,7 @@ public static class McpServerConfigurationEndpoints
 {
     private static string Tags => "McpServerConfiguration";
 
-    public static WebApplication MapMcpServerConfigurationEndpoints(this WebApplication app)
+    public static IEndpointRouteBuilder MapMcpServerConfigurationEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet("v1/mcp-servers",
                 async ([FromServices] IMcpServerConfigurationService service, CancellationToken cancellationToken) =>

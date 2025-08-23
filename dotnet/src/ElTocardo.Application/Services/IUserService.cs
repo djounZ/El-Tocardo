@@ -15,7 +15,7 @@ public interface IUserService
     /// <summary>
     /// Authenticates a user and returns a JWT token by delegating to the AuthenticateUserCommand handler.
     /// </summary>
-    public Task<Result<string>> AuthenticateUserAsync(string username, string password, CancellationToken cancellationToken = default);
+    public Task<VoidResult> AuthenticateUserAsync(string username, string password, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Initiates a password reset by delegating to the InitiatePasswordResetCommand handler.

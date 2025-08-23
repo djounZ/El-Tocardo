@@ -9,7 +9,7 @@ public static class McpClientToolsEndpoints
 
     private static string Tags => "McpClientTools";
 
-    public static WebApplication MapMcpClientToolsEndpoints(this WebApplication app)
+    public static IEndpointRouteBuilder MapMcpClientToolsEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet("/api/mcp_tools", async (
                 IMcpClientToolsService mcpClientToolProviderService,

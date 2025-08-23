@@ -8,7 +8,7 @@ namespace ElTocardo.API.Endpoints;
 public static class AiProviderEndpoints
 {
     private static string Tags => "AiProvider";
-    public static WebApplication MapAiProviderEndpoints(this WebApplication app)
+    public static IEndpointRouteBuilder MapAiProviderEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet("v1/ai-providers",
                 async ([FromServices] IAiProviderService service, CancellationToken cancellationToken) => Results.Ok(await service.GetAllAsync(cancellationToken)))

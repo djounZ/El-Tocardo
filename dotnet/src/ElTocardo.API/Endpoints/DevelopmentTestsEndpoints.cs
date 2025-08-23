@@ -10,7 +10,7 @@ namespace ElTocardo.API.Endpoints;
 
 public static class DevelopmentTestsEndpoints
 {
-    public static WebApplication MapDevelopmentTestEndpoints(this WebApplication app)
+    public static IEndpointRouteBuilder MapDevelopmentTestEndpoints(this IEndpointRouteBuilder app)
     {
         var summaries = new[]
         {

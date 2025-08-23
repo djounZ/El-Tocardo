@@ -1,17 +1,22 @@
+using ElTocardo.API.Options;
 using ElTocardo.Application.Services;
+using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using OpenIddict.Abstractions;
+using OpenIddict.Server.AspNetCore;
 
 namespace ElTocardo.API.Endpoints;
 
-/// <summary>
-/// Minimal API endpoints for user registration, login, password reset, and unregistration.
-/// </summary>
-public static class UserEndpoints
+public static class RegistrationEndpoints
 {
-    private static string Tags => "User";
+    private static string Tags => "Registration";
 
-    public static WebApplication MapUserEndpoints(this WebApplication app)
-    {
+    public static IEndpointRouteBuilder MapRegistrationEndpoints(this IEndpointRouteBuilder app)
+  {
         app.MapPost("v1/users/register", async (
             [FromServices] IUserService userService,
             [FromBody] RegisterUserRequest request,
@@ -23,20 +28,6 @@ public static class UserEndpoints
                 : Results.Conflict(new ProblemDetails { Title = "Registration failed", Detail = result.ReadError().Message });
         })
         .WithName("RegisterUser")
-        .WithTags(Tags)
-        .WithOpenApi();
-
-        app.MapPost("v1/users/login", async (
-            [FromServices] IUserService userService,
-            [FromBody] LoginRequest request,
-            CancellationToken cancellationToken) =>
-        {
-            var result = await userService.AuthenticateUserAsync(request.Username, request.Password, cancellationToken);
-            return result.IsSuccess
-                ? Results.Ok(new { Token = result.ReadValue() })
-                : Results.BadRequest(new ProblemDetails { Title = "Login failed", Detail = result.ReadError().Message });
-        })
-        .WithName("LoginUser")
         .WithTags(Tags)
         .WithOpenApi();
 

@@ -1,12 +1,16 @@
 using AI.GithubCopilot.Infrastructure.Services;
 using ElTocardo.API.Options;
 using ElTocardo.Infrastructure.Configuration;
+using ElTocardo.Infrastructure.Mediator.Data;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using OpenIddict.Server;
+using OpenIddict.Validation.AspNetCore;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using OpenIddictServerOptions = OpenIddict.Server.OpenIddictServerOptions;
 
 namespace ElTocardo.API.Configuration;
 
@@ -38,7 +42,11 @@ public static class ServiceCollectionExtensions
 
         services
             .AddElTocardoInfrastructure(configuration,
-                options => options.UseNpgsql(configuration.GetConnectionString("el-tocardo-db-postgres")));
+                options =>
+                {
+                    options.UseNpgsql(configuration.GetConnectionString("el-tocardo-db-postgres"));
+                    options.UseOpenIddict();
+                });
 
         services.AddOpenTelemetryExporters(configuration)
             .AddOpenTelemetry()
@@ -55,6 +63,7 @@ public static class ServiceCollectionExtensions
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation();
             });
+        services.AddOAuth2Oidc();
         return services;
     }
 
@@ -73,6 +82,74 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+
+
+    private static IServiceCollection AddOAuth2Oidc(this IServiceCollection services)
+    {
+        services.AddSingleton<IConfigureOptions<OpenIddictServerOptions>, ConfigureOpenIddictServerOptions>();
+      services.AddOpenIddict()
+          .AddCore(options =>
+          {
+              options.UseEntityFrameworkCore()
+                  .UseDbContext<ApplicationDbContext>();
+          })
+          .AddServer(options =>
+          {
+              options.AllowPasswordFlow()
+                  .AllowRefreshTokenFlow()
+                  .AllowClientCredentialsFlow();
+
+
+              // Environment-specific certificate configuration
+              var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+              if (environment == "Development")
+              {
+                  // Development certificates (auto-generated)
+                  options.AddDevelopmentEncryptionCertificate()
+                      .AddDevelopmentSigningCertificate();
+              }
+              else
+              {
+                  // Production certificates
+                  // var signingCertPath = configuration["OpenIddict:SigningCertificate:Path"];
+                  // var signingCertPassword = configuration["OpenIddict:SigningCertificate:Password"];
+                  // var encryptionCertPath = configuration["OpenIddict:EncryptionCertificate:Path"];
+                  // var encryptionCertPassword = configuration["OpenIddict:EncryptionCertificate:Password"];
+                  //
+                  // if (!string.IsNullOrEmpty(signingCertPath))
+                  // {
+                  //     options.AddSigningCertificate(signingCertPath, signingCertPassword);
+                  // }
+                  //
+                  // if (!string.IsNullOrEmpty(encryptionCertPath))
+                  // {
+                  //     options.AddEncryptionCertificate(encryptionCertPath, encryptionCertPassword);
+                  // }
+
+                  // Alternative: Use certificates from store
+                  // options.AddSigningCertificate("thumbprint");
+                  // options.AddEncryptionCertificate("thumbprint");
+              }
+              options.UseAspNetCore()
+                  .EnableTokenEndpointPassthrough()
+                  .EnableAuthorizationEndpointPassthrough()
+                  .EnableEndSessionEndpointPassthrough()
+                  .EnableUserInfoEndpointPassthrough();
+          })
+          .AddValidation(options =>
+          {
+              options.UseLocalServer();
+              options.UseAspNetCore();
+          });
+        services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+            });
+        services.AddAuthorization();
+
+        return services;
+    }
     private static IServiceCollection AddOpenTelemetryExporters(this IServiceCollection services, IConfiguration configuration)
     {
         var useOtlpExporter = !string.IsNullOrWhiteSpace(configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);

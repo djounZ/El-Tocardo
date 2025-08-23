@@ -8,7 +8,7 @@ public static class ChatCompletionsEndpoints
 {
     private static string Tags => "Chat Completions";
 
-    public static WebApplication MapChatCompletionsEndpoints(this WebApplication app)
+    public static IEndpointRouteBuilder MapChatCompletionsEndpoints(this IEndpointRouteBuilder app)
     {
 
         // provider

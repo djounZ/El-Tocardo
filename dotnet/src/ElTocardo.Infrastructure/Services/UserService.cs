@@ -11,7 +11,7 @@ namespace ElTocardo.Infrastructure.Services;
 /// </summary>
 public class UserService(
     ICommandHandler<CreateUserCommand> createUserHandler,
-    ICommandHandler<AuthenticateUserCommand, string> authenticateUserHandler,
+    ICommandHandler<AuthenticateUserCommand> authenticateUserHandler,
     ICommandHandler<InitiatePasswordResetCommand, string> initiatePasswordResetHandler,
     ICommandHandler<ConfirmPasswordResetCommand> confirmPasswordResetHandler,
     ICommandHandler<UnregisterUserCommand> unregisterUserHandler)
@@ -29,7 +29,7 @@ public class UserService(
     /// <summary>
     /// Authenticates a user and returns a JWT token by delegating to the AuthenticateUserCommand handler.
     /// </summary>
-    public async Task<Result<string>> AuthenticateUserAsync(string username, string password, CancellationToken cancellationToken = default)
+    public async Task<VoidResult> AuthenticateUserAsync(string username, string password, CancellationToken cancellationToken = default)
     {
         var command = new AuthenticateUserCommand(username, password);
         return await authenticateUserHandler.HandleAsync(command, cancellationToken);

@@ -8,21 +8,21 @@ namespace ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Handlers.Com
 /// <summary>
 /// Handler for AuthenticateUserCommand.
 /// </summary>
-public class AuthenticateUserCommandHandler(ILogger<AuthenticateUserCommandHandler> logger, UserManager<ApplicationUser> userManager)
-    : CommandHandlerBase<AuthenticateUserCommand, string>(logger)
+public class AuthenticateUserCommandHandler(ILogger<AuthenticateUserCommandHandler> logger, UserManager<ApplicationUser> userManager,
+    SignInManager<ApplicationUser> signInManager)
+    : CommandHandlerBase<AuthenticateUserCommand>(logger)
 {
-    protected override async Task<string> HandleAsyncImplementation(AuthenticateUserCommand command, CancellationToken cancellationToken = default)
+    protected override async Task HandleAsyncImplementation(AuthenticateUserCommand command, CancellationToken cancellationToken = default)
     {
         // Find user by username
         var user = await userManager.FindByNameAsync(command.Username)
                    ?? throw new ArgumentException($"Invalid username {command.Username}", nameof(command));
 
         // Check password
-        var isValid = await userManager.CheckPasswordAsync(user, command.Password);
-        return !isValid ? throw new ArgumentException("Invalid username or password") :
-            // Success: return user ID (or you could return a JWT here)
-            user.Id;
-
-        // Alternatively, you could return a JWT token here if you have JWT generation logic
+        var signInResult = await signInManager.CheckPasswordSignInAsync(user, command.Password, lockoutOnFailure: false);
+        if (!signInResult.Succeeded)
+        {
+            throw new ArgumentException(signInResult.ToString());
+        }
     }
 }
