@@ -11,7 +11,7 @@ public class PresetChatOptionsDomainGetDtoMapper : AbstractDomainGetDtoMapper<Pr
     public override PresetChatOptionsDto MapDomainToDto(PresetChatOptions entity)
     {
         var chatOptions = new ChatOptionsDto(
-            entity.ConversationId,
+            null,
             entity.Instructions,
             entity.Temperature,
             entity.MaxOutputTokens,
@@ -23,7 +23,7 @@ public class PresetChatOptionsDomainGetDtoMapper : AbstractDomainGetDtoMapper<Pr
             entity.ResponseFormat is not null
                 ? JsonSerializer.Deserialize<ChatResponseFormatDto>(entity.ResponseFormat)
                 : null,
-            entity.ModelId,
+            null,
             entity.StopSequences?.Split(",", StringSplitOptions.RemoveEmptyEntries).ToList(),
             entity.AllowMultipleToolCalls,
             entity.ToolMode is not null ? JsonSerializer.Deserialize<ChatToolModeDto>(entity.ToolMode) : null,

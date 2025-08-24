@@ -8,7 +8,6 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
 
     public PresetChatOptions(
         string name,
-        string? conversationId,
         string? instructions,
         float? temperature,
         int? maxOutputTokens,
@@ -18,7 +17,6 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
         float? presencePenalty,
         long? seed,
         string? responseFormat,
-        string? modelId,
         string? stopSequences,
         bool? allowMultipleToolCalls,
         string? toolMode,
@@ -26,7 +24,6 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
     {
         Id = Guid.NewGuid();
         Name = name;
-        ConversationId = conversationId;
         Instructions = instructions;
         Temperature = temperature;
         MaxOutputTokens = maxOutputTokens;
@@ -36,7 +33,6 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
         PresencePenalty = presencePenalty;
         Seed = seed;
         ResponseFormat = responseFormat;
-        ModelId = modelId;
         StopSequences = stopSequences;
         AllowMultipleToolCalls = allowMultipleToolCalls;
         ToolMode = toolMode;
@@ -48,7 +44,6 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
 
     public override Guid Id { get; }
     public string Name { get; private set; } = string.Empty;
-    public string? ConversationId { get; private set; }
     public string? Instructions { get; private set; }
     public float? Temperature { get; private set; }
     public int? MaxOutputTokens { get; private set; }
@@ -58,14 +53,12 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
     public float? PresencePenalty { get; private set; }
     public long? Seed { get; private set; }
     public string? ResponseFormat { get; private set; }
-    public string? ModelId { get; private set; }
     public string? StopSequences { get; private set; }
     public bool? AllowMultipleToolCalls { get; private set; }
     public string? ToolMode { get; private set; }
     public string? Tools { get; private set; }
 
     public void Update(
-        string? conversationId,
         string? instructions,
         float? temperature,
         int? maxOutputTokens,
@@ -75,13 +68,11 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
         float? presencePenalty,
         long? seed,
         string? responseFormat,
-        string? modelId,
         string? stopSequences,
         bool? allowMultipleToolCalls,
         string? toolMode,
         string? tools)
     {
-        ConversationId = conversationId;
         Instructions = instructions;
         Temperature = temperature;
         MaxOutputTokens = maxOutputTokens;
@@ -91,7 +82,6 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
         PresencePenalty = presencePenalty;
         Seed = seed;
         ResponseFormat = responseFormat;
-        ModelId = modelId;
         StopSequences = stopSequences;
         AllowMultipleToolCalls = allowMultipleToolCalls;
         ToolMode = toolMode;

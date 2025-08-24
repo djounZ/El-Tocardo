@@ -30,7 +30,6 @@ public class PresetChatOptionsService(
     {
         var command = new CreatePresetChatOptionsCommand(
             dto.Name,
-            dto.ChatOptions.ConversationId,
             dto.ChatOptions.Instructions,
             dto.ChatOptions.Temperature,
             dto.ChatOptions.MaxOutputTokens,
@@ -42,7 +41,6 @@ public class PresetChatOptionsService(
             dto.ChatOptions.ResponseFormat is not null
                 ? JsonSerializer.Serialize(dto.ChatOptions.ResponseFormat)
                 : null,
-            dto.ChatOptions.ModelId,
             dto.ChatOptions.StopSequences is not null ? string.Join(",", dto.ChatOptions.StopSequences) : null,
             dto.ChatOptions.AllowMultipleToolCalls,
             dto.ChatOptions.ToolMode?.ToString(),

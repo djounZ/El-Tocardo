@@ -12,7 +12,6 @@ public static class PresetChatOptionsModelBuilderExtensions
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.Name).IsUnique();
             entity.Property(e => e.Name).HasMaxLength(255).IsRequired();
-            entity.Property(e => e.ConversationId).HasMaxLength(255);
             entity.Property(e => e.Instructions).HasMaxLength(-1); // No length restriction
             entity.Property(e => e.Temperature);
             entity.Property(e => e.MaxOutputTokens);
@@ -22,7 +21,6 @@ public static class PresetChatOptionsModelBuilderExtensions
             entity.Property(e => e.PresencePenalty);
             entity.Property(e => e.Seed);
             entity.Property(e => e.ResponseFormat); // JSON
-            entity.Property(e => e.ModelId).HasMaxLength(255);
             entity.Property(e => e.StopSequences); // comma-separated
             entity.Property(e => e.AllowMultipleToolCalls);
             entity.Property(e => e.ToolMode).HasMaxLength(500);

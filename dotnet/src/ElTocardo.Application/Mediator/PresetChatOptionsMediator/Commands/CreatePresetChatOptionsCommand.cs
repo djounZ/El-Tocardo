@@ -3,7 +3,6 @@ namespace ElTocardo.Application.Mediator.PresetChatOptionsMediator.Commands;
 
 public record CreatePresetChatOptionsCommand(
     string Name,
-    string? ConversationId,
     string? Instructions,
     float? Temperature,
     int? MaxOutputTokens,
@@ -13,7 +12,6 @@ public record CreatePresetChatOptionsCommand(
     float? PresencePenalty,
     long? Seed,
     string? ResponseFormat,
-    string? ModelId,
     string? StopSequences,
     bool? AllowMultipleToolCalls,
     string? ToolMode,
