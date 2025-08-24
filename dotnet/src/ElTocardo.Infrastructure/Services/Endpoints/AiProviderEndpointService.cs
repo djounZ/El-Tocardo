@@ -4,9 +4,9 @@ using ElTocardo.Application.Services;
 using Microsoft.Extensions.Logging;
 using OllamaSharp;
 
-namespace ElTocardo.Infrastructure.Services;
+namespace ElTocardo.Infrastructure.Services.Endpoints;
 
-public sealed class AiProviderService(ILogger<AiProviderService> logger, OllamaApiClient ollamaApiClient, GithubCopilotChatCompletion githubCopilotChatCompletion) : IAiProviderService
+public sealed class AiProviderEndpointService(ILogger<AiProviderEndpointService> logger, OllamaApiClient ollamaApiClient, GithubCopilotChatCompletion githubCopilotChatCompletion) : IAiProviderEndpointService
 {
 
     public async Task<AiProviderDto[]> GetAllAsync(CancellationToken cancellationToken)

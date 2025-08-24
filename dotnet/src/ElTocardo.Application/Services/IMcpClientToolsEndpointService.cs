@@ -2,7 +2,7 @@ using ElTocardo.Application.Dtos.ModelContextProtocol;
 
 namespace ElTocardo.Application.Services;
 
-public interface IMcpClientToolsService
+public interface IMcpClientToolsEndpointService
 {
     public Task<IDictionary<string, IList<McpClientToolDto>>> GetAll(CancellationToken cancellationToken);
 

@@ -6,15 +6,15 @@ using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Commands;
 using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Queries;
 using ElTocardo.Application.Services;
 
-namespace ElTocardo.Infrastructure.Services;
+namespace ElTocardo.Infrastructure.Services.Endpoints;
 
-public class PresetChatOptionsService(
+public class PresetChatOptionsEndpointService(
     IQueryHandler<GetAllPresetChatOptionsQuery, List<PresetChatOptionsDto>> getAllQueryHandler,
     IQueryHandler<GetPresetChatOptionsByNameQuery, PresetChatOptionsDto> getByNameQueryHandler,
     ICommandHandler<CreatePresetChatOptionsCommand, Guid> createCommandHandler,
     ICommandHandler<UpdatePresetChatOptionsCommand> updateCommandHandler,
     ICommandHandler<DeletePresetChatOptionsCommand> deleteCommandHandler)
-    : IPresetChatOptionsService
+    : IPresetChatOptionsEndpointService
 {
     public async Task<Result<List<PresetChatOptionsDto>>> GetAllAsync(CancellationToken cancellationToken = default)
     {

@@ -11,7 +11,7 @@ public static class AiProviderEndpoints
     public static IEndpointRouteBuilder MapAiProviderEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet("v1/ai-providers",
-                async ([FromServices] IAiProviderService service, CancellationToken cancellationToken) => Results.Ok(await service.GetAllAsync(cancellationToken)))
+                async ([FromServices] IAiProviderEndpointService service, CancellationToken cancellationToken) => Results.Ok(await service.GetAllAsync(cancellationToken)))
             .WithName("GetAllAiProvider")
             .WithSummary("Get all AI Provider")
             .WithDescription("Returns all AI Provider items")
@@ -21,7 +21,7 @@ public static class AiProviderEndpoints
             .CacheOutput(PredefinedOutputCachingPolicy.PerUserVaryByHeaderAuthorizationLongLiving);
 
         app.MapGet("v1/ai-providers/{provider}",
-                async ([FromServices] IAiProviderService service, string provider, CancellationToken cancellationToken) =>
+                async ([FromServices] IAiProviderEndpointService service, string provider, CancellationToken cancellationToken) =>
                 {
                     var item = await service.GetAsync(provider.Parse<AiProviderEnumDto>(), cancellationToken);
                     return item is not null ? Results.Ok(item) : Results.NotFound();

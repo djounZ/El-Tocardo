@@ -6,15 +6,15 @@ using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Queries;
 using ElTocardo.Application.Services;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.ValueObjects;
 
-namespace ElTocardo.Infrastructure.Services;
+namespace ElTocardo.Infrastructure.Services.Endpoints;
 
-public class McpServerConfigurationService(
+public class McpServerConfigurationEndpointService(
     IQueryHandler<GetAllMcpServersQuery, Dictionary<string, McpServerConfigurationItemDto>> getAllQueryHandler,
     IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto> getByNameQueryHandler,
     ICommandHandler<CreateMcpServerCommand, Guid> createCommandHandler,
     ICommandHandler<UpdateMcpServerCommand> updateCommandHandler,
     ICommandHandler<DeleteMcpServerCommand> deleteCommandHandler)
-    : IMcpServerConfigurationService
+    : IMcpServerConfigurationEndpointService
 {
     public async Task<Result<Dictionary<string, McpServerConfigurationItemDto>>> GetAllServersAsync(
         CancellationToken cancellationToken = default)

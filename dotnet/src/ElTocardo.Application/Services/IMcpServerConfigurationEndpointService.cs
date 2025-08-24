@@ -3,7 +3,7 @@ using ElTocardo.Application.Mediator.Common.Models;
 
 namespace ElTocardo.Application.Services;
 
-public interface IMcpServerConfigurationService
+public interface IMcpServerConfigurationEndpointService
 {
     public Task<Result<Dictionary<string, McpServerConfigurationItemDto>>> GetAllServersAsync(
         CancellationToken cancellationToken = default);

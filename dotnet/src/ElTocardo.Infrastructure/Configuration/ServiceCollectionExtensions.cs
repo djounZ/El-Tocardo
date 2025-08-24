@@ -27,6 +27,7 @@ using ElTocardo.Infrastructure.Mediator.Data;
 using ElTocardo.Infrastructure.Mediator.Repositories;
 using ElTocardo.Infrastructure.Options;
 using ElTocardo.Infrastructure.Services;
+using ElTocardo.Infrastructure.Services.Endpoints;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -87,13 +88,13 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddTransient<IAiProviderService, AiProviderService>();
+        services.AddTransient<IAiProviderEndpointService, AiProviderEndpointService>();
         services.AddTransient<ChatClientStore>();
         services.AddTransient<ChatClientProvider>();
         services.AddTransient<AiToolsProviderService>();
-        services.AddTransient<IChatCompletionsService, ChatCompletionsService>();
+        services.AddTransient<IChatCompletionsEndpointService, ChatCompletionsEndpointService>();
 
-        services.AddTransient<IMcpClientToolsService, McpClientToolsService>();
+        services.AddTransient<IMcpClientToolsEndpointService, McpClientToolsEndpointService>();
         return
             services
                 .AddTransient<ClientTransportFactoryService>()
@@ -130,7 +131,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IQueryHandler<GetPresetChatOptionsByNameQuery, PresetChatOptionsDto>,
                 GetPresetChatOptionsByNameQueryHandler>();
 
-        services.AddScoped<IPresetChatOptionsService, PresetChatOptionsService>();
+        services.AddScoped<IPresetChatOptionsEndpointService, PresetChatOptionsEndpointService>();
 
         return services;
     }
@@ -152,7 +153,7 @@ public static class ServiceCollectionExtensions
         // User Query handlers
         services.AddScoped<IQueryHandler<GetAllUsersQuery, ApplicationUser[]>, GetAllUsersQueryHandler>();
 
-        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IUserEndpointService, UserEndpointService>();
         return services;
     }
 
@@ -181,7 +182,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto>,
                 GetMcpServerByNameQueryHandler>();
 
-        services.AddScoped<IMcpServerConfigurationService, McpServerConfigurationService>();
+        services.AddScoped<IMcpServerConfigurationEndpointService, McpServerConfigurationEndpointService>();
 
         return services;
     }

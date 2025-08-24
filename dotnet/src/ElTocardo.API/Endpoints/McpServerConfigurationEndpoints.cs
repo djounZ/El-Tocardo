@@ -12,7 +12,7 @@ public static class McpServerConfigurationEndpoints
     public static IEndpointRouteBuilder MapMcpServerConfigurationEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet("v1/mcp-servers",
-                async ([FromServices] IMcpServerConfigurationService service, CancellationToken cancellationToken) =>
+                async ([FromServices] IMcpServerConfigurationEndpointService service, CancellationToken cancellationToken) =>
                 {
                     var allServersAsync = await service.GetAllServersAsync(cancellationToken);
                     return allServersAsync.IsSuccess
@@ -28,7 +28,7 @@ public static class McpServerConfigurationEndpoints
             .CacheOutput(PredefinedOutputCachingPolicy.PerUserVaryByHeaderAuthorizationShortLiving);
 
         app.MapGet("v1/mcp-servers/{serverName}",
-                async ([FromServices] IMcpServerConfigurationService service, string serverName,
+                async ([FromServices] IMcpServerConfigurationEndpointService service, string serverName,
                     CancellationToken cancellationToken) =>
                 {
                     var item = await service.GetServerAsync(serverName, cancellationToken);
@@ -42,7 +42,7 @@ public static class McpServerConfigurationEndpoints
             .Produces(StatusCodes.Status404NotFound)
             .WithOpenApi();
 
-        app.MapPost("v1/mcp-servers/{serverName}", async ([FromServices] IMcpServerConfigurationService service,
+        app.MapPost("v1/mcp-servers/{serverName}", async ([FromServices] IMcpServerConfigurationEndpointService service,
                 string serverName, [FromBody] McpServerConfigurationItemDto item,
                 CancellationToken cancellationToken) =>
             {
@@ -59,7 +59,7 @@ public static class McpServerConfigurationEndpoints
             .Produces(StatusCodes.Status409Conflict)
             .WithOpenApi();
 
-        app.MapPut("v1/mcp-servers/{serverName}", async ([FromServices] IMcpServerConfigurationService service,
+        app.MapPut("v1/mcp-servers/{serverName}", async ([FromServices] IMcpServerConfigurationEndpointService service,
                 string serverName, [FromBody] McpServerConfigurationItemDto item,
                 CancellationToken cancellationToken) =>
             {
@@ -77,7 +77,7 @@ public static class McpServerConfigurationEndpoints
             .WithOpenApi();
 
         app.MapDelete("v1/mcp-servers/{serverName}",
-                async ([FromServices] IMcpServerConfigurationService service, string serverName,
+                async ([FromServices] IMcpServerConfigurationEndpointService service, string serverName,
                     CancellationToken cancellationToken) =>
                 {
                     var result = await service.DeleteServerAsync(serverName, cancellationToken);

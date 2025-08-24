@@ -56,7 +56,6 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
     public string? Tools { get; private set; }
 
     public void Update(
-        string? instructions,
         float? temperature,
         int? maxOutputTokens,
         float? topP,

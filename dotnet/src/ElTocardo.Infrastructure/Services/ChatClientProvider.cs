@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Infrastructure.Services;
 
-public sealed class ChatClientProvider(ILogger<ChatClientProvider> logger, IAiProviderService aiProviderService, ChatClientStore chatClientStore)
+public sealed class ChatClientProvider(ILogger<ChatClientProvider> logger, IAiProviderEndpointService aiProviderEndpointService, ChatClientStore chatClientStore)
 {
 
     // should be user specific, but for now we will not filter on user
@@ -14,7 +14,7 @@ public sealed class ChatClientProvider(ILogger<ChatClientProvider> logger, IAiPr
         logger.LogInformation("Retrieving chat client for provider: {Provider}", provider);
 
         var defaultedProvider = provider ?? AiProviderEnumDto.Ollama;
-        var aiProviderDto = await aiProviderService.GetAsync(defaultedProvider, cancellationToken);
+        var aiProviderDto = await aiProviderEndpointService.GetAsync(defaultedProvider, cancellationToken);
         return aiProviderDto == null ?
             throw new UnauthorizedAccessException("Provider not found or not authorized.")
             : chatClientStore.GetMcpChatClient(aiProviderDto.Name);

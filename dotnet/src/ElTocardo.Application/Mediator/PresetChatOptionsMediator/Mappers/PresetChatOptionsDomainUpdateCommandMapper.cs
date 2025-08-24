@@ -9,7 +9,6 @@ public class PresetChatOptionsDomainUpdateCommandMapper : AbstractDomainUpdateCo
     public override void UpdateFromCommand(PresetChatOptions domain, UpdatePresetChatOptionsCommand command)
     {
         domain.Update(
-            command.Instructions,
             command.Temperature,
             command.MaxOutputTokens,
             command.TopP,

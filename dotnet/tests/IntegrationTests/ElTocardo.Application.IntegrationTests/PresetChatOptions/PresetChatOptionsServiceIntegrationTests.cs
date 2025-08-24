@@ -12,6 +12,7 @@ using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Repositories;
 using ElTocardo.Infrastructure.Mediator.Data;
 using ElTocardo.Infrastructure.Mediator.Repositories;
 using ElTocardo.Infrastructure.Services;
+using ElTocardo.Infrastructure.Services.Endpoints;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,7 +39,7 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
         services.AddLogging();
         
         // Register services manually for testing
-        services.AddScoped<IPresetChatOptionsService, PresetChatOptionsService>();
+        services.AddScoped<IPresetChatOptionsEndpointService, PresetChatOptionsEndpointService>();
         
         // Add handlers and repositories (simplified for test)
         services.AddSingleton<PresetChatOptionsDomainGetDtoMapper>();
@@ -75,7 +76,7 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
     [Fact]
     public async Task CreatePreset_WithValidData_ShouldReturnSuccess()
     {
-        var service = _serviceProvider.GetRequiredService<IPresetChatOptionsService>();
+        var service = _serviceProvider.GetRequiredService<IPresetChatOptionsEndpointService>();
         var preset = new PresetChatOptionsDto("preset1", new ChatOptionsDto(
             ConversationId: "conv1",
             Instructions: "Say hello",
@@ -103,7 +104,7 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
     [Fact]
     public async Task GetAllPresets_AfterCreating_ShouldReturnAll()
     {
-        var service = _serviceProvider.GetRequiredService<IPresetChatOptionsService>();
+        var service = _serviceProvider.GetRequiredService<IPresetChatOptionsEndpointService>();
         await service.CreateAsync(new PresetChatOptionsDto("p1", new ChatOptionsDto(null, "A", null, null, null, null, null, null, null, null, null, null, null, null, null)));
         await service.CreateAsync(new PresetChatOptionsDto("p2", new ChatOptionsDto(null, "B", null, null, null, null, null, null, null, null, null, null, null, null, null)));
         
@@ -119,7 +120,7 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
     [Fact]
     public async Task UpdatePreset_ShouldChangeData()
     {
-        var service = _serviceProvider.GetRequiredService<IPresetChatOptionsService>();
+        var service = _serviceProvider.GetRequiredService<IPresetChatOptionsEndpointService>();
         var preset = new PresetChatOptionsDto("to-update", new ChatOptionsDto(null, "Old", null, null, null, null, null, null, null, null, null, null, null, null, null));
         await service.CreateAsync(preset);
         var updated = new PresetChatOptionsDto("to-update", new ChatOptionsDto(null, "New", null, null, null, null, null, null, null, null, null, null, null, null, null));
@@ -135,7 +136,7 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
     [Fact]
     public async Task DeletePreset_ShouldRemove()
     {
-        var service = _serviceProvider.GetRequiredService<IPresetChatOptionsService>();
+        var service = _serviceProvider.GetRequiredService<IPresetChatOptionsEndpointService>();
         var preset = new PresetChatOptionsDto("to-delete", new ChatOptionsDto(null, "Del", null, null, null, null, null, null, null, null, null, null, null, null, null));
         await service.CreateAsync(preset);
         
@@ -149,7 +150,7 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
     [Fact]
     public async Task GetByName_NonExistent_ShouldReturnFailure()
     {
-        var service = _serviceProvider.GetRequiredService<IPresetChatOptionsService>();
+        var service = _serviceProvider.GetRequiredService<IPresetChatOptionsEndpointService>();
         
         var result = await service.GetByNameAsync("not-exist");
         
@@ -159,7 +160,7 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
     [Fact]
     public async Task Update_NonExistent_ShouldReturnFailure()
     {
-        var service = _serviceProvider.GetRequiredService<IPresetChatOptionsService>();
+        var service = _serviceProvider.GetRequiredService<IPresetChatOptionsEndpointService>();
         var updated = new PresetChatOptionsDto("not-exist", new ChatOptionsDto(null, "X", null, null, null, null, null, null, null, null, null, null, null, null, null));
         
         var result = await service.UpdateAsync("not-exist", updated);
@@ -170,7 +171,7 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
     [Fact]
     public async Task Delete_NonExistent_ShouldReturnFailure()
     {
-        var service = _serviceProvider.GetRequiredService<IPresetChatOptionsService>();
+        var service = _serviceProvider.GetRequiredService<IPresetChatOptionsEndpointService>();
         
         var result = await service.DeleteAsync("not-exist");
         
@@ -180,7 +181,7 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
     [Fact]
     public async Task CreatePreset_WithInvalidName_ShouldReturnFailure()
     {
-        var service = _serviceProvider.GetRequiredService<IPresetChatOptionsService>();
+        var service = _serviceProvider.GetRequiredService<IPresetChatOptionsEndpointService>();
         var preset = new PresetChatOptionsDto("", new ChatOptionsDto(null, "Test", null, null, null, null, null, null, null, null, null, null, null, null, null));
         
         var result = await service.CreateAsync(preset);

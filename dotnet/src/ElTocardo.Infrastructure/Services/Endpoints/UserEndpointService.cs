@@ -1,21 +1,21 @@
-using ElTocardo.Application.Services;
+using System.Security.Claims;
 using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Application.Mediator.Common.Models;
+using ElTocardo.Application.Services;
 using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Commands;
-using System.Security.Claims;
 
-namespace ElTocardo.Infrastructure.Services;
+namespace ElTocardo.Infrastructure.Services.Endpoints;
 
 /// <summary>
 /// Service for user management operations, orchestrating command and query handlers.
 /// </summary>
-public class UserService(
+public class UserEndpointService(
     ICommandHandler<CreateUserCommand> createUserHandler,
     ICommandHandler<AuthenticateUserCommand> authenticateUserHandler,
     ICommandHandler<InitiatePasswordResetCommand, string> initiatePasswordResetHandler,
     ICommandHandler<ConfirmPasswordResetCommand> confirmPasswordResetHandler,
     ICommandHandler<UnregisterUserCommand> unregisterUserHandler)
-    : IUserService
+    : IUserEndpointService
 {
     /// <summary>
     /// Registers a new user by delegating to the CreateUserCommand handler.

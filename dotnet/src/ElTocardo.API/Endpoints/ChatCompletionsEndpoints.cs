@@ -13,7 +13,7 @@ public static class ChatCompletionsEndpoints
 
         // provider
         app.MapPost("/v1/chat/completions", async (
-                IChatCompletionsService completionsService,
+                IChatCompletionsEndpointService completionsService,
                 ChatRequestDto chatRequestDto,
                 CancellationToken cancellationToken) =>
             {
@@ -29,7 +29,7 @@ public static class ChatCompletionsEndpoints
             .WithOpenApi();
 
         app.MapPost("/v1/chat/completions/stream", (
-                IChatCompletionsService completionsService,
+                IChatCompletionsEndpointService completionsService,
                 ChatRequestDto chatRequestDto,
                 CancellationToken cancellationToken) =>
             {

@@ -5,7 +5,7 @@ namespace ElTocardo.Application.Services;
 
 
 
-public interface IUserService
+public interface IUserEndpointService
 {
     /// <summary>
     /// Registers a new user by delegating to the CreateUserCommand handler.

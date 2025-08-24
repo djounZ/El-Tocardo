@@ -7,14 +7,14 @@ using Microsoft.Extensions.Logging;
 using ModelContextProtocol;
 using ModelContextProtocol.Client;
 
-namespace ElTocardo.Infrastructure.Services;
+namespace ElTocardo.Infrastructure.Services.Endpoints;
 
-public sealed class McpClientToolsService(
-    ILogger<McpClientToolsService> logger,
+public sealed class McpClientToolsEndpointService(
+    ILogger<McpClientToolsEndpointService> logger,
     IQueryHandler<GetAllMcpServersQuery, Dictionary<string, McpServerConfigurationItemDto>> getAllQueryHandler,
     IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto> getByNameQueryHandler,
     ClientTransportFactoryService clientTransportFactoryService,
-    ModelContextProtocolMapper modelContextProtocolMapper) : IMcpClientToolsService
+    ModelContextProtocolMapper modelContextProtocolMapper) : IMcpClientToolsEndpointService
 {
     private readonly McpClientToolCallProgressIProgress _progress = new(logger);
 

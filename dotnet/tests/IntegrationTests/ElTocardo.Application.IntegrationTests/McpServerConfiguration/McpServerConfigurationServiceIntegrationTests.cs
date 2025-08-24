@@ -11,6 +11,7 @@ using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
 using ElTocardo.Infrastructure.Mediator.Data;
 using ElTocardo.Infrastructure.Mediator.Repositories;
 using ElTocardo.Infrastructure.Services;
+using ElTocardo.Infrastructure.Services.Endpoints;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,7 +37,7 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
         //s services.AddLogging(builder => builder.AddConsole());
         services.AddLogging();
         // Register services manually for testing
-        services.AddScoped<IMcpServerConfigurationService, McpServerConfigurationService>();
+        services.AddScoped<IMcpServerConfigurationEndpointService, McpServerConfigurationEndpointService>();
 
         // Add handlers and repositories (simplified for test)
         services.AddSingleton<McpServerConfigurationDomainGetDtoMapper>();
@@ -78,7 +79,7 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
     public async Task CreateServer_WithValidData_ShouldReturnSuccess()
     {
         // Arrange
-        var service = _serviceProvider.GetRequiredService<IMcpServerConfigurationService>();
+        var service = _serviceProvider.GetRequiredService<IMcpServerConfigurationEndpointService>();
         var serverDto = new McpServerConfigurationItemDto(
             "test",
             "node",
@@ -99,7 +100,7 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
     public async Task CreateServer_WithDuplicateName_ShouldReturnFailure()
     {
         // Arrange
-        var service = _serviceProvider.GetRequiredService<IMcpServerConfigurationService>();
+        var service = _serviceProvider.GetRequiredService<IMcpServerConfigurationEndpointService>();
         var serverDto = new McpServerConfigurationItemDto(
             "test",
             "node",
@@ -121,7 +122,7 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
     public async Task GetAllServers_AfterCreatingServers_ShouldReturnAllServers()
     {
         // Arrange
-        var service = _serviceProvider.GetRequiredService<IMcpServerConfigurationService>();
+        var service = _serviceProvider.GetRequiredService<IMcpServerConfigurationEndpointService>();
         var serverDto1 = new McpServerConfigurationItemDto(
             "test1",
             "node",
@@ -153,7 +154,7 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
     public async Task CreateServer_WithHttpTransportAndNoEndpoint_ShouldReturnFailure()
     {
         // Arrange
-        var service = _serviceProvider.GetRequiredService<IMcpServerConfigurationService>();
+        var service = _serviceProvider.GetRequiredService<IMcpServerConfigurationEndpointService>();
         var serverDto = new McpServerConfigurationItemDto(
             "test",
             null,

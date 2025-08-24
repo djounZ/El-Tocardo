@@ -18,11 +18,11 @@ public static class RegistrationEndpoints
     public static IEndpointRouteBuilder MapRegistrationEndpoints(this IEndpointRouteBuilder app)
   {
         app.MapPost("v1/users/register", async (
-            [FromServices] IUserService userService,
+            [FromServices] IUserEndpointService userEndpointService,
             [FromBody] RegisterUserRequest request,
             CancellationToken cancellationToken) =>
         {
-            var result = await userService.RegisterUserAsync(request.Username, request.Email, request.Password, cancellationToken);
+            var result = await userEndpointService.RegisterUserAsync(request.Username, request.Email, request.Password, cancellationToken);
             return result.IsSuccess
                 ? Results.Ok("User registered")
                 : Results.Conflict(new ProblemDetails { Title = "Registration failed", Detail = result.ReadError().Message });
@@ -32,11 +32,11 @@ public static class RegistrationEndpoints
         .WithOpenApi();
 
         app.MapPost("v1/users/reset-password", async (
-            [FromServices] IUserService userService,
+            [FromServices] IUserEndpointService userEndpointService,
             [FromBody] ResetPasswordRequest request,
             CancellationToken cancellationToken) =>
         {
-            var result = await userService.InitiatePasswordResetAsync(request.Email, cancellationToken);
+            var result = await userEndpointService.InitiatePasswordResetAsync(request.Email, cancellationToken);
             return result.IsSuccess
                 ? Results.Ok(new { Token = result.ReadValue() }) // In production, do not return token directly
                 : Results.BadRequest(new ProblemDetails { Title = "Reset password failed", Detail = result.ReadError().Message });
@@ -46,11 +46,11 @@ public static class RegistrationEndpoints
         .WithOpenApi();
 
         app.MapPost("v1/users/reset-password/confirm", async (
-            [FromServices] IUserService userService,
+            [FromServices] IUserEndpointService userEndpointService,
             [FromBody] ConfirmResetPasswordRequest request,
             CancellationToken cancellationToken) =>
         {
-            var result = await userService.ConfirmPasswordResetAsync(request.Email, request.Token, request.NewPassword, cancellationToken);
+            var result = await userEndpointService.ConfirmPasswordResetAsync(request.Email, request.Token, request.NewPassword, cancellationToken);
             return result.IsSuccess
                 ? Results.Ok(new { Message = "Password reset successful" })
                 : Results.BadRequest(new ProblemDetails { Title = "Password reset failed", Detail = result.ReadError().Message });
@@ -60,7 +60,7 @@ public static class RegistrationEndpoints
         .WithOpenApi();
 
         app.MapDelete("v1/users/unregister", async (
-            [FromServices] IUserService userService,
+            [FromServices] IUserEndpointService userEndpointService,
             [FromServices] IHttpContextAccessor httpContextAccessor,
             CancellationToken cancellationToken) =>
         {
@@ -70,7 +70,7 @@ public static class RegistrationEndpoints
                 return Results.Unauthorized();
             }
 
-            var result = await userService.UnregisterUserAsync(user, cancellationToken);
+            var result = await userEndpointService.UnregisterUserAsync(user, cancellationToken);
             return result.IsSuccess
                 ? Results.NoContent()
                 : Results.BadRequest(new ProblemDetails { Title = "Unregistration failed", Detail = result.ReadError().Message });

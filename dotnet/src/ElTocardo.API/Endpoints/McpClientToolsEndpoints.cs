@@ -12,7 +12,7 @@ public static class McpClientToolsEndpoints
     public static IEndpointRouteBuilder MapMcpClientToolsEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet("/api/mcp_tools", async (
-                IMcpClientToolsService mcpClientToolProviderService,
+                IMcpClientToolsEndpointService mcpClientToolProviderService,
                 CancellationToken cancellationToken) =>
             {
                 var response = await mcpClientToolProviderService.GetAll(cancellationToken);
@@ -27,7 +27,7 @@ public static class McpClientToolsEndpoints
             .CacheOutput(PredefinedOutputCachingPolicy.PerUserVaryByHeaderAuthorizationLongLiving);
 
         app.MapPost("/api/mcp_tools/call", async (
-                IMcpClientToolsService mcpClientToolProviderService,
+                IMcpClientToolsEndpointService mcpClientToolProviderService,
                 McpClientToolRequestDto request,
                 CancellationToken cancellationToken) =>
             {

@@ -10,7 +10,7 @@ public static class PresetChatOptionsEndpoints
     public static IEndpointRouteBuilder MapPresetChatOptionsEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet("v1/preset-chat-options",
-                async ([FromServices] IPresetChatOptionsService service, CancellationToken cancellationToken) =>
+                async ([FromServices] IPresetChatOptionsEndpointService service, CancellationToken cancellationToken) =>
                 {
                     var result = await service.GetAllAsync(cancellationToken);
                     return result.IsSuccess ? Results.Ok(result.ReadValue()) : Results.InternalServerError(result.ReadError());
@@ -23,7 +23,7 @@ public static class PresetChatOptionsEndpoints
             .WithOpenApi();
 
         app.MapGet("v1/preset-chat-options/{name}",
-                async ([FromServices] IPresetChatOptionsService service, string name, CancellationToken cancellationToken) =>
+                async ([FromServices] IPresetChatOptionsEndpointService service, string name, CancellationToken cancellationToken) =>
                 {
                     var result = await service.GetByNameAsync(name, cancellationToken);
                     return result.IsSuccess ? Results.Ok(result.ReadValue()) : Results.NotFound(result.ReadError());
@@ -36,7 +36,7 @@ public static class PresetChatOptionsEndpoints
             .Produces(StatusCodes.Status404NotFound)
             .WithOpenApi();
 
-        app.MapPost("v1/preset-chat-options/{name}", async ([FromServices] IPresetChatOptionsService service,
+        app.MapPost("v1/preset-chat-options/{name}", async ([FromServices] IPresetChatOptionsEndpointService service,
                 string name, [FromBody] PresetChatOptionsDto item, CancellationToken cancellationToken) =>
             {
                 var result = await service.CreateAsync(item, cancellationToken);
@@ -52,7 +52,7 @@ public static class PresetChatOptionsEndpoints
             .Produces(StatusCodes.Status409Conflict)
             .WithOpenApi();
 
-        app.MapPut("v1/preset-chat-options/{name}", async ([FromServices] IPresetChatOptionsService service,
+        app.MapPut("v1/preset-chat-options/{name}", async ([FromServices] IPresetChatOptionsEndpointService service,
                 string name, [FromBody] PresetChatOptionsDto item, CancellationToken cancellationToken) =>
             {
                 var result = await service.UpdateAsync(name, item, cancellationToken);
@@ -69,7 +69,7 @@ public static class PresetChatOptionsEndpoints
             .WithOpenApi();
 
         app.MapDelete("v1/preset-chat-options/{name}",
-                async ([FromServices] IPresetChatOptionsService service, string name, CancellationToken cancellationToken) =>
+                async ([FromServices] IPresetChatOptionsEndpointService service, string name, CancellationToken cancellationToken) =>
                 {
                     var result = await service.DeleteAsync(name, cancellationToken);
                     return result.IsSuccess ? Results.NoContent() : Results.NotFound(result.ReadError());

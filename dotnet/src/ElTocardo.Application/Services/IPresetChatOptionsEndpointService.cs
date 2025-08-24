@@ -3,7 +3,7 @@ using ElTocardo.Application.Mediator.Common.Models;
 
 namespace ElTocardo.Application.Services;
 
-public interface IPresetChatOptionsService
+public interface IPresetChatOptionsEndpointService
 {
     public Task<Result<List<PresetChatOptionsDto>>> GetAllAsync(CancellationToken cancellationToken = default);
     public Task<Result<PresetChatOptionsDto>> GetByNameAsync(string name, CancellationToken cancellationToken = default);
