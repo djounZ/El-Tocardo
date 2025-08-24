@@ -29,7 +29,7 @@ using ElTocardo.Infrastructure.Options;
 using ElTocardo.Infrastructure.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -45,14 +45,15 @@ public static class ServiceCollectionExtensions
     ///     Requires AiGithubCopilotUserProvider to be registered in the service collection.
     ///     Requires IMemoryCache to be registered in the service collection.
     /// </summary>
-    public static IServiceCollection AddElTocardoInfrastructure(this IServiceCollection services,
-        IConfiguration configuration, Action<DbContextOptionsBuilder> configureDbContext)
+    public static IServiceCollection AddElTocardoInfrastructure<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services,
+        IConfiguration configuration) where TApplicationDbContextOptionsConfiguration : class, IDbContextOptionsConfiguration<ApplicationDbContext>
     {
         return services
+            .AddSingleton<IDbContextOptionsConfiguration<ApplicationDbContext>, TApplicationDbContextOptionsConfiguration>()
             .AddOptions(configuration)
             .AddElTocardoApplication(configuration)
             .AddAiClients(configuration)
-            .AddDbContext<ApplicationDbContext>(configureDbContext)
+            .AddDbContext<ApplicationDbContext>()
             .AddValidation()
             .AddMappers()
             .AddServices();

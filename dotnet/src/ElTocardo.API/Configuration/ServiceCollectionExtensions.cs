@@ -3,9 +3,7 @@ using ElTocardo.API.Options;
 using ElTocardo.Infrastructure.Configuration;
 using ElTocardo.Infrastructure.Mediator.Data;
 using Microsoft.AspNetCore.OutputCaching;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using OpenIddict.Server;
 using OpenIddict.Validation.AspNetCore;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
@@ -41,12 +39,7 @@ public static class ServiceCollectionExtensions
         });
 
         services
-            .AddElTocardoInfrastructure(configuration,
-                options =>
-                {
-                    options.UseNpgsql(configuration.GetConnectionString("el-tocardo-db-postgres"));
-                    options.UseOpenIddict();
-                });
+            .AddElTocardoInfrastructure<DbContextOptionsConfiguration>(configuration);
 
         services.AddOpenTelemetryExporters(configuration)
             .AddOpenTelemetry()
