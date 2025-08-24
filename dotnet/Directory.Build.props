@@ -34,6 +34,7 @@
 
         <FluentValidationCommonPackagesVersion>12.0.0</FluentValidationCommonPackagesVersion>
         <NpgsqlEntityFrameworkCorePostgreSQLVersion>9.0.4</NpgsqlEntityFrameworkCorePostgreSQLVersion>
+        <MongoDBCommonPackagesVersion>3.4.3</MongoDBCommonPackagesVersion>
 
         <!-- Logs and Telemetry packages -->
         <SerilogAspNetCoreVersion>9.0.0</SerilogAspNetCoreVersion>

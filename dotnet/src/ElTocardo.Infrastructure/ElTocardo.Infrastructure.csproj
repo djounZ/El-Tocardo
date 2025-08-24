@@ -10,6 +10,11 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftExtensionsPackagesCommonVersion)" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(MicrosoftExtensionsPackagesCommonVersion)" />
         <PackageReference Include="Microsoft.AspNetCore.Identity" Version="$(MicrosoftAspNetCoreIdentityVersion)" />
+        <PackageReference Include="MongoDB.Driver" Version="3.4.0" />
    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Mediator\ConversationMediator\Handlers\" />
+    </ItemGroup>
 
 </Project>
