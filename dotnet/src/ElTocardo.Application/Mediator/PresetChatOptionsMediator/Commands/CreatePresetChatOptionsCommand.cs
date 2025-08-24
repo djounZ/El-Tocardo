@@ -3,7 +3,6 @@ namespace ElTocardo.Application.Mediator.PresetChatOptionsMediator.Commands;
 
 public record CreatePresetChatOptionsCommand(
     string Name,
-    string? Instructions,
     float? Temperature,
     int? MaxOutputTokens,
     float? TopP,

@@ -12,7 +12,7 @@ public class PresetChatOptionsDomainGetDtoMapper : AbstractDomainGetDtoMapper<Pr
     {
         var chatOptions = new ChatOptionsDto(
             null,
-            entity.Instructions,
+            null,
             entity.Temperature,
             entity.MaxOutputTokens,
             entity.TopP,

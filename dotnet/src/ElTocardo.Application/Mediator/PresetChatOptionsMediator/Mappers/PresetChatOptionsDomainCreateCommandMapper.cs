@@ -10,7 +10,6 @@ public class PresetChatOptionsDomainCreateCommandMapper : AbstractDomainCreateCo
     {
         return new PresetChatOptions(
             command.Name,
-            command.Instructions,
             command.Temperature,
             command.MaxOutputTokens,
             command.TopP,

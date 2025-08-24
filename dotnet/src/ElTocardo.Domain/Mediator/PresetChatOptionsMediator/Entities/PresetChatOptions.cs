@@ -8,7 +8,6 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
 
     public PresetChatOptions(
         string name,
-        string? instructions,
         float? temperature,
         int? maxOutputTokens,
         float? topP,
@@ -24,7 +23,6 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
     {
         Id = Guid.NewGuid();
         Name = name;
-        Instructions = instructions;
         Temperature = temperature;
         MaxOutputTokens = maxOutputTokens;
         TopP = topP;
@@ -44,7 +42,6 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
 
     public override Guid Id { get; }
     public string Name { get; private set; } = string.Empty;
-    public string? Instructions { get; private set; }
     public float? Temperature { get; private set; }
     public int? MaxOutputTokens { get; private set; }
     public float? TopP { get; private set; }
@@ -73,7 +70,6 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
         string? toolMode,
         string? tools)
     {
-        Instructions = instructions;
         Temperature = temperature;
         MaxOutputTokens = maxOutputTokens;
         TopP = topP;
