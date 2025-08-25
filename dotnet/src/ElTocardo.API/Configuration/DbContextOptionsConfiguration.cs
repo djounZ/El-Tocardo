@@ -1,4 +1,4 @@
-using ElTocardo.Infrastructure.Mediator.Data;
+using ElTocardo.Infrastructure.Mediator.EntityFramework.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 

@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using ElTocardo.API.Options;
-using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator;
+using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;

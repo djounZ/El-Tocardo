@@ -12,4 +12,4 @@ public class GetAllConversationsQueryHandler(
     IConversationRepository repository,
     ILogger<GetAllConversationsQueryHandler> logger,
     ConversationDomainGetAllDtoMapper mapper)
-    : GetAllEntitiesQueryHandler<Conversation, string, string, GetAllConversationsQuery, Dictionary<string, ConversationResponseDto>>(repository, logger, mapper);
+    : GetAllEntitiesQueryHandler<Conversation, string, string, GetAllConversationsQuery,ConversationResponseDto[]>(repository, logger, mapper);

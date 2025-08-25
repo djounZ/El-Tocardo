@@ -1,8 +1,8 @@
 using AI.GithubCopilot.Domain.Services;
 using ElTocardo.API.Options;
 using ElTocardo.Application.Mediator.Common.Interfaces;
-using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator;
-using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Queries;
+using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator;
+using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator.Queries;
 using Microsoft.Extensions.AI;
 using OllamaSharp;
 

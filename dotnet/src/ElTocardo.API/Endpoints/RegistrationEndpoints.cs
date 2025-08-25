@@ -1,6 +1,5 @@
 using ElTocardo.API.Options;
 using ElTocardo.Application.Services;
-using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;

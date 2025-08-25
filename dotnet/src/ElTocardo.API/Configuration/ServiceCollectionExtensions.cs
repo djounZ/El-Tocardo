@@ -1,7 +1,7 @@
 using AI.GithubCopilot.Infrastructure.Services;
 using ElTocardo.API.Options;
 using ElTocardo.Infrastructure.Configuration;
-using ElTocardo.Infrastructure.Mediator.Data;
+using ElTocardo.Infrastructure.Mediator.EntityFramework.Data;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Options;
 using OpenIddict.Validation.AspNetCore;
