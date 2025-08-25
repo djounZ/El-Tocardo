@@ -1,8 +1,16 @@
 using AI.GithubCopilot.Configuration;
 using ElTocardo.Application.Configuration;
 using ElTocardo.Application.Dtos.Configuration;
+using ElTocardo.Application.Dtos.Conversation;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
+using ElTocardo.Application.Mappers.Dtos.AI;
+using ElTocardo.Application.Mappers.Dtos.ModelContextProtocol;
 using ElTocardo.Application.Mediator.Common.Interfaces;
+using ElTocardo.Application.Mediator.ConversationMediator.Commands;
+using ElTocardo.Application.Mediator.ConversationMediator.Handlers.Commands;
+using ElTocardo.Application.Mediator.ConversationMediator.Handlers.Queries;
+using ElTocardo.Application.Mediator.ConversationMediator.Mappers;
+using ElTocardo.Application.Mediator.ConversationMediator.Queries;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Commands;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Commands;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Queries;
@@ -14,16 +22,17 @@ using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Handlers.Queries;
 using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Mappers;
 using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Queries;
 using ElTocardo.Application.Services;
+using ElTocardo.Domain.Mediator.ConversationMediator.Entities;
+using ElTocardo.Domain.Mediator.ConversationMediator.Repositories;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Repositories;
-using ElTocardo.Infrastructure.Mappers.Dtos.AI;
-using ElTocardo.Infrastructure.Mappers.Dtos.ModelContextProtocol;
 using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator;
 using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Commands;
 using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Handlers.Commands;
 using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Handlers.Queries;
 using ElTocardo.Infrastructure.Mediator.ApplicationUserMediator.Queries;
 using ElTocardo.Infrastructure.Mediator.Data;
+using ElTocardo.Infrastructure.Mediator.MongoDb.Repositories;
 using ElTocardo.Infrastructure.Mediator.Repositories;
 using ElTocardo.Infrastructure.Options;
 using ElTocardo.Infrastructure.Services;
@@ -93,7 +102,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ChatClientProvider>();
         services.AddTransient<AiToolsProviderService>();
         services.AddTransient<IChatCompletionsEndpointService, ChatCompletionsEndpointService>();
-
+        services.AddConversationService();
         services.AddTransient<IMcpClientToolsEndpointService, McpClientToolsEndpointService>();
         return
             services
@@ -119,7 +128,7 @@ public static class ServiceCollectionExtensions
         services
             .AddScoped<ICommandHandler<CreatePresetChatOptionsCommand, Guid>, CreatePresetChatOptionsCommandHandler>();
         services
-            .AddScoped<ICommandHandler<UpdatePresetChatOptionsCommand>, UpdatePresetChatOptionsCommandHandler>();
+            .AddScoped<ICommandHandler<UpdatePresetChatOptionsCommand>, UpdatePresetChatOptionsCommandByKeyHandler>();
         services
             .AddScoped<ICommandHandler<DeletePresetChatOptionsCommand>, DeletePresetChatOptionsCommandHandler>();
 
@@ -157,6 +166,41 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+
+
+
+    private static IServiceCollection AddConversationService(this IServiceCollection services)
+    {
+        services.AddScoped<IConversationRepository, ConversationRepository>();
+
+
+        //  Mappers
+        services.AddSingleton<ConversationDomainCreateCommandMapper>();
+        services.AddSingleton<ConversationDomainGetAllDtoMapper>();
+        services.AddSingleton<ConversationDomainGetDtoMapper>();
+        services.AddSingleton<ConversationDomainUpdateChatResponseCommandMapper>();
+        services.AddSingleton<ConversationDomainUpdateUserMessageCommandMapper>();
+
+
+        //  Command handlers
+        services.AddScoped<ICommandHandler<CreateConversationCommand, string>, CreateConversationCommandHandler>();
+        services.AddScoped<ICommandHandler<DeleteConversationCommand>, DeleteConversationCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdateConversationUpdateRoundCommand,Conversation>, UpdateConversationUpdateRoundCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdateConversationAddNewRoundCommand,Conversation>, UpdateConversationAddNewRoundCommandHandler>();
+
+        //  Query handlers
+        services
+            .AddScoped<IQueryHandler<GetAllConversationsQuery, Dictionary<string, ConversationResponseDto>>,
+                GetAllConversationsQueryHandler>();
+        services
+            .AddScoped<IQueryHandler<GetConversationByIdQuery, ConversationResponseDto>,
+                GetConversationByIdQueryHandler>();
+
+        services.AddScoped<IConversationEndpointService, ConversationEndpointService>();
+
+        return services;
+    }
+
     private static IServiceCollection AddMcpServerConfigurationService(this IServiceCollection services)
     {
         services.AddScoped<IMcpServerConfigurationRepository, McpServerConfigurationRepository>();
@@ -171,7 +215,7 @@ public static class ServiceCollectionExtensions
 
         // MCP Command handlers
         services.AddScoped<ICommandHandler<CreateMcpServerCommand, Guid>, CreateMcpServerCommandHandler>();
-        services.AddScoped<ICommandHandler<UpdateMcpServerCommand>, UpdateMcpServerCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdateMcpServerCommand>, UpdateMcpServerCommandByKeyHandler>();
         services.AddScoped<ICommandHandler<DeleteMcpServerCommand>, DeleteMcpServerCommandHandler>();
 
         // MCP Query handlers

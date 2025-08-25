@@ -2,7 +2,7 @@ using ElTocardo.Application.Dtos.AI.Contents;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 
-namespace ElTocardo.Infrastructure.Mappers.Dtos.AI;
+namespace ElTocardo.Application.Mappers.Dtos.AI;
 
 public sealed class AiContentMapper(ILogger<AiContentMapper> logger)
 {

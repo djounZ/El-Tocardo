@@ -8,9 +8,9 @@ using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Application.Mediator.PresetChatOptionsMediator.Handlers.Commands;
 
-public class UpdatePresetChatOptionsCommandHandler(
+public class UpdatePresetChatOptionsCommandByKeyHandler(
     IPresetChatOptionsRepository repository,
-    ILogger<UpdatePresetChatOptionsCommandHandler> logger,
+    ILogger<UpdatePresetChatOptionsCommandByKeyHandler> logger,
     IValidator<UpdatePresetChatOptionsCommand> validator,
     PresetChatOptionsDomainUpdateCommandMapper mapper)
-    : UpdateEntityCommandHandler<PresetChatOptions,Guid, string, UpdatePresetChatOptionsCommand>(repository, logger, validator, mapper);
+    : UpdateEntityCommandByKeyHandler<PresetChatOptions,Guid, string, UpdatePresetChatOptionsCommand>(repository, logger, validator, mapper);

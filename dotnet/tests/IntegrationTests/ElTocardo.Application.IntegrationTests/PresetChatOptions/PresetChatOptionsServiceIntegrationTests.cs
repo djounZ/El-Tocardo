@@ -49,7 +49,7 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
         services.AddScoped<IPresetChatOptionsRepository, PresetChatOptionsRepository>();
         
         services.AddScoped<ICommandHandler<CreatePresetChatOptionsCommand, Guid>, CreatePresetChatOptionsCommandHandler>();
-        services.AddScoped<ICommandHandler<UpdatePresetChatOptionsCommand>, UpdatePresetChatOptionsCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdatePresetChatOptionsCommand>, UpdatePresetChatOptionsCommandByKeyHandler>();
         services.AddScoped<ICommandHandler<DeletePresetChatOptionsCommand>, DeletePresetChatOptionsCommandHandler>();
         services
             .AddScoped<IQueryHandler<GetAllPresetChatOptionsQuery, List<PresetChatOptionsDto>>,

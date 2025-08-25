@@ -7,7 +7,7 @@ public class UpdatePresetChatOptionsCommandValidator : AbstractValidator<UpdateP
 {
     public UpdatePresetChatOptionsCommandValidator()
     {
-        RuleFor(x => x.Key)
+        RuleFor(x => x.Id)
             .NotEmpty()
             .WithMessage("Name is required")
             .MaximumLength(255)

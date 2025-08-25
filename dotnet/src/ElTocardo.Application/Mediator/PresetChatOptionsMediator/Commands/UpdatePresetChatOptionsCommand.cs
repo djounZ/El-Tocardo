@@ -3,7 +3,7 @@ using ElTocardo.Application.Mediator.Common.Commands;
 namespace ElTocardo.Application.Mediator.PresetChatOptionsMediator.Commands;
 
 public record UpdatePresetChatOptionsCommand(
-    string Key,
+    string Id,
     float? Temperature,
     int? MaxOutputTokens,
     float? TopP,
@@ -15,4 +15,4 @@ public record UpdatePresetChatOptionsCommand(
     string? StopSequences,
     bool? AllowMultipleToolCalls,
     string? ToolMode,
-    string? Tools) : UpdateCommandBase<string>(Key);
+    string? Tools) : UpdateCommandBase<string>(Id);

@@ -1,10 +1,10 @@
 using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Dtos.Conversation;
-using ElTocardo.Infrastructure.Mappers.Dtos.AI;
+using ElTocardo.Application.Mappers.Dtos.AI;
 using Microsoft.Extensions.AI;
 
-namespace ElTocardo.Infrastructure.Mappers.Dtos.Conversation;
+namespace ElTocardo.Application.Mappers.Dtos.Conversation;
 
 public sealed class ConversationDtoChatDtoMapper(AiChatCompletionMapper aiChatCompletionMapper)
 {

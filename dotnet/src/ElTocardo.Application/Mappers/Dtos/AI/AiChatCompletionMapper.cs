@@ -5,7 +5,7 @@ using ElTocardo.Application.Dtos.Configuration;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 
-namespace ElTocardo.Infrastructure.Mappers.Dtos.AI;
+namespace ElTocardo.Application.Mappers.Dtos.AI;
 
 public sealed class AiChatCompletionMapper(ILogger<AiChatCompletionMapper> logger, AiContentMapper aiContentMapper)
 {
@@ -101,7 +101,7 @@ public sealed class AiChatCompletionMapper(ILogger<AiChatCompletionMapper> logge
         };
     }
 
-    private ChatFinishReasonDto? MapToFinishReasonDto(ChatFinishReason? finishReason)
+    public ChatFinishReasonDto? MapToFinishReasonDto(ChatFinishReason? finishReason)
     {
         if (finishReason == null)
         {
@@ -131,7 +131,7 @@ public sealed class AiChatCompletionMapper(ILogger<AiChatCompletionMapper> logge
         return ChatFinishReasonDto.Stop;
     }
 
-    private ChatOptions? MapToChatOptions(ChatOptionsDto? options)
+    public ChatOptions? MapToChatOptions(ChatOptionsDto? options)
     {
         return options is null ? null : MapToChatOptionsNotNull(options);
     }
@@ -182,7 +182,7 @@ public sealed class AiChatCompletionMapper(ILogger<AiChatCompletionMapper> logge
         };
     }
 
-    private ChatMessage MapToChatMessage(ChatMessageDto appModel)
+    public ChatMessage MapToChatMessage(ChatMessageDto appModel)
     {
         return new ChatMessage(MapToChatRole(appModel.Role),
             [.. appModel.Contents.Select(aiContentMapper.MapToAiContent)]);
@@ -300,7 +300,7 @@ public sealed class AiChatCompletionMapper(ILogger<AiChatCompletionMapper> logge
         return null;
     }
 
-    private ChatMessageDto MapToChatMessageDto(ChatMessage chatMessage)
+    public ChatMessageDto MapToChatMessageDto(ChatMessage chatMessage)
     {
         return new ChatMessageDto(
             MapToChatRoleDto(chatMessage.Role),

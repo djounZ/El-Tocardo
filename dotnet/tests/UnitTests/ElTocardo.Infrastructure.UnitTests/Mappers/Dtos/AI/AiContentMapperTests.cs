@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using ElTocardo.Application.Dtos.AI.Contents;
-using ElTocardo.Infrastructure.Mappers.Dtos.AI;
+using ElTocardo.Application.Mappers.Dtos.AI;
 using FluentAssertions;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;

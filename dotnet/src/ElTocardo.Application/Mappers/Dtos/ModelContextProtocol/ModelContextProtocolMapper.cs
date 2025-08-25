@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
 
-namespace ElTocardo.Infrastructure.Mappers.Dtos.ModelContextProtocol;
+namespace ElTocardo.Application.Mappers.Dtos.ModelContextProtocol;
 
 public sealed class ModelContextProtocolMapper(ILogger<ModelContextProtocolMapper> logger)
 {

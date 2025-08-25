@@ -8,7 +8,7 @@ public class UpdateMcpServerCommandValidator : AbstractValidator<UpdateMcpServer
 {
     public UpdateMcpServerCommandValidator()
     {
-        RuleFor(x => x.Key)
+        RuleFor(x => x.Id)
             .NotEmpty()
             .WithMessage("Server name is required")
             .MaximumLength(255)

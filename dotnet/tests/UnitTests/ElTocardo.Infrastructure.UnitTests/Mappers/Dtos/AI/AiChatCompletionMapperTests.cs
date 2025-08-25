@@ -1,6 +1,6 @@
 using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.Configuration;
-using ElTocardo.Infrastructure.Mappers.Dtos.AI;
+using ElTocardo.Application.Mappers.Dtos.AI;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;

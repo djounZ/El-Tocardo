@@ -1,8 +1,8 @@
 using System.Runtime.CompilerServices;
 using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.AI.ChatCompletion.Response;
+using ElTocardo.Application.Mappers.Dtos.AI;
 using ElTocardo.Application.Services;
-using ElTocardo.Infrastructure.Mappers.Dtos.AI;
 using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Infrastructure.Services.Endpoints;
@@ -43,7 +43,7 @@ public sealed class ChatCompletionsEndpointService(
     private async Task<AiChatCompletionMapper.AiChatClientRequest> MapToAiChatClientRequest(ChatRequestDto chatRequestDto, CancellationToken cancellationToken)
     {
         var request = AiChatCompletionMapper.MapToAiChatClientRequest(chatRequestDto);
-        await MapTools(chatRequestDto.Options, request, cancellationToken);
+        await MapTools(chatRequestDto.Options, request.Options, cancellationToken);
 
         return request;
     }

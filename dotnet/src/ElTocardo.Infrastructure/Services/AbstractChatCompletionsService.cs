@@ -1,5 +1,6 @@
 using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
-using ElTocardo.Infrastructure.Mappers.Dtos.AI;
+using ElTocardo.Application.Mappers.Dtos.AI;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Infrastructure.Services;
@@ -15,11 +16,11 @@ public abstract class AbstractChatCompletionsService(
     protected ChatClientProvider ClientProvider { get; } = clientProvider;
 
     protected async Task MapTools(ChatOptionsDto? chatOptionsDto,
-        AiChatCompletionMapper.AiChatClientRequest request, CancellationToken cancellationToken)
+        ChatOptions? request, CancellationToken cancellationToken)
     {
         if (chatOptionsDto?.Tools != null)
         {
-            request.Options!.Tools = await aiToolsProviderService.GetAiToolsAsync(chatOptionsDto.Tools, cancellationToken);
+            request!.Tools = await aiToolsProviderService.GetAiToolsAsync(chatOptionsDto.Tools, cancellationToken);
         }
     }
 }

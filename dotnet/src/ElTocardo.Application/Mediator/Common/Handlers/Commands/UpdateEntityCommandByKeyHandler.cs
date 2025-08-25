@@ -7,9 +7,9 @@ using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Application.Mediator.Common.Handlers.Commands;
 
-public class UpdateEntityCommandHandler<TEntity, TId, TKey, TCommand>(
+public class UpdateEntityCommandByKeyHandler<TEntity, TId, TKey, TCommand>(
     IEntityRepository<TEntity,TId, TKey> repository,
-    ILogger<UpdateEntityCommandHandler<TEntity, TId, TKey, TCommand>> logger,
+    ILogger<UpdateEntityCommandByKeyHandler<TEntity, TId, TKey, TCommand>> logger,
     IValidator<TCommand> validator,
     AbstractDomainUpdateCommandMapper<TEntity,TId, TKey,TCommand> commandMapper)
     : CommandHandlerBase<TCommand>(logger) where TEntity: IEntity<TId,TKey> where TCommand : UpdateCommandBase<TKey>
@@ -25,7 +25,7 @@ public class UpdateEntityCommandHandler<TEntity, TId, TKey, TCommand>(
         await validator.ValidateAndThrowAsync(command, cancellationToken);
 
         // Get existing configuration
-        var configuration = await repository.GetByKeyAsync(command.Key, cancellationToken);
+        var configuration = await repository.GetByKeyAsync(command.Id, cancellationToken);
 
         // Update configuration
         commandMapper.UpdateFromCommand(configuration!, command);
