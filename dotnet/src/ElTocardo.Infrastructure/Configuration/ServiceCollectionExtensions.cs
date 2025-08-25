@@ -1,28 +1,7 @@
 using AI.GithubCopilot.Configuration;
 using ElTocardo.Application.Configuration;
-using ElTocardo.Application.Dtos.Configuration;
-using ElTocardo.Application.Dtos.Conversation;
-using ElTocardo.Application.Dtos.ModelContextProtocol;
-using ElTocardo.Application.Mappers.Dtos.AI;
-using ElTocardo.Application.Mappers.Dtos.ModelContextProtocol;
 using ElTocardo.Application.Mediator.Common.Interfaces;
-using ElTocardo.Application.Mediator.ConversationMediator.Commands;
-using ElTocardo.Application.Mediator.ConversationMediator.Handlers.Commands;
-using ElTocardo.Application.Mediator.ConversationMediator.Handlers.Queries;
-using ElTocardo.Application.Mediator.ConversationMediator.Mappers;
-using ElTocardo.Application.Mediator.ConversationMediator.Queries;
-using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Commands;
-using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Commands;
-using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Queries;
-using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Mappers;
-using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Queries;
-using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Commands;
-using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Handlers.Commands;
-using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Handlers.Queries;
-using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Mappers;
-using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Queries;
 using ElTocardo.Application.Services;
-using ElTocardo.Domain.Mediator.ConversationMediator.Entities;
 using ElTocardo.Domain.Mediator.ConversationMediator.Repositories;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Repositories;
@@ -37,12 +16,10 @@ using ElTocardo.Infrastructure.Mediator.MongoDb.Repositories;
 using ElTocardo.Infrastructure.Options;
 using ElTocardo.Infrastructure.Services;
 using ElTocardo.Infrastructure.Services.Endpoints;
-using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using OllamaSharp;
 
@@ -59,15 +36,40 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration) where TApplicationDbContextOptionsConfiguration : class, IDbContextOptionsConfiguration<ApplicationDbContext>
     {
         return services
-            .AddSingleton<IDbContextOptionsConfiguration<ApplicationDbContext>, TApplicationDbContextOptionsConfiguration>()
-            .AddOptions(configuration)
-            .AddElTocardoApplication(configuration)
             .AddAiClients(configuration)
-            .AddDbContext<ApplicationDbContext>()
-            .AddValidation()
-            .AddMappers()
-            .AddServices();
+            .AddMediator<TApplicationDbContextOptionsConfiguration>()
+            .AddOptions(configuration)
+            .AddServices()
+            .AddElTocardoApplication(configuration);
     }
+
+    private static IServiceCollection AddMediator<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services) where TApplicationDbContextOptionsConfiguration : class, IDbContextOptionsConfiguration<ApplicationDbContext>
+    {
+
+        return services
+            .AddEntityFramework<TApplicationDbContextOptionsConfiguration>()
+            .AddMongoDb();
+    }
+
+
+    private static IServiceCollection AddEntityFramework<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services) where TApplicationDbContextOptionsConfiguration : class, IDbContextOptionsConfiguration<ApplicationDbContext>
+    {
+
+        services
+            .AddSingleton<IDbContextOptionsConfiguration<ApplicationDbContext>,
+                TApplicationDbContextOptionsConfiguration>()
+            .AddDbContext<ApplicationDbContext>();
+        return services;
+    }
+
+
+
+    private static IServiceCollection AddMongoDb(this IServiceCollection services)
+    {
+
+        return services;
+    }
+
     private static IServiceCollection AddAiClients(this IServiceCollection services, IConfiguration configuration)
     {
         return services
@@ -146,9 +148,6 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddConversationService(this IServiceCollection services)
     {
         services.AddScoped<IConversationRepository, ConversationRepository>();
-
-
-
         services.AddScoped<IConversationEndpointService, ConversationEndpointService>();
 
         return services;
@@ -157,32 +156,6 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddMcpServerConfigurationService(this IServiceCollection services)
     {
         services.AddScoped<IMcpServerConfigurationRepository, McpServerConfigurationRepository>();
-
-        return services;
-    }
-
-    private static IServiceCollection AddMappers(this IServiceCollection services)
-    {
-        return services.AddDtos();
-    }
-
-    private static IServiceCollection AddDtos(this IServiceCollection services)
-    {
-        services.AddAi()
-            .TryAddSingleton<ModelContextProtocolMapper>();
-        return services;
-    }
-
-    private static IServiceCollection AddAi(this IServiceCollection services)
-    {
-        services.TryAddSingleton<AiChatCompletionMapper>();
-        services.TryAddSingleton<AiContentMapper>();
-        return services;
-    }
-
-    private static IServiceCollection AddValidation(this IServiceCollection services)
-    {
-        services.AddValidatorsFromAssemblyContaining<CreateMcpServerCommand>();
         return services;
     }
 }

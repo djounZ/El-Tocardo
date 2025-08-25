@@ -1,6 +1,8 @@
 using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Dtos.Conversation;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
+using ElTocardo.Application.Mappers.Dtos.AI;
+using ElTocardo.Application.Mappers.Dtos.ModelContextProtocol;
 using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Application.Mediator.ConversationMediator.Commands;
 using ElTocardo.Application.Mediator.ConversationMediator.Handlers.Commands;
@@ -21,8 +23,10 @@ using ElTocardo.Application.Options;
 using ElTocardo.Application.Services;
 using ElTocardo.Domain.Configuration;
 using ElTocardo.Domain.Mediator.ConversationMediator.Entities;
+using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ElTocardo.Application.Configuration;
 
@@ -34,12 +38,33 @@ public static class ServiceCollectionExtensions
         services.Configure<ElTocardoApplicationOptions>(configuration.GetSection(nameof(ElTocardoApplicationOptions)));
         return services
             .AddElTocardoDomain(configuration)
+            .AddMappers()
+            .AddValidation()
             .AddMcpServerConfigurationService()
             .AddPresetChatOptionsService()
             .AddConversationService()
             ;
     }
 
+
+    private static IServiceCollection AddMappers(this IServiceCollection services)
+    {
+        return services.AddDtos();
+    }
+
+    private static IServiceCollection AddDtos(this IServiceCollection services)
+    {
+        services.AddAi()
+            .TryAddSingleton<ModelContextProtocolMapper>();
+        return services;
+    }
+
+    private static IServiceCollection AddAi(this IServiceCollection services)
+    {
+        services.TryAddSingleton<AiChatCompletionMapper>();
+        services.TryAddSingleton<AiContentMapper>();
+        return services;
+    }
 
 
     private static IServiceCollection AddMcpServerConfigurationService(this IServiceCollection services)
@@ -131,6 +156,12 @@ public static class ServiceCollectionExtensions
                 GetConversationByIdQueryHandler>();
 
 
+        return services;
+    }
+
+    private static IServiceCollection AddValidation(this IServiceCollection services)
+    {
+        services.AddValidatorsFromAssemblyContaining<CreateMcpServerCommand>();
         return services;
     }
 }
