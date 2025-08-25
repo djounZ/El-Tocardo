@@ -11,8 +11,8 @@ public interface IEntity<out TId, out TKey>
 public abstract class AbstractEntity<TId,TKey> : IEntity<TId,TKey>
 {
     public  abstract TId Id { get; }
-    public  DateTimeOffset CreatedAt { get; protected init; }
-    public  DateTimeOffset UpdatedAt { get; protected set; }
+    public  DateTimeOffset CreatedAt { get; protected init; } = DateTimeOffset.UtcNow;
+    public  DateTimeOffset UpdatedAt { get; protected set; } = DateTimeOffset.UtcNow;
 
     public abstract TKey GetKey();
 }

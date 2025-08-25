@@ -22,7 +22,7 @@ public sealed class ConversationDtoChatDtoMapper(AiChatCompletionMapper aiChatCo
 
     public (ChatMessage ChatMessage, ChatOptions? ChatOptions) MapToChatMessageAndOptions(StartConversationRequestDto startConversationRequestDto)
     {
-        var chatMessage = aiChatCompletionMapper.MapToChatMessage(startConversationRequestDto.InitialUserMessage);
+        var chatMessage = aiChatCompletionMapper.MapToChatMessage(startConversationRequestDto.InputMessage);
         var chatOptions = aiChatCompletionMapper.MapToChatOptions(startConversationRequestDto.Options);
         return (chatMessage, chatOptions);
     }
@@ -30,7 +30,7 @@ public sealed class ConversationDtoChatDtoMapper(AiChatCompletionMapper aiChatCo
 
     public (ChatMessage ChatMessage, ChatOptions? ChatOptions) MapToChatMessageAndOptions(ContinueConversationDto continueConversationDto)
     {
-        var chatMessage = aiChatCompletionMapper.MapToChatMessage(continueConversationDto.UserMessage);
+        var chatMessage = aiChatCompletionMapper.MapToChatMessage(continueConversationDto.InputMessage);
         var chatOptions = aiChatCompletionMapper.MapToChatOptions(continueConversationDto.Options);
         return (chatMessage, chatOptions);
     }

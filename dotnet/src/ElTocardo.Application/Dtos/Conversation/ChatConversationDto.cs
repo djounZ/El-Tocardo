@@ -12,10 +12,10 @@ public sealed record StartConversationRequestDto(
     string Title,
     [property: JsonPropertyName("description")]
     string? Description,
-    [property: JsonPropertyName("initial_user_message")]
-    ChatMessageDto InitialUserMessage,
-    [property: JsonPropertyName("initial_provider")]
-    AiProviderEnumDto? InitialProvider = null,
+    [property: JsonPropertyName("input_message")]
+    ChatMessageDto InputMessage,
+    [property: JsonPropertyName("provider")]
+    AiProviderEnumDto? Provider = null,
     [property: JsonPropertyName("options")]
     ChatOptionsDto? Options = null,
     [property: JsonPropertyName("is_public")]
@@ -25,8 +25,8 @@ public sealed record StartConversationRequestDto(
 public sealed record ContinueConversationDto(
     [property: JsonPropertyName("conversation_id")]
     string ConversationId,
-    [property: JsonPropertyName("user_message")]
-    ChatMessageDto UserMessage,
+    [property: JsonPropertyName("input_message")]
+    ChatMessageDto InputMessage,
     [property: JsonPropertyName("provider")]
     AiProviderEnumDto? Provider = null,
     [property: JsonPropertyName("options")]

@@ -14,12 +14,14 @@ public class  Conversation : AbstractEntity<string, string>
         Title = title;
         Description = description;
         Rounds.Add(new ConversationRound(userMessage, chatOptions, provider ?? string.Empty));
+        CurrentOptions = chatOptions;
+        CurrentProvider = provider ?? string.Empty;
     }
 
     public override string Id { get; } = string.Empty;
-    public string Title { get; } = string.Empty;
-    public string? Description { get; }
-    public IList<ConversationRound> Rounds { get;  } = [];
+    public string Title { get; private set;} = string.Empty;
+    public string? Description { get; private set;}
+    public IList<ConversationRound> Rounds { get;  private set;} = [];
     public ChatOptions? CurrentOptions { get; private set; }
     public string CurrentProvider { get; private set; } = string.Empty;
 

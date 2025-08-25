@@ -91,12 +91,12 @@ public sealed class ConversationEndpointService(ILogger<ConversationEndpointServ
         var (chatMessage, options) = conversationDtoChatDtoMapper.MapToChatMessageAndOptions(startConversationRequestDto);
         await MapTools(startConversationRequestDto.Options, options, cancellationToken);
 
-        var createConversationCommand = new CreateConversationCommand(startConversationRequestDto.Title, startConversationRequestDto.Description, chatMessage, options, startConversationRequestDto.InitialProvider?.ToString());
+        var createConversationCommand = new CreateConversationCommand(startConversationRequestDto.Title, startConversationRequestDto.Description, chatMessage, options, startConversationRequestDto.Provider?.ToString());
         var conversationCreation = await createConversationCommandHandler.HandleAsync(createConversationCommand, cancellationToken);
 
         var conversationId = conversationCreation.ReadValue();
 
-        var chatClient = await ClientProvider.GetChatClientAsync(startConversationRequestDto.InitialProvider, cancellationToken);
+        var chatClient = await ClientProvider.GetChatClientAsync(startConversationRequestDto.Provider, cancellationToken);
 
         return new ChatRequestContext([chatMessage], options, conversationId, chatClient);
     }
