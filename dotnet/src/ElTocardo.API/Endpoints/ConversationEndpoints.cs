@@ -77,6 +77,23 @@ public static class ConversationEndpoints
             .Produces<ConversationUpdateResponseDto[]>()
             .WithOpenApi();
 
+        // Get Conversation by ID
+        app.MapGet("/v1/conversation/{conversationId}", async (
+                IConversationEndpointService conversationService,
+                string conversationId,
+                CancellationToken cancellationToken) =>
+            {
+                var result = await conversationService.GetConversation(conversationId, cancellationToken);
+                return result.IsSuccess ? Results.Ok(result.ReadValue()) : Results.NotFound();
+            })
+            .WithName("GetConversation")
+            .WithSummary("Get Conversation by ID")
+            .WithDescription("Retrieves a conversation by its ID.")
+            .WithTags(Tags)
+            .Produces<ConversationResponseDto>()
+            .Produces(404)
+            .WithOpenApi();
+
         return app;
     }
 }

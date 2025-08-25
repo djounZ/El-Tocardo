@@ -1,4 +1,6 @@
+using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.Conversation;
+using ElTocardo.Application.Mediator.Common.Models;
 
 namespace ElTocardo.Application.Services;
 
@@ -8,4 +10,6 @@ public interface IConversationEndpointService
     public IAsyncEnumerable<ConversationUpdateResponseDto>  StartStreamingConversationAsync(StartConversationRequestDto startConversationRequestDto, CancellationToken cancellationToken);
     public Task<ConversationResponseDto> ContinueConversationAsync(ContinueConversationDto continueConversationDto, CancellationToken cancellationToken);
     public IAsyncEnumerable<ConversationUpdateResponseDto>  ContinueStreamingConversationAsync(ContinueConversationDto continueConversationDto, CancellationToken cancellationToken);
+
+    public Task<Result<ConversationResponseDto>> GetConversation(string conversationId, CancellationToken cancellationToken);
 }

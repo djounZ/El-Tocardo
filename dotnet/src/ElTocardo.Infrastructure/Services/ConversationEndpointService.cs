@@ -4,7 +4,9 @@ using ElTocardo.Application.Dtos.Conversation;
 using ElTocardo.Application.Mappers.Dtos.AI;
 using ElTocardo.Application.Mappers.Dtos.Conversation;
 using ElTocardo.Application.Mediator.Common.Interfaces;
+using ElTocardo.Application.Mediator.Common.Models;
 using ElTocardo.Application.Mediator.ConversationMediator.Commands;
+using ElTocardo.Application.Mediator.ConversationMediator.Queries;
 using ElTocardo.Application.Services;
 using ElTocardo.Domain.Mediator.ConversationMediator.Entities;
 using Microsoft.Extensions.AI;
@@ -16,6 +18,7 @@ public sealed class ConversationEndpointService(ILogger<ConversationEndpointServ
     ICommandHandler<CreateConversationCommand, string> createConversationCommandHandler,
     ICommandHandler<UpdateConversationUpdateRoundCommand,Conversation> updateRoundCommandHandler,
     ICommandHandler<UpdateConversationAddNewRoundCommand,Conversation> addNewRoundCommandHandler,
+    IQueryHandler<GetConversationByIdQuery, ConversationResponseDto> getConversationByIdQueryHandler,
     ChatClientProvider clientProvider,
     AiToolsProviderService aiToolsProviderService,
     ConversationDtoChatDtoMapper conversationDtoChatDtoMapper) : AbstractChatCompletionsService(logger,  clientProvider, aiToolsProviderService),IConversationEndpointService
@@ -79,6 +82,11 @@ public sealed class ConversationEndpointService(ILogger<ConversationEndpointServ
         }
 
         logger.LogTrace("Streaming Response Completed for Conversation Id : {ConversationId}", conversationId);
+    }
+
+    public async Task<Result<ConversationResponseDto>> GetConversation(string conversationId, CancellationToken cancellationToken)
+    {
+        return await getConversationByIdQueryHandler.HandleAsync(new GetConversationByIdQuery(conversationId), cancellationToken);
     }
 
     private record ChatRequestContext(IEnumerable<ChatMessage> ChatMessages, ChatOptions? ChatOptions, string ConversationId, IChatClient ChatClient);

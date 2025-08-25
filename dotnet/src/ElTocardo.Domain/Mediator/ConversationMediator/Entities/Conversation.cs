@@ -57,6 +57,6 @@ public class  Conversation : AbstractEntity<string, string>
     }
     public override string GetKey()
     {
-        return Title;
+        return Id;
     }
 }

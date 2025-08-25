@@ -1,3 +1,4 @@
+using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.Conversation;
 using ElTocardo.Application.Mappers.Dtos.AI;
 using ElTocardo.Application.Mediator.Common.Mappers;
@@ -9,17 +10,33 @@ public class ConversationDomainGetDtoMapper(AiChatCompletionMapper aiChatComplet
 {
     public override ConversationResponseDto MapDomainToDto(Conversation conversation)
     {
-        // Get the latest response messages from the last round
-        var latestMessages = conversation.Rounds.LastOrDefault()?.Response?.Messages ?? new List<Microsoft.Extensions.AI.ChatMessage>();
-        var latestResponse = conversation.Rounds.LastOrDefault()?.Response;
+        var rounds = conversation.Rounds;
 
-        var messagesDto = latestMessages.Select(aiChatCompletionMapper.MapToChatMessageDto).ToList();
+        // Get the latest response messages from the last round
+        var messagesDto = GetMessagesDto(rounds);
+        var latestResponse = rounds.LastOrDefault()?.Response;
+
 
         return new ConversationResponseDto(
-            conversation.Id.ToString(),
+            conversation.Id,
             messagesDto,
-            latestResponse?.ModelId,
-            latestResponse?.CreatedAt,
-            latestResponse?.FinishReason != null ? aiChatCompletionMapper.MapToFinishReasonDto(latestResponse.FinishReason) : null);
+            conversation.CurrentOptions?.ModelId,
+            conversation.CreatedAt,
+            aiChatCompletionMapper.MapToFinishReasonDto(latestResponse?.FinishReason));
+    }
+
+    private  IList<ChatMessageDto> GetMessagesDto(IList<ConversationRound> rounds)
+    {
+        var chatMessages = new List<ChatMessageDto>();
+
+        foreach (var round in rounds)
+        {
+            chatMessages.Add(aiChatCompletionMapper.MapToChatMessageDto(round.InputMessage));
+            if (round.Response != null)
+            {
+                chatMessages.AddRange(round.Response.Messages.Select(aiChatCompletionMapper.MapToChatMessageDto));
+            }
+        }
+        return chatMessages;
     }
 }
