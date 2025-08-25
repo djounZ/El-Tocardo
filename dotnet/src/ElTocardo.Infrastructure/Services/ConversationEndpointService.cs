@@ -16,10 +16,9 @@ public sealed class ConversationEndpointService(ILogger<ConversationEndpointServ
     ICommandHandler<CreateConversationCommand, string> createConversationCommandHandler,
     ICommandHandler<UpdateConversationUpdateRoundCommand,Conversation> updateRoundCommandHandler,
     ICommandHandler<UpdateConversationAddNewRoundCommand,Conversation> addNewRoundCommandHandler,
-    AiChatCompletionMapper aiChatCompletionMapper,
     ChatClientProvider clientProvider,
     AiToolsProviderService aiToolsProviderService,
-    ConversationDtoChatDtoMapper conversationDtoChatDtoMapper) : AbstractChatCompletionsService(logger, aiChatCompletionMapper, clientProvider, aiToolsProviderService),IConversationEndpointService
+    ConversationDtoChatDtoMapper conversationDtoChatDtoMapper) : AbstractChatCompletionsService(logger,  clientProvider, aiToolsProviderService),IConversationEndpointService
 {
     public async Task<ConversationResponseDto> StartConversationAsync(StartConversationRequestDto startConversationRequestDto,
         CancellationToken cancellationToken)
@@ -89,8 +88,7 @@ public sealed class ConversationEndpointService(ILogger<ConversationEndpointServ
     {
 
 
-        var chatMessage = AiChatCompletionMapper.MapToChatMessage(startConversationRequestDto.InitialUserMessage);
-        var options = AiChatCompletionMapper.MapToChatOptions(startConversationRequestDto.Options);
+        var (chatMessage, options) = conversationDtoChatDtoMapper.MapToChatMessageAndOptions(startConversationRequestDto);
         await MapTools(startConversationRequestDto.Options, options, cancellationToken);
 
         var createConversationCommand = new CreateConversationCommand(startConversationRequestDto.Title, startConversationRequestDto.Description, chatMessage, options, startConversationRequestDto.InitialProvider?.ToString());
@@ -106,9 +104,8 @@ public sealed class ConversationEndpointService(ILogger<ConversationEndpointServ
     private async Task<ChatRequestContext> GetChatRequestContextAsync(ContinueConversationDto continueConversationDto,
         CancellationToken cancellationToken)
     {
-        var chatMessage = AiChatCompletionMapper.MapToChatMessage(continueConversationDto.UserMessage);
-        var options = AiChatCompletionMapper.MapToChatOptions(continueConversationDto.Options);
 
+        var (chatMessage, options) = conversationDtoChatDtoMapper.MapToChatMessageAndOptions(continueConversationDto);
         await MapTools(continueConversationDto.Options, options, cancellationToken);
         var newRoundCommand = new UpdateConversationAddNewRoundCommand(continueConversationDto.ConversationId, chatMessage, options, continueConversationDto.Provider?.ToString());
         var newRoundResult = await addNewRoundCommandHandler.HandleAsync(newRoundCommand, cancellationToken);
@@ -147,4 +144,6 @@ public sealed class ConversationEndpointService(ILogger<ConversationEndpointServ
 
         await updateRoundCommandHandler.HandleAsync(updateConversationWithChatResponseCommand, cancellationToken);
     }
+
+
 }

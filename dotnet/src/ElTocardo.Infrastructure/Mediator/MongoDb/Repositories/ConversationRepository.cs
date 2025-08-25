@@ -6,12 +6,14 @@ using MongoDB.Driver;
 
 namespace ElTocardo.Infrastructure.Mediator.MongoDb.Repositories;
 
-public class ConversationRepository(ILogger<ConversationRepository> logger, IMongoCollection<Conversation> conversationCollection) : IConversationRepository
+public class ConversationRepository(ILogger<ConversationRepository> logger, IMongoDatabase mongoDatabase) : IConversationRepository
 {
+    private readonly IMongoCollection<Conversation> _conversationCollection = mongoDatabase.GetCollection<Conversation>(nameof(Conversation));
+
     public async Task<IEnumerable<Conversation>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         logger.LogDebug("Getting all conversations");
-        var conversations = await conversationCollection.Find(_ => true).ToListAsync(cancellationToken);
+        var conversations = await _conversationCollection.Find(_ => true).ToListAsync(cancellationToken);
         logger.LogDebug("Retrieved {Count} conversations", conversations.Count);
         return conversations;
     }
@@ -19,7 +21,7 @@ public class ConversationRepository(ILogger<ConversationRepository> logger, IMon
     public async Task<Conversation?> GetByKeyAsync(string key, CancellationToken cancellationToken = default)
     {
         logger.LogDebug("Getting conversation by key: {Key}", key);
-        var conversation = await conversationCollection.Find(c => c.Title == key).FirstOrDefaultAsync(cancellationToken);
+        var conversation = await _conversationCollection.Find(c => c.Title == key).FirstOrDefaultAsync(cancellationToken);
         logger.LogDebug("Found conversation: {Found}", conversation != null);
         return conversation;
     }
@@ -27,7 +29,7 @@ public class ConversationRepository(ILogger<ConversationRepository> logger, IMon
     public async Task<Conversation?> GetByIdAsync(string id, CancellationToken cancellationToken = default)
     {
         logger.LogDebug("Getting conversation by ID: {Id}", id);
-        var conversation = await conversationCollection.Find(c => c.Id == id).FirstOrDefaultAsync(cancellationToken);
+        var conversation = await _conversationCollection.Find(c => c.Id == id).FirstOrDefaultAsync(cancellationToken);
         logger.LogDebug("Found conversation: {Found}", conversation != null);
         return conversation;
     }
@@ -35,7 +37,7 @@ public class ConversationRepository(ILogger<ConversationRepository> logger, IMon
     public async Task<bool> ExistsAsync(string key, CancellationToken cancellationToken = default)
     {
         logger.LogDebug("Checking if conversation exists with key: {Key}", key);
-        var count = await conversationCollection.CountDocumentsAsync(c => c.Title == key, cancellationToken: cancellationToken);
+        var count = await _conversationCollection.CountDocumentsAsync(c => c.Title == key, cancellationToken: cancellationToken);
         var exists = count > 0;
         logger.LogDebug("Conversation exists: {Exists}", exists);
         return exists;
@@ -44,7 +46,7 @@ public class ConversationRepository(ILogger<ConversationRepository> logger, IMon
     public async Task AddAsync(Conversation conversation, CancellationToken cancellationToken = default)
     {
         logger.LogDebug("Adding conversation with ID: {Id}", conversation.Id);
-        await conversationCollection.InsertOneAsync(conversation, cancellationToken: cancellationToken);
+        await _conversationCollection.InsertOneAsync(conversation, cancellationToken: cancellationToken);
         logger.LogDebug("Successfully added conversation with ID: {Id}", conversation.Id);
     }
 
@@ -52,7 +54,7 @@ public class ConversationRepository(ILogger<ConversationRepository> logger, IMon
     {
         logger.LogDebug("Updating conversation with ID: {Id}", conversation.Id);
         var filter = Builders<Conversation>.Filter.Eq(c => c.Id, conversation.Id);
-        var result = await conversationCollection.ReplaceOneAsync(filter, conversation, cancellationToken: cancellationToken);
+        var result = await _conversationCollection.ReplaceOneAsync(filter, conversation, cancellationToken: cancellationToken);
 
         if (result.MatchedCount == 0)
         {
@@ -67,7 +69,7 @@ public class ConversationRepository(ILogger<ConversationRepository> logger, IMon
     {
         logger.LogDebug("Deleting conversation with ID: {Id}", conversation.Id);
         var filter = Builders<Conversation>.Filter.Eq(c => c.Id, conversation.Id);
-        var result = await conversationCollection.DeleteOneAsync(filter, cancellationToken);
+        var result = await _conversationCollection.DeleteOneAsync(filter, cancellationToken);
 
         if (result.DeletedCount == 0)
         {
@@ -111,14 +113,14 @@ public class ConversationRepository(ILogger<ConversationRepository> logger, IMon
             updates.Add(Builders<Conversation>.Update.Set(c => c.CurrentOptions, conversationRound.Options));
             logger.LogDebug("Updating current options");
         }
-
+        updates.Add(Builders<Conversation>.Update.Set(c => c.UpdatedAt, DateTimeOffset.UtcNow));
         var combinedUpdate = Builders<Conversation>.Update.Combine(updates);
         var options = new FindOneAndUpdateOptions<Conversation>
         {
             ReturnDocument = ReturnDocument.After
         };
 
-        var updatedConversation = await conversationCollection.FindOneAndUpdateAsync(filter, combinedUpdate, options, cancellationToken);
+        var updatedConversation = await _conversationCollection.FindOneAndUpdateAsync(filter, combinedUpdate, options, cancellationToken);
 
         if (updatedConversation == null)
         {
@@ -152,13 +154,20 @@ public class ConversationRepository(ILogger<ConversationRepository> logger, IMon
 
         // Update the response of the last round using FindOneAndUpdate
         var filter = Builders<Conversation>.Filter.Eq(c => c.Id, id);
-        var update = Builders<Conversation>.Update.Set($"Rounds.{lastRoundIndex}.Response", chatResponse);
+        var dateTimeOffset = DateTimeOffset.UtcNow;
+        var updates = new List<UpdateDefinition<Conversation>>
+        {
+            Builders<Conversation>.Update.Set($"Rounds.{lastRoundIndex}.Response", chatResponse),
+            Builders<Conversation>.Update.Set($"Rounds.{lastRoundIndex}.UpdatedAt", dateTimeOffset),
+            Builders<Conversation>.Update.Set(c => c.UpdatedAt, dateTimeOffset)
+        };
+        var combinedUpdate = Builders<Conversation>.Update.Combine(updates);
         var options = new FindOneAndUpdateOptions<Conversation>
         {
             ReturnDocument = ReturnDocument.After
         };
 
-        var updatedConversation = await conversationCollection.FindOneAndUpdateAsync(filter, update, options, cancellationToken);
+        var updatedConversation = await _conversationCollection.FindOneAndUpdateAsync(filter, combinedUpdate, options, cancellationToken);
 
         if (updatedConversation == null)
         {

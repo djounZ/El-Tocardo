@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using OllamaSharp;
 
 namespace ElTocardo.Infrastructure.Configuration;
@@ -33,22 +34,22 @@ public static class ServiceCollectionExtensions
     ///     Requires IMemoryCache to be registered in the service collection.
     /// </summary>
     public static IServiceCollection AddElTocardoInfrastructure<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services,
-        IConfiguration configuration) where TApplicationDbContextOptionsConfiguration : class, IDbContextOptionsConfiguration<ApplicationDbContext>
+        IConfiguration configuration, MongoClientSettings mongoClientSettings, string mongoDatabaseName) where TApplicationDbContextOptionsConfiguration : class, IDbContextOptionsConfiguration<ApplicationDbContext>
     {
         return services
             .AddAiClients(configuration)
-            .AddMediator<TApplicationDbContextOptionsConfiguration>()
+            .AddMediator<TApplicationDbContextOptionsConfiguration>(mongoClientSettings, mongoDatabaseName)
             .AddOptions(configuration)
             .AddServices()
             .AddElTocardoApplication(configuration);
     }
 
-    private static IServiceCollection AddMediator<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services) where TApplicationDbContextOptionsConfiguration : class, IDbContextOptionsConfiguration<ApplicationDbContext>
+    private static IServiceCollection AddMediator<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services, MongoClientSettings mongoClientSettings, string mongoDatabaseName) where TApplicationDbContextOptionsConfiguration : class, IDbContextOptionsConfiguration<ApplicationDbContext>
     {
 
         return services
             .AddEntityFramework<TApplicationDbContextOptionsConfiguration>()
-            .AddMongoDb();
+            .AddMongoDb(mongoClientSettings, mongoDatabaseName);
     }
 
 
@@ -64,9 +65,10 @@ public static class ServiceCollectionExtensions
 
 
 
-    private static IServiceCollection AddMongoDb(this IServiceCollection services)
+    private static IServiceCollection AddMongoDb(this IServiceCollection services, MongoClientSettings mongoClientSettings, string mongoDatabaseName)
     {
-
+        services.AddSingleton<IMongoClient>(_=>new MongoClient(mongoClientSettings));
+        services.AddScoped<IMongoDatabase>(sp =>sp.GetRequiredService<IMongoClient>().GetDatabase(mongoDatabaseName));
         return services;
     }
 

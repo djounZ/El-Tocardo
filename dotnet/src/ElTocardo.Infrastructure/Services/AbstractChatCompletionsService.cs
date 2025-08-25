@@ -7,12 +7,10 @@ namespace ElTocardo.Infrastructure.Services;
 
 public abstract class AbstractChatCompletionsService(
     ILogger<AbstractChatCompletionsService> logger,
-    AiChatCompletionMapper aiChatCompletionMapper,
     ChatClientProvider clientProvider,
     AiToolsProviderService aiToolsProviderService)
 {
     protected ILogger<AbstractChatCompletionsService> Logger { get; } = logger;
-    protected AiChatCompletionMapper AiChatCompletionMapper { get; } = aiChatCompletionMapper;
     protected ChatClientProvider ClientProvider { get; } = clientProvider;
 
     protected async Task MapTools(ChatOptionsDto? chatOptionsDto,

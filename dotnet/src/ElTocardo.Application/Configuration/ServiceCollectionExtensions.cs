@@ -2,6 +2,7 @@ using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Dtos.Conversation;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
 using ElTocardo.Application.Mappers.Dtos.AI;
+using ElTocardo.Application.Mappers.Dtos.Conversation;
 using ElTocardo.Application.Mappers.Dtos.ModelContextProtocol;
 using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Application.Mediator.ConversationMediator.Commands;
@@ -54,8 +55,12 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddDtos(this IServiceCollection services)
     {
-        services.AddAi()
-            .TryAddSingleton<ModelContextProtocolMapper>();
+        services.AddAi();
+
+
+        services.TryAddSingleton<ConversationDtoChatDtoMapper>();
+
+        services.TryAddSingleton<ModelContextProtocolMapper>();
         return services;
     }
 

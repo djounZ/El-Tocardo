@@ -8,11 +8,6 @@ namespace ElTocardo.Application.Mappers.Dtos.Conversation;
 
 public sealed class ConversationDtoChatDtoMapper(AiChatCompletionMapper aiChatCompletionMapper)
 {
-    public ChatRequestDto MapToChatRequestDto(StartConversationRequestDto startConversationRequestDto)
-    {
-        return new ChatRequestDto([startConversationRequestDto.InitialUserMessage], startConversationRequestDto.InitialProvider, startConversationRequestDto.Options);
-    }
-
     public ConversationResponseDto MapToConversationResponseDto(string conversationId, ChatResponse chatResponse)
     {
         var chatResponseDto = aiChatCompletionMapper.MapToChatResponseDto(chatResponse);
@@ -25,9 +20,18 @@ public sealed class ConversationDtoChatDtoMapper(AiChatCompletionMapper aiChatCo
         return new ConversationUpdateResponseDto(conversationId, chatResponseUpdateDto.Role, chatResponseUpdateDto.Contents, chatResponseUpdateDto.CreatedAt, chatResponseUpdateDto.FinishReason, chatResponseUpdateDto.ModelId);
     }
 
-
-    public ChatRequestDto MapToChatRequestDto(ContinueConversationDto continueConversationDto, IList<ChatMessageDto> previousMessages, AiProviderEnumDto? previousProvider = null, ChatOptionsDto? previousOptions = null)
+    public (ChatMessage ChatMessage, ChatOptions? ChatOptions) MapToChatMessageAndOptions(StartConversationRequestDto startConversationRequestDto)
     {
-        return new ChatRequestDto([..previousMessages, continueConversationDto.UserMessage], continueConversationDto.Provider ?? previousProvider, continueConversationDto.Options ?? previousOptions);
+        var chatMessage = aiChatCompletionMapper.MapToChatMessage(startConversationRequestDto.InitialUserMessage);
+        var chatOptions = aiChatCompletionMapper.MapToChatOptions(startConversationRequestDto.Options);
+        return (chatMessage, chatOptions);
+    }
+
+
+    public (ChatMessage ChatMessage, ChatOptions? ChatOptions) MapToChatMessageAndOptions(ContinueConversationDto continueConversationDto)
+    {
+        var chatMessage = aiChatCompletionMapper.MapToChatMessage(continueConversationDto.UserMessage);
+        var chatOptions = aiChatCompletionMapper.MapToChatOptions(continueConversationDto.Options);
+        return (chatMessage, chatOptions);
     }
 }

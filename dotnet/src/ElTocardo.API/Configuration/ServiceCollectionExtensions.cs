@@ -4,6 +4,7 @@ using ElTocardo.Infrastructure.Configuration;
 using ElTocardo.Infrastructure.Mediator.EntityFramework.Data;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using OpenIddict.Validation.AspNetCore;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
@@ -38,8 +39,9 @@ public static class ServiceCollectionExtensions
                 sc.GetRequiredService<IHttpContextAccessor>().HttpContext?.User.Identity?.Name ?? string.Empty);
         });
 
+        var fromConnectionString = MongoClientSettings.FromConnectionString(configuration.GetConnectionString("el-tocardo-db-mongodb"));
         services
-            .AddElTocardoInfrastructure<DbContextOptionsConfiguration>(configuration);
+            .AddElTocardoInfrastructure<DbContextOptionsConfiguration>(configuration, fromConnectionString,"el-tocardo-db-mongodb");
 
         services.AddOpenTelemetryExporters(configuration)
             .AddOpenTelemetry()
