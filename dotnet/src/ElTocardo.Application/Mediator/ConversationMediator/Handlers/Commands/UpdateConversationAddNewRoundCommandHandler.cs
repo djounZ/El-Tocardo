@@ -26,7 +26,6 @@ public class UpdateConversationAddNewRoundCommandHandler(
         var conversationRound = new ConversationRound(command.UserMessage, command.Options, command.Provider ?? string.Empty);
         // Save changes
         var conversation = await repository.AddRoundAsync(command.Id,conversationRound, cancellationToken);
-        await repository.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Conversation updated successfully: {ServerName}", command);
 

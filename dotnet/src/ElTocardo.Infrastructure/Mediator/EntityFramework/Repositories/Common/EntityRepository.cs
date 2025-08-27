@@ -56,28 +56,24 @@ public abstract class EntityRepository<TEntity, TId, TKey>(
         logger.LogDebug("Adding {@Entity}: {key}", EntityName, configuration.GetKey());
 
         await dbSet.AddAsync(configuration, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
-    public Task UpdateAsync(TEntity configuration, CancellationToken cancellationToken = default)
+    public  async Task UpdateAsync(TEntity configuration, CancellationToken cancellationToken = default)
     {
         logger.LogDebug("Updating {@Entity}: {key}", EntityName, configuration.GetKey());
 
         dbSet.Update(configuration);
-        return Task.CompletedTask;
-    }
-
-    public Task DeleteAsync(TEntity configuration, CancellationToken cancellationToken = default)
-    {
-        logger.LogDebug("Deleting {@Entity}: {key}", EntityName, configuration.GetKey());
-
-        dbSet.Remove(configuration);
-        return Task.CompletedTask;
-    }
-
-    public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        logger.LogDebug("Saving changes to database");
-
         await context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task DeleteAsync(TKey configuration, CancellationToken cancellationToken = default)
+    {
+        logger.LogDebug("Deleting {@Entity}: {key}", EntityName, configuration);
+
+        var byKeyAsync = await GetByKeyAsync(configuration, cancellationToken);
+        dbSet.Remove(byKeyAsync!);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
 }

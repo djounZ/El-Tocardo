@@ -12,4 +12,4 @@ public class GetConversationByIdQueryHandler(
     IConversationRepository repository,
     ILogger<GetConversationByIdQueryHandler> logger,
     ConversationDomainGetDtoMapper mapper)
-    : GetEntityByIdQueryHandler<Conversation, string, string, GetConversationByIdQuery, ConversationResponseDto>(repository, logger, mapper);
+    : GetEntityByKeyQueryHandler<Conversation, string, string, GetConversationByIdQuery, ConversationResponseDto>(repository, logger, mapper);

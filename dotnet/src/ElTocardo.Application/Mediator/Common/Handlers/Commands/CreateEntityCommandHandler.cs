@@ -26,14 +26,14 @@ public class CreateEntityCommandHandler<TEntity, TId,  TKey, TCommand>(
         // Create domain entity
         var configuration = commandMapper.CreateFromCommand(command);
 
-        if (await repository.ExistsAsync(configuration.GetKey(), cancellationToken))
+        var byKeyAsync = await repository.GetByKeyAsync(configuration.GetKey(), cancellationToken);
+        if (byKeyAsync != null)
         {
             throw new InvalidOperationException(
                 $"{EntityName} with key {configuration.GetKey()} already exists.");
         }
         // Add to repository
         await repository.AddAsync(configuration, cancellationToken);
-        await repository.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("{@Entity} created successfully: {ServerName} with ID: {Id}",EntityName,
             command, configuration.Id);

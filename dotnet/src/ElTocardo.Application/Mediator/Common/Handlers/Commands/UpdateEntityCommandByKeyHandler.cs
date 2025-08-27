@@ -32,7 +32,6 @@ public class UpdateEntityCommandByKeyHandler<TEntity, TId, TKey, TCommand>(
 
         // Save changes
         await repository.UpdateAsync(configuration!, cancellationToken);
-        await repository.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("{@Entity} updated successfully: {ServerName}",EntityName, command);
     }

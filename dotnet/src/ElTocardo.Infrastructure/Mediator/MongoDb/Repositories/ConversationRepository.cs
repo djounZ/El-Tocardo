@@ -65,27 +65,19 @@ public class ConversationRepository(ILogger<ConversationRepository> logger, IMon
         logger.LogDebug("Successfully updated conversation with ID: {Id}", conversation.Id);
     }
 
-    public async Task DeleteAsync(Conversation conversation, CancellationToken cancellationToken = default)
+    public async Task DeleteAsync(string id, CancellationToken cancellationToken = default)
     {
-        logger.LogDebug("Deleting conversation with ID: {Id}", conversation.Id);
-        var filter = Builders<Conversation>.Filter.Eq(c => c.Id, conversation.Id);
+        logger.LogDebug("Deleting conversation with ID: {Id}", id);
+        var filter = Builders<Conversation>.Filter.Eq(c => c.Id, id);
         var result = await _conversationCollection.DeleteOneAsync(filter, cancellationToken);
 
         if (result.DeletedCount == 0)
         {
-            logger.LogWarning("No conversation found with ID: {Id} for deletion", conversation.Id);
-            throw new InvalidOperationException($"Conversation with ID {conversation.Id} not found for deletion");
+            logger.LogWarning("No conversation found with ID: {Id} for deletion", id);
+            throw new InvalidOperationException($"Conversation with ID {id} not found for deletion");
         }
 
-        logger.LogDebug("Successfully deleted conversation with ID: {Id}", conversation.Id);
-    }
-
-    public Task SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        // MongoDB doesn't require explicit save changes like EF Core
-        // Changes are persisted immediately with each operation
-        logger.LogDebug("SaveChangesAsync called - MongoDB persists changes immediately");
-        return Task.CompletedTask;
+        logger.LogDebug("Successfully deleted conversation with ID: {Id}", id);
     }
 
     public async Task<Conversation> AddRoundAsync(string id, ConversationRound conversationRound, CancellationToken cancellationToken = default)

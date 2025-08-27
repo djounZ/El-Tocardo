@@ -17,17 +17,9 @@ public class DeleteEntityCommandHandler<TEntity, TId, TKey, TCommand>(
     {
         logger.LogInformation("Deleting {@Entity}: {ServerName}",EntityName, command.Key);
 
-        // Get existing configuration
-        var configuration = await repository.GetByKeyAsync(command.Key, cancellationToken);
-        if (configuration == null)
-        {
-            logger.LogWarning("MCP server not found: {ServerName}", command.Key);
-            return;
-        }
 
         // Delete configuration
-        await repository.DeleteAsync(configuration, cancellationToken);
-        await repository.SaveChangesAsync(cancellationToken);
+        await repository.DeleteAsync(command.Key, cancellationToken);
 
         logger.LogInformation("{@Entity} deleted successfully: {ServerName}",EntityName, command.Key);
     }
