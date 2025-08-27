@@ -10,7 +10,7 @@ namespace ElTocardo.Infrastructure.Mediator.EntityFramework.Repositories;
 public class McpServerConfigurationRepository(
     ApplicationDbContext context,
     ILogger<McpServerConfigurationRepository> logger)
-    : GuidIdEntityRepository<McpServerConfiguration, string>(context, context.McpServerConfigurations, logger), IMcpServerConfigurationRepository
+    : EntityRepository<McpServerConfiguration,Guid, string>(context, context.McpServerConfigurations, logger), IMcpServerConfigurationRepository
 {
     protected override async Task<McpServerConfiguration?> GetByKeyAsync(string key, DbSet<McpServerConfiguration> dbSet, CancellationToken cancellationToken = default)
     {
@@ -18,9 +18,4 @@ public class McpServerConfigurationRepository(
             .FirstOrDefaultAsync(x => x.ServerName == key, cancellationToken);
     }
 
-    protected  override  async Task<bool> ExistsAsync(string key, DbSet<McpServerConfiguration> dbSet, CancellationToken cancellationToken = default)
-    {
-        return  await dbSet
-            .AnyAsync(x => x.ServerName == key, cancellationToken);
-    }
 }

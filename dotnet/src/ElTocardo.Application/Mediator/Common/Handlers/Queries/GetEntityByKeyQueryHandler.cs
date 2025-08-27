@@ -1,7 +1,9 @@
+using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Application.Mediator.Common.Mappers;
 using ElTocardo.Application.Mediator.Common.Queries;
 using ElTocardo.Domain.Mediator.Common.Entities;
 using ElTocardo.Domain.Mediator.Common.Repositories;
+using ElTocardo.Domain.Models;
 using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Application.Mediator.Common.Handlers.Queries;
@@ -9,18 +11,23 @@ namespace ElTocardo.Application.Mediator.Common.Handlers.Queries;
 public class GetEntityByKeyQueryHandler<TEntity, TId, TKey, TQuery, TDto>(
     IEntityRepository<TEntity,TId, TKey> repository,
     ILogger<GetEntityByKeyQueryHandler<TEntity, TId, TKey, TQuery, TDto>> logger,
-    AbstractDomainGetDtoMapper<TEntity,TId,TKey, TDto> commandMapper): QueryHandlerBase<TQuery, TDto>(logger) where TQuery : GetByKeyQueryBase<TKey> where TEntity : IEntity<TId,TKey>
+    AbstractDomainGetDtoMapper<TEntity,TId,TKey, TDto> commandMapper): IQueryHandler<TQuery, TDto> where TQuery : GetByKeyQueryBase<TKey> where TEntity : IEntity<TId,TKey>
 {
     private string EntityName => typeof(TEntity).Name;
-    protected override async Task<TDto> HandleAsyncImplementation(
+    public async Task<Result<TDto>> HandleAsync(
         TQuery query,
         CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Getting {@Entity}: {ServerName}",EntityName, query.Key);
 
-        var configuration = await repository.GetByKeyAsync(query.Key, cancellationToken);
+        var byKeyAsync = await repository.GetByKeyAsync(query.Key, cancellationToken);
 
-        var result = commandMapper.MapDomainToDto(configuration!);
+        if (!byKeyAsync.IsSuccess)
+        {
+            return byKeyAsync.ReadError();
+        }
+
+        var result = commandMapper.MapDomainToDto(byKeyAsync.ReadValue());
 
         logger.LogInformation("Retrieved {@Entity}: {ServerName}",EntityName,  query.Key);
         return result;

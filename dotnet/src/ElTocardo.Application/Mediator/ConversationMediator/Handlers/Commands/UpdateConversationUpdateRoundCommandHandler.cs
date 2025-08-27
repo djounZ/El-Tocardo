@@ -1,8 +1,8 @@
-using ElTocardo.Application.Mediator.Common.Handlers;
+using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Application.Mediator.ConversationMediator.Commands;
-using ElTocardo.Application.Mediator.ConversationMediator.Mappers;
 using ElTocardo.Domain.Mediator.ConversationMediator.Entities;
 using ElTocardo.Domain.Mediator.ConversationMediator.Repositories;
+using ElTocardo.Domain.Models;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 
@@ -12,23 +12,23 @@ public class UpdateConversationUpdateRoundCommandHandler(
     IConversationRepository repository,
     ILogger<UpdateConversationUpdateRoundCommandHandler> logger,
     IValidator<UpdateConversationUpdateRoundCommand> validator)
-    : CommandHandlerBase<UpdateConversationUpdateRoundCommand, Conversation>(logger)
+    : ICommandHandler<UpdateConversationUpdateRoundCommand, Conversation>
 {
 
-    protected override async Task<Conversation> HandleAsyncImplementation(
+    public async Task<Result<Conversation>> HandleAsync(
         UpdateConversationUpdateRoundCommand command,
         CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Updating Conversation: {ServerName}", command);
 
         // Validate command
-        await validator.ValidateAndThrowAsync(command, cancellationToken);
+        var validationResult = await validator.ValidateAsync(command, cancellationToken);
+        if (!validationResult.IsValid)
+        {
+            return new ValidationException(string.Concat(validationResult.Errors.Select(e => e.ErrorMessage)));
+        }
 
         // Save changes
-        var conversation = await repository.UpdateRoundAsync(command.Id, command.ChatResponse, cancellationToken);
-
-        logger.LogInformation("Conversation updated successfully: {ServerName}", command);
-
-        return conversation;
+        return await repository.UpdateRoundAsync(command.Id, command.ChatResponse, cancellationToken);
     }
 }

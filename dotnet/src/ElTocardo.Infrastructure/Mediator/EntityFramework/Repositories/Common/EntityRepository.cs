@@ -1,5 +1,6 @@
 using ElTocardo.Domain.Mediator.Common.Entities;
 using ElTocardo.Domain.Mediator.Common.Repositories;
+using ElTocardo.Domain.Models;
 using ElTocardo.Infrastructure.Mediator.EntityFramework.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -13,66 +14,106 @@ public abstract class EntityRepository<TEntity, TId, TKey>(
 {
     private static string EntityName => typeof(TEntity).Name;
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<TEntity>>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         logger.LogDebug("Getting all {@Entities} from database", EntityName);
 
-        return await dbSet
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
+        try
+        {
+            return await dbSet
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error getting all {@Entities} from database", EntityName);
+            return ex;
+        }
     }
 
 
-    public async Task<TEntity?> GetByIdAsync(TId id, CancellationToken cancellationToken = default)
-    {
-        logger.LogDebug("Getting {@Entity} by ID: {Id}", EntityName, id);
-
-        return await GetByIdAsync(id, dbSet, cancellationToken);
-    }
-    protected abstract Task<TEntity?> GetByIdAsync(TId id, DbSet<TEntity> currentDbSet, CancellationToken cancellationToken = default);
-    public async Task<TEntity?> GetByKeyAsync(TKey key, CancellationToken cancellationToken = default)
+    public async Task<Result<TEntity>> GetByKeyAsync(TKey key, CancellationToken cancellationToken = default)
     {
         logger.LogDebug("Getting {@Entity} by name: {key}", EntityName, key);
 
-        return await GetByKeyAsync(key, dbSet, cancellationToken);
+        try
+        {
+            var byKeyAsync = await GetByKeyAsync(key, dbSet, cancellationToken);
+            if (byKeyAsync is null)
+            {
+                logger.LogError("Key {key} not found",key);
+                return new KeyNotFoundException($"Key {key} not found");
+            }
+
+            return byKeyAsync;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error getting {@Entity} by name: {key}", EntityName, key);
+            return ex;
+        }
     }
 
     protected abstract Task<TEntity?> GetByKeyAsync(TKey key, DbSet<TEntity> dbSet,
         CancellationToken cancellationToken = default);
 
 
-    public async Task<bool> ExistsAsync(TKey key, CancellationToken cancellationToken = default)
-    {
-        logger.LogDebug("Checking if {@Entity} exists: {key}", EntityName, key);
-
-        return await ExistsAsync(key, dbSet, cancellationToken);
-    }
-
-    protected abstract  Task<bool> ExistsAsync(TKey key,
-        DbSet<TEntity> dbSet, CancellationToken cancellationToken = default);
-    public async Task AddAsync(TEntity configuration, CancellationToken cancellationToken = default)
+    public async Task<VoidResult> AddAsync(TEntity configuration, CancellationToken cancellationToken = default)
     {
         logger.LogDebug("Adding {@Entity}: {key}", EntityName, configuration.GetKey());
 
-        await dbSet.AddAsync(configuration, cancellationToken);
-        await context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await dbSet.AddAsync(configuration, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
+            return VoidResult.Success;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error adding {@Entity}: {key}", EntityName, configuration.GetKey());
+            return ex;
+        }
     }
 
-    public  async Task UpdateAsync(TEntity configuration, CancellationToken cancellationToken = default)
+    public  async Task<VoidResult> UpdateAsync(TEntity configuration, CancellationToken cancellationToken = default)
     {
         logger.LogDebug("Updating {@Entity}: {key}", EntityName, configuration.GetKey());
-
-        dbSet.Update(configuration);
-        await context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            dbSet.Update(configuration);
+            await context.SaveChangesAsync(cancellationToken);
+            return VoidResult.Success;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error setting {@Entity}: {key}", EntityName, configuration.GetKey());
+            return ex;
+        }
     }
 
-    public async Task DeleteAsync(TKey configuration, CancellationToken cancellationToken = default)
+    public async Task<VoidResult> DeleteAsync(TKey configuration, CancellationToken cancellationToken = default)
     {
         logger.LogDebug("Deleting {@Entity}: {key}", EntityName, configuration);
 
         var byKeyAsync = await GetByKeyAsync(configuration, cancellationToken);
-        dbSet.Remove(byKeyAsync!);
-        await context.SaveChangesAsync(cancellationToken);
+
+        if (!byKeyAsync.IsSuccess)
+        {
+            return byKeyAsync;
+        }
+
+        try
+        {
+
+            dbSet.Remove(byKeyAsync.ReadValue());
+            await context.SaveChangesAsync(cancellationToken);
+            return  VoidResult.Success;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error deleting {@Entity}: {key}", EntityName, configuration);
+            return ex;
+        }
     }
 
 }

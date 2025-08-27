@@ -10,17 +10,11 @@ namespace ElTocardo.Infrastructure.Mediator.EntityFramework.Repositories;
 public class PresetChatOptionsRepository(
     ApplicationDbContext context,
     ILogger<PresetChatOptionsRepository> logger)
-    : GuidIdEntityRepository<PresetChatOptions, string>(context, context.PresetChatOptions, logger), IPresetChatOptionsRepository
+    : EntityRepository<PresetChatOptions,Guid, string>(context, context.PresetChatOptions, logger), IPresetChatOptionsRepository
 {
     protected override async Task<PresetChatOptions?> GetByKeyAsync(string key, DbSet<PresetChatOptions> dbSet, CancellationToken cancellationToken = default)
     {
         return await dbSet
             .FirstOrDefaultAsync(x => x.Name == key, cancellationToken);
-    }
-
-    protected override async Task<bool> ExistsAsync(string key, DbSet<PresetChatOptions> dbSet, CancellationToken cancellationToken = default)
-    {
-        return await dbSet
-            .AnyAsync(x => x.Name == key, cancellationToken);
     }
 }

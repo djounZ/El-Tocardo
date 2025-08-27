@@ -1,7 +1,9 @@
 using ElTocardo.Application.Mediator.Common.Commands;
+using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Application.Mediator.Common.Mappers;
 using ElTocardo.Domain.Mediator.Common.Entities;
 using ElTocardo.Domain.Mediator.Common.Repositories;
+using ElTocardo.Domain.Models;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 
@@ -12,27 +14,36 @@ public class UpdateEntityCommandByKeyHandler<TEntity, TId, TKey, TCommand>(
     ILogger<UpdateEntityCommandByKeyHandler<TEntity, TId, TKey, TCommand>> logger,
     IValidator<TCommand> validator,
     AbstractDomainUpdateCommandMapper<TEntity,TId, TKey,TCommand> commandMapper)
-    : CommandHandlerBase<TCommand>(logger) where TEntity: IEntity<TId,TKey> where TCommand : UpdateCommandBase<TKey>
+    : ICommandHandler<TCommand> where TEntity: IEntity<TId,TKey> where TCommand : UpdateCommandBase<TKey>
 {
 
     private string EntityName => typeof(TEntity).Name;
-    protected override async Task HandleAsyncImplementation(TCommand command,
+    public async Task<VoidResult> HandleAsync(TCommand command,
         CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Updating {@Entity}: {ServerName}",EntityName, command);
 
         // Validate command
-        await validator.ValidateAndThrowAsync(command, cancellationToken);
+        var validationResult = await validator.ValidateAsync(command, cancellationToken);
+        if (!validationResult.IsValid)
+        {
+            return string.Concat(validationResult.Errors.Select(e => e.ErrorMessage));
+        }
 
         // Get existing configuration
-        var configuration = await repository.GetByKeyAsync(command.Id, cancellationToken);
+        var byKeyAsync = await repository.GetByKeyAsync(command.Id, cancellationToken);
+
+        if (!byKeyAsync.IsSuccess)
+        {
+            return byKeyAsync.ReadError();
+        }
+
+        var entity = byKeyAsync.ReadValue();
 
         // Update configuration
-        commandMapper.UpdateFromCommand(configuration!, command);
+        commandMapper.UpdateFromCommand(entity, command);
 
         // Save changes
-        await repository.UpdateAsync(configuration!, cancellationToken);
-
-        logger.LogInformation("{@Entity} updated successfully: {ServerName}",EntityName, command);
+        return await repository.UpdateAsync(entity, cancellationToken);
     }
 }
