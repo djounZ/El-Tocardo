@@ -9,9 +9,9 @@ using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Application.Mediator.Common.Handlers.Commands;
 
-public class UpdateEntityCommandByKeyHandler<TEntity, TId, TKey, TCommand>(
+public class UpdateEntityCommandHandler<TEntity, TId, TKey, TCommand>(
     IEntityRepository<TEntity,TId, TKey> repository,
-    ILogger<UpdateEntityCommandByKeyHandler<TEntity, TId, TKey, TCommand>> logger,
+    ILogger<UpdateEntityCommandHandler<TEntity, TId, TKey, TCommand>> logger,
     IValidator<TCommand> validator,
     AbstractDomainUpdateCommandMapper<TEntity,TId, TKey,TCommand> commandMapper)
     : ICommandHandler<TCommand> where TEntity: IEntity<TId,TKey> where TCommand : UpdateCommandBase<TKey>

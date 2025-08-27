@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using ElTocardo.Domain.Mediator.ConversationMediator.Entities;
 using ElTocardo.Domain.Mediator.ConversationMediator.Repositories;
 using ElTocardo.Domain.Models;
@@ -7,110 +8,22 @@ using MongoDB.Driver;
 
 namespace ElTocardo.Infrastructure.Mediator.MongoDb.Repositories;
 
-public class ConversationRepository(ILogger<ConversationRepository> logger, IMongoDatabase mongoDatabase) : IConversationRepository
+public class ConversationRepository(ILogger<ConversationRepository> logger, IMongoDatabase mongoDatabase)
+    : MongoCollectionRepository<Conversation, string, string>(logger, mongoDatabase), IConversationRepository
 {
-    private readonly IMongoCollection<Conversation> _conversationCollection = mongoDatabase.GetCollection<Conversation>(nameof(Conversation));
-
-    public async Task<Result<IEnumerable<Conversation>>> GetAllAsync(CancellationToken cancellationToken = default)
+    protected override Expression<Func<Conversation, bool>> GetByKeySelector(string id)
     {
-        logger.LogDebug("Getting all conversations");
-        try
-        {
-
-            var conversations = await _conversationCollection.Find(_ => true).ToListAsync(cancellationToken);
-            logger.LogDebug("Retrieved {Count} conversations", conversations.Count);
-            return conversations;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error getting conversations");
-            return ex;
-        }
+        return  x => x.Id == id;
     }
 
-    public async Task<Result<Conversation>> GetByKeyAsync(string key, CancellationToken cancellationToken = default)
+    protected override FilterDefinition<Conversation> GetUpdateFilter(Conversation entity)
     {
-        try
-        {
-            logger.LogDebug("Getting conversation by key: {Key}", key);
-            var conversation = await _conversationCollection.Find(c => c.Title == key).FirstOrDefaultAsync(cancellationToken);
-            if (conversation == null)
-            {
-                return new KeyNotFoundException($"Key {key} not found");
-            }
-            return conversation;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error getting conversation by key");
-            return ex;
-        }
+        return Builders<Conversation>.Filter.Eq(c => c.Id, entity.Id);
     }
 
-    public async Task<VoidResult> AddAsync(Conversation conversation, CancellationToken cancellationToken = default)
+    protected override FilterDefinition<Conversation> GetDeleteFilter(string key)
     {
-        try
-        {
-
-            logger.LogDebug("Adding conversation with ID: {Id}", conversation.Id);
-            await _conversationCollection.InsertOneAsync(conversation, cancellationToken: cancellationToken);
-            logger.LogDebug("Successfully added conversation with ID: {Id}", conversation.Id);
-            return VoidResult.Success;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error adding conversation");
-            return ex;
-        }
-    }
-
-    public async Task<VoidResult> UpdateAsync(Conversation conversation, CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            logger.LogDebug("Updating conversation with ID: {Id}", conversation.Id);
-            var filter = Builders<Conversation>.Filter.Eq(c => c.Id, conversation.Id);
-            var result = await _conversationCollection.ReplaceOneAsync(filter, conversation, cancellationToken: cancellationToken);
-
-            if (result.MatchedCount == 0)
-            {
-                logger.LogWarning("No conversation found with ID: {Id} for update", conversation.Id);
-                return new InvalidOperationException($"Conversation with ID {conversation.Id} not found for update");
-            }
-
-            logger.LogDebug("Successfully updated conversation with ID: {Id}", conversation.Id);
-            return VoidResult.Success;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error updating conversation");
-            return ex;
-        }
-    }
-
-    public async Task<VoidResult> DeleteAsync(string id, CancellationToken cancellationToken = default)
-    {
-        try
-        {
-
-            logger.LogDebug("Deleting conversation with ID: {Id}", id);
-            var filter = Builders<Conversation>.Filter.Eq(c => c.Id, id);
-            var result = await _conversationCollection.DeleteOneAsync(filter, cancellationToken);
-
-            if (result.DeletedCount == 0)
-            {
-                logger.LogWarning("No conversation found with ID: {Id} for deletion", id);
-                return new InvalidOperationException($"Conversation with ID {id} not found for deletion");
-            }
-
-            logger.LogDebug("Successfully deleted conversation with ID: {Id}", id);
-            return VoidResult.Success;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error deleting conversation");
-            return ex;
-        }
+        return Builders<Conversation>.Filter.Eq(c => c.Id, key);
     }
 
     public async Task<Result<Conversation>> AddRoundAsync(string id, ConversationRound conversationRound, CancellationToken cancellationToken = default)
@@ -147,7 +60,7 @@ public class ConversationRepository(ILogger<ConversationRepository> logger, IMon
                 ReturnDocument = ReturnDocument.After
             };
 
-            var updatedConversation = await _conversationCollection.FindOneAndUpdateAsync(filter, combinedUpdate, options, cancellationToken);
+            var updatedConversation = await EntityCollection.FindOneAndUpdateAsync(filter, combinedUpdate, options, cancellationToken);
 
             if (updatedConversation == null)
             {
@@ -204,7 +117,7 @@ public class ConversationRepository(ILogger<ConversationRepository> logger, IMon
                 ReturnDocument = ReturnDocument.After
             };
 
-            var updatedConversation = await _conversationCollection.FindOneAndUpdateAsync(filter, combinedUpdate, options, cancellationToken);
+            var updatedConversation = await EntityCollection.FindOneAndUpdateAsync(filter, combinedUpdate, options, cancellationToken);
 
             if (updatedConversation == null)
             {

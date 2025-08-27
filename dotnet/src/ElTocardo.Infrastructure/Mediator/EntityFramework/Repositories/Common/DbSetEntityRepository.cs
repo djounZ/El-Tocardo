@@ -7,10 +7,10 @@ using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Infrastructure.Mediator.EntityFramework.Repositories.Common;
 
-public abstract class EntityRepository<TEntity, TId, TKey>(
+public abstract class DbSetEntityRepository<TEntity, TId, TKey>(
     ApplicationDbContext context,
     DbSet<TEntity> dbSet,
-    ILogger<EntityRepository<TEntity,TId,  TKey>> logger) :IEntityRepository<TEntity,TId,TKey> where TEntity: AbstractEntity<TId,TKey>
+    ILogger<DbSetEntityRepository<TEntity,TId,  TKey>> logger) :IEntityRepository<TEntity,TId,TKey> where TEntity: AbstractEntity<TId,TKey>
 {
     private static string EntityName => typeof(TEntity).Name;
 
@@ -58,44 +58,44 @@ public abstract class EntityRepository<TEntity, TId, TKey>(
         CancellationToken cancellationToken = default);
 
 
-    public async Task<VoidResult> AddAsync(TEntity configuration, CancellationToken cancellationToken = default)
+    public async Task<VoidResult> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        logger.LogDebug("Adding {@Entity}: {key}", EntityName, configuration.GetKey());
+        logger.LogDebug("Adding {@Entity}: {key}", EntityName, entity.GetKey());
 
         try
         {
-            await dbSet.AddAsync(configuration, cancellationToken);
+            await dbSet.AddAsync(entity, cancellationToken);
             await context.SaveChangesAsync(cancellationToken);
             return VoidResult.Success;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error adding {@Entity}: {key}", EntityName, configuration.GetKey());
+            logger.LogError(ex, "Error adding {@Entity}: {key}", EntityName, entity.GetKey());
             return ex;
         }
     }
 
-    public  async Task<VoidResult> UpdateAsync(TEntity configuration, CancellationToken cancellationToken = default)
+    public  async Task<VoidResult> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        logger.LogDebug("Updating {@Entity}: {key}", EntityName, configuration.GetKey());
+        logger.LogDebug("Updating {@Entity}: {key}", EntityName, entity.GetKey());
         try
         {
-            dbSet.Update(configuration);
+            dbSet.Update(entity);
             await context.SaveChangesAsync(cancellationToken);
             return VoidResult.Success;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error setting {@Entity}: {key}", EntityName, configuration.GetKey());
+            logger.LogError(ex, "Error setting {@Entity}: {key}", EntityName, entity.GetKey());
             return ex;
         }
     }
 
-    public async Task<VoidResult> DeleteAsync(TKey configuration, CancellationToken cancellationToken = default)
+    public async Task<VoidResult> DeleteAsync(TKey key, CancellationToken cancellationToken = default)
     {
-        logger.LogDebug("Deleting {@Entity}: {key}", EntityName, configuration);
+        logger.LogDebug("Deleting {@Entity}: {key}", EntityName, key);
 
-        var byKeyAsync = await GetByKeyAsync(configuration, cancellationToken);
+        var byKeyAsync = await GetByKeyAsync(key, cancellationToken);
 
         if (!byKeyAsync.IsSuccess)
         {
@@ -111,7 +111,7 @@ public abstract class EntityRepository<TEntity, TId, TKey>(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error deleting {@Entity}: {key}", EntityName, configuration);
+            logger.LogError(ex, "Error deleting {@Entity}: {key}", EntityName, key);
             return ex;
         }
     }

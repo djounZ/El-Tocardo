@@ -7,8 +7,8 @@ public interface IEntityRepository<TEntity, in TId, in TKey> where TEntity: IEnt
 {
     public Task<Result<IEnumerable<TEntity>>> GetAllAsync(CancellationToken cancellationToken = default);
     public Task<Result<TEntity>> GetByKeyAsync(TKey key, CancellationToken cancellationToken = default);
-    public Task<VoidResult> AddAsync(TEntity configuration, CancellationToken cancellationToken = default);
-    public Task<VoidResult> UpdateAsync(TEntity configuration, CancellationToken cancellationToken = default);
-    public Task<VoidResult> DeleteAsync(TKey configuration, CancellationToken cancellationToken = default);
+    public Task<VoidResult> AddAsync(TEntity entity, CancellationToken cancellationToken = default);
+    public Task<VoidResult> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
+    public Task<VoidResult> DeleteAsync(TKey key, CancellationToken cancellationToken = default);
 
 }

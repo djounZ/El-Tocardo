@@ -8,10 +8,10 @@ using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Commands;
 
-public class UpdateMcpServerCommandByKeyHandler(
+public class UpdateMcpServerCommandHandler(
     IMcpServerConfigurationRepository repository,
-    ILogger<UpdateMcpServerCommandByKeyHandler> logger,
+    ILogger<UpdateMcpServerCommandHandler> logger,
     IValidator<UpdateMcpServerCommand> validator,
     McpServerConfigurationDomainUpdateCommandMapper mapper)
-    : UpdateEntityCommandByKeyHandler<McpServerConfiguration, Guid, string, UpdateMcpServerCommand>(repository, logger, validator,
+    : UpdateEntityCommandHandler<McpServerConfiguration, Guid, string, UpdateMcpServerCommand>(repository, logger, validator,
         mapper);

@@ -46,7 +46,7 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
         services.AddSingleton<McpServerConfigurationDomainCreateCommandMapper>();
         services.AddScoped<IMcpServerConfigurationRepository, McpServerConfigurationRepository>();
         services.AddScoped<ICommandHandler<CreateMcpServerCommand, Guid>, CreateMcpServerCommandHandler>();
-        services.AddScoped<ICommandHandler<UpdateMcpServerCommand>, UpdateMcpServerCommandByKeyHandler>();
+        services.AddScoped<ICommandHandler<UpdateMcpServerCommand>, UpdateMcpServerCommandHandler>();
         services.AddScoped<ICommandHandler<DeleteMcpServerCommand>, DeleteMcpServerCommandHandler>();
         services
             .AddScoped<IQueryHandler<GetAllMcpServersQuery, Dictionary<string, McpServerConfigurationItemDto>>,
