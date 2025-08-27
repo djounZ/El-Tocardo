@@ -1,6 +1,6 @@
 using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.Conversation;
-using ElTocardo.Application.Mediator.Common.Models;
+using ElTocardo.Domain.Models;
 
 namespace ElTocardo.Application.Services;
 

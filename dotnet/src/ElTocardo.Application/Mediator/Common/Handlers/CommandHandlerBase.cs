@@ -1,5 +1,5 @@
 using ElTocardo.Application.Mediator.Common.Interfaces;
-using ElTocardo.Application.Mediator.Common.Models;
+using ElTocardo.Domain.Models;
 using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Application.Mediator.Common.Handlers;

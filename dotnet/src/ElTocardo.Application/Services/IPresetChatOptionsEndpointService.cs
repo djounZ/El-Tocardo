@@ -1,5 +1,5 @@
 using ElTocardo.Application.Dtos.Configuration;
-using ElTocardo.Application.Mediator.Common.Models;
+using ElTocardo.Domain.Models;
 
 namespace ElTocardo.Application.Services;
 

@@ -4,11 +4,11 @@ using ElTocardo.Application.Dtos.Conversation;
 using ElTocardo.Application.Mappers.Dtos.AI;
 using ElTocardo.Application.Mappers.Dtos.Conversation;
 using ElTocardo.Application.Mediator.Common.Interfaces;
-using ElTocardo.Application.Mediator.Common.Models;
 using ElTocardo.Application.Mediator.ConversationMediator.Commands;
 using ElTocardo.Application.Mediator.ConversationMediator.Queries;
 using ElTocardo.Application.Services;
 using ElTocardo.Domain.Mediator.ConversationMediator.Entities;
+using ElTocardo.Domain.Models;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 

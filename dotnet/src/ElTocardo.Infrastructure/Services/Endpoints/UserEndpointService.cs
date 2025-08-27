@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using ElTocardo.Application.Mediator.Common.Interfaces;
-using ElTocardo.Application.Mediator.Common.Models;
 using ElTocardo.Application.Services;
+using ElTocardo.Domain.Models;
 using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator.Commands;
 
 namespace ElTocardo.Infrastructure.Services.Endpoints;

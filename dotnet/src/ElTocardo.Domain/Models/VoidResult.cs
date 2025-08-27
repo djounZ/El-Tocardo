@@ -1,4 +1,4 @@
-namespace ElTocardo.Application.Mediator.Common.Models;
+namespace ElTocardo.Domain.Models;
 
 public class VoidResult
 {

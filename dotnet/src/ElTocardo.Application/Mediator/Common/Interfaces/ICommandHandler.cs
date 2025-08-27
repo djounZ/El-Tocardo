@@ -1,4 +1,4 @@
-using ElTocardo.Application.Mediator.Common.Models;
+using ElTocardo.Domain.Models;
 
 namespace ElTocardo.Application.Mediator.Common.Interfaces;
 

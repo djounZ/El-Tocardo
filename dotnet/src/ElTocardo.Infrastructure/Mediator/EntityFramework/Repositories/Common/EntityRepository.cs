@@ -11,8 +11,7 @@ public abstract class EntityRepository<TEntity, TId, TKey>(
     DbSet<TEntity> dbSet,
     ILogger<EntityRepository<TEntity,TId,  TKey>> logger) :IEntityRepository<TEntity,TId,TKey> where TEntity: AbstractEntity<TId,TKey>
 {
-
-    protected static string EntityName => typeof(TEntity).Name;
+    private static string EntityName => typeof(TEntity).Name;
 
     public async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
     {
