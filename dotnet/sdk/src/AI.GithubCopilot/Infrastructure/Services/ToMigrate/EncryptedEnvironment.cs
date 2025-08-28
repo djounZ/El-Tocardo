@@ -14,7 +14,7 @@ public sealed class EncryptedEnvironment(ILogger<EncryptedEnvironment> logger)
 
         try
         {
-            var environmentVariable = Environment.GetEnvironmentVariable(environmentVariableName,EnvironmentVariableTarget.User);
+            var environmentVariable = Environment.GetEnvironmentVariable(environmentVariableName);
             if (environmentVariable == null)
             {
                 return default;
