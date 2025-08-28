@@ -1,0 +1,32 @@
+meta {
+  name: SimpleRequest
+  type: http
+  seq: 1
+}
+
+post {
+  url: https://localhost:40067/v1/chat/completions
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "messages": [
+      {
+        "role": "user",
+        "contents": [
+          {
+            "$type": "text",
+            "text:": "hello"
+          }
+        ]
+      }
+    ],
+    "provider":"github_copilot"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
