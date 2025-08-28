@@ -90,7 +90,7 @@ public static class ConversationEndpoints
             .WithSummary("Get Conversation by ID")
             .WithDescription("Retrieves a conversation by its ID.")
             .WithTags(Tags)
-            .Produces<ConversationResponseDto>()
+            .Produces<ConversationDto>()
             .Produces(404)
             .WithOpenApi();
 

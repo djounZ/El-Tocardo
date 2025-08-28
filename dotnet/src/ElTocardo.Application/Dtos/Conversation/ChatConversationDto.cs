@@ -58,3 +58,24 @@ public sealed record ConversationUpdateResponseDto(
     [property: JsonPropertyName("model_id")]
     string? ModelId
 );
+
+
+
+public sealed record ConversationDto(
+    [property: JsonPropertyName("conversation_id")]
+    string ConversationId,
+    [property: JsonPropertyName("title")]
+    string Title,
+    [property: JsonPropertyName("description")]
+    string? Description,
+    [property: JsonPropertyName("messages")]
+    IList<ChatMessageDto> Messages,
+    [property: JsonPropertyName("created_at")]
+    DateTimeOffset? CreatedAt,
+    [property: JsonPropertyName("finish_reason")]
+    ChatFinishReasonDto? FinishReason,
+    [property: JsonPropertyName("chat_options")]
+    ChatOptionsDto? ChatOptions,
+    [property: JsonPropertyName("provider")]
+    string? Provider
+    );

@@ -1,0 +1,35 @@
+meta {
+  name: Start Conversation
+  type: http
+  seq: 1
+}
+
+post {
+  url: https://localhost:40067/v1/conversation/start
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "Simple Conversation Test",
+    "description": "This a demo conversation",
+    "provider": "github_copilot",
+    "options": {
+      "max_output_tokens": 8000
+    },
+    "input_message": {
+      "role": "user",
+      "contents": [
+        {
+          "$type": "text",
+          "text": "Hello"
+        }
+      ]
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,30 @@
+meta {
+  name: Continue SimpleConversation 2
+  type: http
+  seq: 4
+}
+
+post {
+  url: https://localhost:40067/v1/conversation/continue
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "conversation_id": "01dcd459-9426-4943-9273-0b13d30b8eb5",
+    "input_message": {
+      "role": "user",
+      "contents": [
+        {
+          "$type": "text",
+          "text": "What can I do to become a better person ?"
+        }
+      ]
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+}

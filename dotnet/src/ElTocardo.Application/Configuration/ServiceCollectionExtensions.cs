@@ -154,10 +154,10 @@ public static class ServiceCollectionExtensions
 
         //  Query handlers
         services
-            .AddScoped<IQueryHandler<GetAllConversationsQuery, ConversationResponseDto[]>,
+            .AddScoped<IQueryHandler<GetAllConversationsQuery, ConversationDto[]>,
                 GetAllConversationsQueryHandler>();
         services
-            .AddScoped<IQueryHandler<GetConversationByIdQuery, ConversationResponseDto>,
+            .AddScoped<IQueryHandler<GetConversationByIdQuery, ConversationDto>,
                 GetConversationByIdQueryHandler>();
 
 

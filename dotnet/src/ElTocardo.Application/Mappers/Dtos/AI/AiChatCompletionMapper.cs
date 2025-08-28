@@ -226,7 +226,7 @@ public sealed class AiChatCompletionMapper(ILogger<AiChatCompletionMapper> logge
         return ChatRoleEnumDto.User;
     }
 
-    private ChatOptionsDto? MapToChatOptionsDto(ChatOptions? chatOptions)
+    public ChatOptionsDto? MapToChatOptionsDto(ChatOptions? chatOptions)
     {
         if (chatOptions == null)
         {

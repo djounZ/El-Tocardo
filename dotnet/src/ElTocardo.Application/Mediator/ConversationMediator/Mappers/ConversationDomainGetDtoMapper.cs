@@ -6,23 +6,26 @@ using ElTocardo.Domain.Mediator.ConversationMediator.Entities;
 
 namespace ElTocardo.Application.Mediator.ConversationMediator.Mappers;
 
-public class ConversationDomainGetDtoMapper(AiChatCompletionMapper aiChatCompletionMapper) : AbstractDomainGetDtoMapper<Conversation, string, string, ConversationResponseDto>
+public class ConversationDomainGetDtoMapper(AiChatCompletionMapper aiChatCompletionMapper) : AbstractDomainGetDtoMapper<Conversation, string, string, ConversationDto>
 {
-    public override ConversationResponseDto MapDomainToDto(Conversation conversation)
+    public override ConversationDto MapDomainToDto(Conversation conversation)
     {
         var rounds = conversation.Rounds;
 
         // Get the latest response messages from the last round
         var messagesDto = GetMessagesDto(rounds);
         var latestResponse = rounds.LastOrDefault()?.Response;
+        var chatOptionsDto = aiChatCompletionMapper.MapToChatOptionsDto(conversation.CurrentOptions);
 
-
-        return new ConversationResponseDto(
+        return new ConversationDto(
             conversation.Id,
+            conversation.Title,
+            conversation.Description,
             messagesDto,
-            conversation.CurrentOptions?.ModelId,
             conversation.CreatedAt,
-            aiChatCompletionMapper.MapToFinishReasonDto(latestResponse?.FinishReason));
+            aiChatCompletionMapper.MapToFinishReasonDto(latestResponse?.FinishReason),
+            chatOptionsDto,
+            conversation.CurrentProvider);
     }
 
     private  IList<ChatMessageDto> GetMessagesDto(IList<ConversationRound> rounds)

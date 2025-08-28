@@ -9,7 +9,7 @@ public sealed record ChatOptionsDto(
     string? Instructions,
     [property: JsonPropertyName("temperature")]
     float? Temperature,
-    [property: JsonPropertyName("maxOutputTokens")]
+    [property: JsonPropertyName("max_output_tokens")]
     int? MaxOutputTokens,
     [property: JsonPropertyName("top_p")] float? TopP,
     [property: JsonPropertyName("top_k")] int? TopK,

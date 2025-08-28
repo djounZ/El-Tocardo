@@ -1,0 +1,30 @@
+meta {
+  name: Continue SimpleConversation
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://localhost:40067/v1/conversation/continue
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "conversation_id": "01dcd459-9426-4943-9273-0b13d30b8eb5",
+    "input_message": {
+      "role": "user",
+      "contents": [
+        {
+          "$type": "text",
+          "text": "What are your skills ? how can you help me ?"
+        }
+      ]
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+}

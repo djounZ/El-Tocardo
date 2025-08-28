@@ -4,9 +4,9 @@ using ElTocardo.Domain.Mediator.ConversationMediator.Entities;
 
 namespace ElTocardo.Application.Mediator.ConversationMediator.Mappers;
 
-public class ConversationDomainGetAllDtoMapper(ConversationDomainGetDtoMapper mapper) : AbstractDomainGetAllDtoMapper<Conversation, string, string, ConversationResponseDto[]>
+public class ConversationDomainGetAllDtoMapper(ConversationDomainGetDtoMapper mapper) : AbstractDomainGetAllDtoMapper<Conversation, string, string, ConversationDto[]>
 {
-    public override ConversationResponseDto[] MapDomainToDto(IEnumerable<Conversation> conversations)
+    public override ConversationDto[] MapDomainToDto(IEnumerable<Conversation> conversations)
     {
         return [.. conversations.Select(
             mapper.MapDomainToDto)];

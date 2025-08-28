@@ -6,56 +6,59 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
-namespace ElTocardo.Infrastructure.Mediator.MongoDb.Repositories;
+namespace ElTocardo.Infrastructure.Mediator.MongoDb.Repositories.Conversation;
+
+using System;
+using System.Collections.Generic;
 
 public class ConversationRepository(ILogger<ConversationRepository> logger, IMongoDatabase mongoDatabase)
-    : MongoCollectionRepository<Conversation, string, string>(logger, mongoDatabase), IConversationRepository
+    : MongoCollectionRepository<Domain.Mediator.ConversationMediator.Entities.Conversation, string, string>(logger, mongoDatabase), IConversationRepository
 {
-    protected override Expression<Func<Conversation, bool>> GetByKeySelector(string id)
+    protected override Expression<Func<Domain.Mediator.ConversationMediator.Entities.Conversation, bool>> GetByKeySelector(string id)
     {
         return  x => x.Id == id;
     }
 
-    protected override FilterDefinition<Conversation> GetUpdateFilter(Conversation entity)
+    protected override FilterDefinition<Domain.Mediator.ConversationMediator.Entities.Conversation> GetUpdateFilter(Domain.Mediator.ConversationMediator.Entities.Conversation entity)
     {
-        return Builders<Conversation>.Filter.Eq(c => c.Id, entity.Id);
+        return Builders<Domain.Mediator.ConversationMediator.Entities.Conversation>.Filter.Eq(c => c.Id, entity.Id);
     }
 
-    protected override FilterDefinition<Conversation> GetDeleteFilter(string key)
+    protected override FilterDefinition<Domain.Mediator.ConversationMediator.Entities.Conversation> GetDeleteFilter(string key)
     {
-        return Builders<Conversation>.Filter.Eq(c => c.Id, key);
+        return Builders<Domain.Mediator.ConversationMediator.Entities.Conversation>.Filter.Eq(c => c.Id, key);
     }
 
-    public async Task<Result<Conversation>> AddRoundAsync(string id, ConversationRound conversationRound, CancellationToken cancellationToken = default)
+    public async Task<Result<Domain.Mediator.ConversationMediator.Entities.Conversation>> AddRoundAsync(string id, ConversationRound conversationRound, CancellationToken cancellationToken = default)
     {
         try
         {
             logger.LogDebug("Adding round to conversation with ID: {Id}", id);
 
-            var filter = Builders<Conversation>.Filter.Eq(c => c.Id, id);
+            var filter = Builders<Domain.Mediator.ConversationMediator.Entities.Conversation>.Filter.Eq(c => c.Id, id);
 
             // Build the update operations
-            var updates = new List<UpdateDefinition<Conversation>>
+            var updates = new List<UpdateDefinition<Domain.Mediator.ConversationMediator.Entities.Conversation>>
             {
-                Builders<Conversation>.Update.Push(c => c.Rounds, conversationRound)
+                Builders<Domain.Mediator.ConversationMediator.Entities.Conversation>.Update.Push(c => c.Rounds, conversationRound)
             };
 
             // Update current provider if the round has a provider
             if (!string.IsNullOrEmpty(conversationRound.Provider))
             {
-                updates.Add(Builders<Conversation>.Update.Set(c => c.CurrentProvider, conversationRound.Provider));
+                updates.Add(Builders<Domain.Mediator.ConversationMediator.Entities.Conversation>.Update.Set(c => c.CurrentProvider, conversationRound.Provider));
                 logger.LogDebug("Updating current provider to: {Provider}", conversationRound.Provider);
             }
 
             // Update current options if the round has options
             if (conversationRound.Options != null)
             {
-                updates.Add(Builders<Conversation>.Update.Set(c => c.CurrentOptions, conversationRound.Options));
+                updates.Add(Builders<Domain.Mediator.ConversationMediator.Entities.Conversation>.Update.Set(c => c.CurrentOptions, conversationRound.Options));
                 logger.LogDebug("Updating current options");
             }
-            updates.Add(Builders<Conversation>.Update.Set(c => c.UpdatedAt, DateTimeOffset.UtcNow));
-            var combinedUpdate = Builders<Conversation>.Update.Combine(updates);
-            var options = new FindOneAndUpdateOptions<Conversation>
+            updates.Add(Builders<Domain.Mediator.ConversationMediator.Entities.Conversation>.Update.Set(c => c.UpdatedAt, DateTimeOffset.UtcNow));
+            var combinedUpdate = Builders<Domain.Mediator.ConversationMediator.Entities.Conversation>.Update.Combine(updates);
+            var options = new FindOneAndUpdateOptions<Domain.Mediator.ConversationMediator.Entities.Conversation>
             {
                 ReturnDocument = ReturnDocument.After
             };
@@ -78,7 +81,7 @@ public class ConversationRepository(ILogger<ConversationRepository> logger, IMon
         }
     }
 
-    public async Task<Result<Conversation>> UpdateRoundAsync(string id, ChatResponse chatResponse, CancellationToken cancellationToken = default)
+    public async Task<Result<Domain.Mediator.ConversationMediator.Entities.Conversation>> UpdateRoundAsync(string id, ChatResponse chatResponse, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -103,16 +106,16 @@ public class ConversationRepository(ILogger<ConversationRepository> logger, IMon
             var lastRoundIndex = conversation.Rounds.Count - 1;
 
             // Update the response of the last round using FindOneAndUpdate
-            var filter = Builders<Conversation>.Filter.Eq(c => c.Id, id);
+            var filter = Builders<Domain.Mediator.ConversationMediator.Entities.Conversation>.Filter.Eq(c => c.Id, id);
             var dateTimeOffset = DateTimeOffset.UtcNow;
-            var updates = new List<UpdateDefinition<Conversation>>
+            var updates = new List<UpdateDefinition<Domain.Mediator.ConversationMediator.Entities.Conversation>>
             {
-                Builders<Conversation>.Update.Set($"Rounds.{lastRoundIndex}.Response", chatResponse),
-                Builders<Conversation>.Update.Set($"Rounds.{lastRoundIndex}.UpdatedAt", dateTimeOffset),
-                Builders<Conversation>.Update.Set(c => c.UpdatedAt, dateTimeOffset)
+                Builders<Domain.Mediator.ConversationMediator.Entities.Conversation>.Update.Set($"Rounds.{lastRoundIndex}.Response", chatResponse),
+                Builders<Domain.Mediator.ConversationMediator.Entities.Conversation>.Update.Set($"Rounds.{lastRoundIndex}.UpdatedAt", dateTimeOffset),
+                Builders<Domain.Mediator.ConversationMediator.Entities.Conversation>.Update.Set(c => c.UpdatedAt, dateTimeOffset)
             };
-            var combinedUpdate = Builders<Conversation>.Update.Combine(updates);
-            var options = new FindOneAndUpdateOptions<Conversation>
+            var combinedUpdate = Builders<Domain.Mediator.ConversationMediator.Entities.Conversation>.Update.Combine(updates);
+            var options = new FindOneAndUpdateOptions<Domain.Mediator.ConversationMediator.Entities.Conversation>
             {
                 ReturnDocument = ReturnDocument.After
             };

@@ -13,6 +13,7 @@ using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator.
 using ElTocardo.Infrastructure.Mediator.EntityFramework.Data;
 using ElTocardo.Infrastructure.Mediator.EntityFramework.Repositories;
 using ElTocardo.Infrastructure.Mediator.MongoDb.Repositories;
+using ElTocardo.Infrastructure.Mediator.MongoDb.Repositories.Conversation;
 using ElTocardo.Infrastructure.Options;
 using ElTocardo.Infrastructure.Services;
 using ElTocardo.Infrastructure.Services.Endpoints;
@@ -21,6 +22,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using OllamaSharp;
 
@@ -67,6 +69,9 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddMongoDb(this IServiceCollection services, MongoClientSettings mongoClientSettings, string mongoDatabaseName)
     {
+        // Register the serializer globally (usually in your startup code)
+        BsonSerializer.RegisterSerializer(new AIContentSerializer());
+
         services.AddSingleton<IMongoClient>(_=>new MongoClient(mongoClientSettings));
         services.AddScoped<IMongoDatabase>(sp =>sp.GetRequiredService<IMongoClient>().GetDatabase(mongoDatabaseName));
         return services;

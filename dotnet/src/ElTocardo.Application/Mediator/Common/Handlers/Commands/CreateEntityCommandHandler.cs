@@ -27,7 +27,7 @@ public class CreateEntityCommandHandler<TEntity, TId,  TKey, TCommand>(
         var configuration = commandMapper.CreateFromCommand(command);
 
         var byKeyAsync = await repository.GetByKeyAsync(configuration.GetKey(), cancellationToken);
-        if (byKeyAsync != null)
+        if (byKeyAsync.IsSuccess)
         {
             throw new InvalidOperationException(
                 $"{EntityName} with key {configuration.GetKey()} already exists.");

@@ -18,7 +18,7 @@ public sealed class ConversationEndpointService(ILogger<ConversationEndpointServ
     ICommandHandler<CreateConversationCommand, string> createConversationCommandHandler,
     ICommandHandler<UpdateConversationUpdateRoundCommand,Conversation> updateRoundCommandHandler,
     ICommandHandler<UpdateConversationAddNewRoundCommand,Conversation> addNewRoundCommandHandler,
-    IQueryHandler<GetConversationByIdQuery, ConversationResponseDto> getConversationByIdQueryHandler,
+    IQueryHandler<GetConversationByIdQuery, ConversationDto> getConversationByIdQueryHandler,
     ChatClientProvider clientProvider,
     AiToolsProviderService aiToolsProviderService,
     ConversationDtoChatDtoMapper conversationDtoChatDtoMapper) : AbstractChatCompletionsService(logger,  clientProvider, aiToolsProviderService),IConversationEndpointService
@@ -84,7 +84,7 @@ public sealed class ConversationEndpointService(ILogger<ConversationEndpointServ
         logger.LogTrace("Streaming Response Completed for Conversation Id : {ConversationId}", conversationId);
     }
 
-    public async Task<Result<ConversationResponseDto>> GetConversation(string conversationId, CancellationToken cancellationToken)
+    public async Task<Result<ConversationDto>> GetConversation(string conversationId, CancellationToken cancellationToken)
     {
         return await getConversationByIdQueryHandler.HandleAsync(new GetConversationByIdQuery(conversationId), cancellationToken);
     }
