@@ -1,0 +1,15 @@
+meta {
+  name: Delete  MCP server
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{api_backend}}/v1/mcp-servers/desktop-commander
+  body: json
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

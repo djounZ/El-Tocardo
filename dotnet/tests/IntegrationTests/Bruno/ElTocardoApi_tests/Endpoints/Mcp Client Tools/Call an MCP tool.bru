@@ -1,0 +1,25 @@
+meta {
+  name: Call an MCP tool
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{api_backend}}/api/mcp_tools/call
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "server_name": "fetch",
+    "tool_name": "fetch",
+    "arguments": {
+      "url": "https://fr.wikipedia.org/wiki/Grand_mod%C3%A8le_de_langage"
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+}
