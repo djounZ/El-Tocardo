@@ -21,7 +21,6 @@ public sealed class McpClientToolsEndpointService(
 
     public async Task<Result<IDictionary<string, IList<McpClientToolDto>>>> GetAll(CancellationToken cancellationToken)
     {
-        var mcpToolDescriptions = new Dictionary<string, IList<McpClientToolDto>>();
         var servers = await getAllQueryHandler.HandleAsync(GetAllMcpServersQuery.Instance, cancellationToken);
 
         if (!servers.IsSuccess)
@@ -29,10 +28,16 @@ public sealed class McpClientToolsEndpointService(
             return servers.ReadError();
         }
 
+        var mcpToolDescriptionsTask = new Dictionary<string, Task<Result<McpClientToolDto[]>>>();
         foreach (var (serverName, serverConfiguration) in servers.ReadValue())
         {
-            var toolDescriptions = await GetMcpClientToolDtosAsync(serverConfiguration, cancellationToken);
+            mcpToolDescriptionsTask[serverName] = GetMcpClientToolDtosAsync(serverConfiguration, cancellationToken);
+        }
 
+        var mcpToolDescriptions = new Dictionary<string, IList<McpClientToolDto>>();
+        foreach (var (serverName, toolDescriptionsTask) in mcpToolDescriptionsTask)
+        {
+            var toolDescriptions = await toolDescriptionsTask;
             if(toolDescriptions.IsSuccess)
             {
                 mcpToolDescriptions[serverName] = toolDescriptions.ReadValue();
