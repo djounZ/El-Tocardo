@@ -41,7 +41,7 @@ public class PresetChatOptionsEndpointService(
                 : null,
             dto.ChatOptions.StopSequences is not null ? string.Join(",", dto.ChatOptions.StopSequences) : null,
             dto.ChatOptions.AllowMultipleToolCalls,
-            dto.ChatOptions.ToolMode?.ToString(),
+            dto.ChatOptions.ToolMode is not null ? JsonSerializer.Serialize(dto.ChatOptions.ToolMode) : null,
             dto.ChatOptions.Tools is not null ? JsonSerializer.Serialize(dto.ChatOptions.Tools) : null
         );
 
@@ -64,7 +64,7 @@ public class PresetChatOptionsEndpointService(
                 : null,
             dto.ChatOptions.StopSequences is not null ? string.Join(",", dto.ChatOptions.StopSequences) : null,
             dto.ChatOptions.AllowMultipleToolCalls,
-            dto.ChatOptions.ToolMode?.ToString(),
+            dto.ChatOptions.ToolMode is not null ? JsonSerializer.Serialize(dto.ChatOptions.ToolMode) : null,
             dto.ChatOptions.Tools is not null ? JsonSerializer.Serialize(dto.ChatOptions.Tools) : null
         );
 

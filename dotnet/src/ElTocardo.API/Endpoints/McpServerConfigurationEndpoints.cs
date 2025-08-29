@@ -7,7 +7,7 @@ namespace ElTocardo.API.Endpoints;
 
 public static class McpServerConfigurationEndpoints
 {
-    private static string Tags => "McpServerConfiguration";
+    private static string Tags => "Mcp Servers Configuration";
 
     public static IEndpointRouteBuilder MapMcpServerConfigurationEndpoints(this IEndpointRouteBuilder app)
     {

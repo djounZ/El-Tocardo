@@ -1,0 +1,15 @@
+meta {
+  name: Delete  preset chat options copy
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{api_backend}}/v1/preset-chat-options/presetChatOptionsTest
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

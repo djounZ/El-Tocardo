@@ -6,7 +6,7 @@ namespace ElTocardo.API.Endpoints;
 
 public static class PresetChatOptionsEndpoints
 {
-    private static string Tags => "PresetChatOptions";
+    private static string Tags => "Preset ChatOptions";
     public static IEndpointRouteBuilder MapPresetChatOptionsEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet("v1/preset-chat-options",

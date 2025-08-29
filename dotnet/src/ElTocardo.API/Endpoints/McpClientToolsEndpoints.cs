@@ -7,7 +7,7 @@ namespace ElTocardo.API.Endpoints;
 public static class McpClientToolsEndpoints
 {
 
-    private static string Tags => "McpClientTools";
+    private static string Tags => "Mcp Client Tools";
 
     public static IEndpointRouteBuilder MapMcpClientToolsEndpoints(this IEndpointRouteBuilder app)
     {

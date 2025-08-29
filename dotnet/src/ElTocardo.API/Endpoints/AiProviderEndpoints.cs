@@ -7,7 +7,7 @@ namespace ElTocardo.API.Endpoints;
 
 public static class AiProviderEndpoints
 {
-    private static string Tags => "AiProvider";
+    private static string Tags => "Ai Provider";
     public static IEndpointRouteBuilder MapAiProviderEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet("v1/ai-providers",
