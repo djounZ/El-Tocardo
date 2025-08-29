@@ -5,14 +5,14 @@ meta {
 }
 
 post {
-  url: https://localhost:40067/v1/conversation/continue
+  url: {{api_backend}}/v1/conversation/continue
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "conversation_id": "01dcd459-9426-4943-9273-0b13d30b8eb5",
+    "conversation_id": "{{simple_conversation_id}}",
     "input_message": {
       "role": "user",
       "contents": [

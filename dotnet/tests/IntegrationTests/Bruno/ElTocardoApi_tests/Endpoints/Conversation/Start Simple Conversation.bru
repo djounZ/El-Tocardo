@@ -1,11 +1,11 @@
 meta {
-  name: Start Conversation
+  name: Start Simple Conversation
   type: http
   seq: 1
 }
 
 post {
-  url: https://localhost:40067/v1/conversation/start
+  url: {{api_backend}}/v1/conversation/start
   body: json
   auth: inherit
 }
@@ -28,6 +28,13 @@ body:json {
       ]
     }
   }
+}
+
+script:post-response {
+  let conversation_id = res.body.conversation_id;
+  
+  bru.setVar("simple_conversation_id",conversation_id)
+  
 }
 
 settings {
