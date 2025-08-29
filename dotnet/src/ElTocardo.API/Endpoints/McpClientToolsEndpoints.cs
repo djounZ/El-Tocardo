@@ -16,7 +16,7 @@ public static class McpClientToolsEndpoints
                 CancellationToken cancellationToken) =>
             {
                 var response = await mcpClientToolProviderService.GetAll(cancellationToken);
-                return Results.Ok(response);
+                return response.IsSuccess ? Results.Ok(response.ReadValue()) :  Results.InternalServerError(response.ReadError());
             })
             .WithName("GetMcpToolDescriptions")
             .WithSummary("Get description of MCP tools")
@@ -32,7 +32,7 @@ public static class McpClientToolsEndpoints
                 CancellationToken cancellationToken) =>
             {
                 var response = await mcpClientToolProviderService.CallToolAsync(request, cancellationToken);
-                return Results.Ok(response);
+                return response.IsSuccess ? Results.Ok(response.ReadValue()) :  Results.InternalServerError(response.ReadError());
             })
             .WithName("CallMcpTool")
             .WithSummary("Call an MCP tool")

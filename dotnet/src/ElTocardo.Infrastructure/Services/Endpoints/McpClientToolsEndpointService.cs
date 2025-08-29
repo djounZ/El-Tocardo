@@ -3,6 +3,7 @@ using ElTocardo.Application.Mappers.Dtos.ModelContextProtocol;
 using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Queries;
 using ElTocardo.Application.Services;
+using ElTocardo.Domain.Models;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol;
 using ModelContextProtocol.Client;
@@ -18,38 +19,71 @@ public sealed class McpClientToolsEndpointService(
 {
     private readonly McpClientToolCallProgressIProgress _progress = new(logger);
 
-    public async Task<IDictionary<string, IList<McpClientToolDto>>> GetAll(CancellationToken cancellationToken)
+    public async Task<Result<IDictionary<string, IList<McpClientToolDto>>>> GetAll(CancellationToken cancellationToken)
     {
         var mcpToolDescriptions = new Dictionary<string, IList<McpClientToolDto>>();
         var servers = await getAllQueryHandler.HandleAsync(GetAllMcpServersQuery.Instance, cancellationToken);
 
         if (!servers.IsSuccess)
         {
-            throw servers.ReadError();
+            return servers.ReadError();
         }
 
         foreach (var (serverName, serverConfiguration) in servers.ReadValue())
         {
-            await using var client = await CreateMcpClientAsync(serverConfiguration, cancellationToken);
-            var mcpClientTools = await client.ListToolsAsync(cancellationToken: cancellationToken);
+            var toolDescriptions = await GetMcpClientToolDtosAsync(serverConfiguration, cancellationToken);
 
-            var toolDescriptions = modelContextProtocolMapper.MapToMcpClientToolDtos(mcpClientTools);
-            mcpToolDescriptions[serverName] = toolDescriptions;
+            if(toolDescriptions.IsSuccess)
+            {
+                mcpToolDescriptions[serverName] = toolDescriptions.ReadValue();
+            }
         }
 
         return mcpToolDescriptions;
     }
 
-    public async Task<CallToolResultDto> CallToolAsync(McpClientToolRequestDto request,
+    private async Task<Result<McpClientToolDto[]>> GetMcpClientToolDtosAsync(
+        McpServerConfigurationItemDto serverConfiguration, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await using var client = await CreateMcpClientAsync(serverConfiguration, cancellationToken);
+            var mcpClientTools = await client.ListToolsAsync(cancellationToken: cancellationToken);
+
+            var toolDescriptions = modelContextProtocolMapper.MapToMcpClientToolDtos(mcpClientTools);
+            return toolDescriptions;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error getting mcp client tools for {McpServerConfigurationItemDto}", serverConfiguration);
+            return ex;
+        }
+    }
+
+    public async Task<Result<CallToolResultDto>> CallToolAsync(McpClientToolRequestDto request,
         CancellationToken cancellationToken)
     {
         var mcpServerConfigurationItem =
             await getByNameQueryHandler.HandleAsync(new GetMcpServerByNameQuery(request.ServerName), cancellationToken);
         if (!mcpServerConfigurationItem.IsSuccess)
         {
-            throw mcpServerConfigurationItem.ReadError();
+            return mcpServerConfigurationItem.ReadError();
         }
 
+        try
+        {
+            return await CallToolAsync(request, mcpServerConfigurationItem, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error while calling tool: {McpClientToolRequestDto}", request);
+            return ex;
+        }
+    }
+
+    private async Task<CallToolResultDto> CallToolAsync(McpClientToolRequestDto request,
+        Result<McpServerConfigurationItemDto> mcpServerConfigurationItem, CancellationToken cancellationToken)
+    {
         await using var client = await CreateMcpClientAsync(mcpServerConfigurationItem.ReadValue(), cancellationToken);
 
         var callToolResult =

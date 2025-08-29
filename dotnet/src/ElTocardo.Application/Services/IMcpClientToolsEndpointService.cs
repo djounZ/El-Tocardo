@@ -1,11 +1,12 @@
 using ElTocardo.Application.Dtos.ModelContextProtocol;
+using ElTocardo.Domain.Models;
 
 namespace ElTocardo.Application.Services;
 
 public interface IMcpClientToolsEndpointService
 {
-    public Task<IDictionary<string, IList<McpClientToolDto>>> GetAll(CancellationToken cancellationToken);
+    public Task<Result<IDictionary<string, IList<McpClientToolDto>>>> GetAll(CancellationToken cancellationToken);
 
-    public Task<CallToolResultDto> CallToolAsync(McpClientToolRequestDto request,
+    public Task<Result<CallToolResultDto>> CallToolAsync(McpClientToolRequestDto request,
         CancellationToken cancellationToken);
 }

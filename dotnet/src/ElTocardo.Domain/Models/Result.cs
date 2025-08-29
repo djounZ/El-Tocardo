@@ -8,7 +8,7 @@ public class Result<T> : VoidResult
     {
     }
 
-    protected Result(T value) : base(null)
+    public Result(T value) : base(null)
     {
         _value = value;
     }
