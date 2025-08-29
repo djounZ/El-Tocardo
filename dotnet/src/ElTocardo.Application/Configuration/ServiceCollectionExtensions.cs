@@ -141,7 +141,9 @@ public static class ServiceCollectionExtensions
         //  Mappers
         services.AddSingleton<ConversationDomainCreateCommandMapper>();
         services.AddSingleton<ConversationDomainGetAllDtoMapper>();
+        services.AddSingleton<ConversationDomainGetAllSummariesDtoMapper>();
         services.AddSingleton<ConversationDomainGetDtoMapper>();
+        services.AddSingleton<ConversationDomainGetSummaryDtoMapper>();
         services.AddSingleton<ConversationDomainUpdateChatResponseCommandMapper>();
         services.AddSingleton<ConversationDomainUpdateUserMessageCommandMapper>();
 
@@ -156,6 +158,9 @@ public static class ServiceCollectionExtensions
         services
             .AddScoped<IQueryHandler<GetAllConversationsQuery, ConversationDto[]>,
                 GetAllConversationsQueryHandler>();
+        services
+            .AddScoped<IQueryHandler<GetAllConversationsQuery, ConversationSummaryDto[]>,
+                GetAllConversationSummariesQueryHandler>();
         services
             .AddScoped<IQueryHandler<GetConversationByIdQuery, ConversationDto>,
                 GetConversationByIdQueryHandler>();

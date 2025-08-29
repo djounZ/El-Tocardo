@@ -60,16 +60,13 @@ public sealed record ConversationUpdateResponseDto(
 );
 
 
-
-public sealed record ConversationDto(
+public abstract record AbstractConversationDto(
     [property: JsonPropertyName("conversation_id")]
     string ConversationId,
     [property: JsonPropertyName("title")]
     string Title,
     [property: JsonPropertyName("description")]
     string? Description,
-    [property: JsonPropertyName("messages")]
-    IList<ChatMessageDto> Messages,
     [property: JsonPropertyName("created_at")]
     DateTimeOffset? CreatedAt,
     [property: JsonPropertyName("finish_reason")]
@@ -78,4 +75,28 @@ public sealed record ConversationDto(
     ChatOptionsDto? ChatOptions,
     [property: JsonPropertyName("provider")]
     string? Provider
-    );
+);
+
+public sealed record ConversationDto(
+    string ConversationId,
+    string Title,
+    string? Description,
+    [property: JsonPropertyName("messages")]
+    IList<ChatMessageDto> Messages,
+    DateTimeOffset? CreatedAt,
+    ChatFinishReasonDto? FinishReason,
+    ChatOptionsDto? ChatOptions,
+    string? Provider
+    ):AbstractConversationDto(ConversationId, Title, Description, CreatedAt, FinishReason, ChatOptions, Provider);
+
+public sealed record ConversationSummaryDto(
+    string ConversationId,
+    string Title,
+    string? Description,
+    [property: JsonPropertyName("rounds_count")]
+    int RoundsCount,
+    DateTimeOffset? CreatedAt,
+    ChatFinishReasonDto? FinishReason,
+    ChatOptionsDto? ChatOptions,
+    string? Provider
+):AbstractConversationDto(ConversationId, Title, Description, CreatedAt, FinishReason, ChatOptions, Provider);

@@ -29,25 +29,25 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
     public PresetChatOptionsServiceIntegrationTests(ITestOutputHelper output)
     {
         var services = new ServiceCollection();
-        
+
         // Add DbContext with in-memory database
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseInMemoryDatabase($"TestDb_{Guid.NewGuid()}")
         );
-        
+
         // Add logging
         services.AddLogging();
-        
+
         // Register services manually for testing
         services.AddScoped<IPresetChatOptionsEndpointService, PresetChatOptionsEndpointService>();
-        
+
         // Add handlers and repositories (simplified for test)
         services.AddSingleton<PresetChatOptionsDomainGetDtoMapper>();
         services.AddSingleton<PresetChatOptionsDomainGetAllDtoMapper>();
         services.AddSingleton<PresetChatOptionsDomainUpdateCommandMapper>();
         services.AddSingleton<PresetChatOptionsDomainCreateCommandMapper>();
         services.AddScoped<IPresetChatOptionsRepository, PresetChatOptionsRepository>();
-        
+
         services.AddScoped<ICommandHandler<CreatePresetChatOptionsCommand, Guid>, CreatePresetChatOptionsCommandHandler>();
         services.AddScoped<ICommandHandler<UpdatePresetChatOptionsCommand>, UpdatePresetChatOptionsCommandHandler>();
         services.AddScoped<ICommandHandler<DeletePresetChatOptionsCommand>, DeletePresetChatOptionsCommandHandler>();
@@ -64,11 +64,11 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
         services.AddScoped<IValidator<DeletePresetChatOptionsCommand>, DeletePresetChatOptionsCommandValidator>();
 
         _serviceProvider = services.BuildServiceProvider();
-        
+
         var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
         loggerFactory.AddProvider(new TestOutputLoggerProvider(output));
         _dbContext = _serviceProvider.GetRequiredService<ApplicationDbContext>();
-        
+
         // Ensure database is created
         _dbContext.Database.EnsureCreated();
     }
@@ -94,11 +94,10 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
             ToolMode: null,
             Tools: null
         ));
-        
+
         var result = await service.CreateAsync(preset);
-        
+
         Assert.True(result.IsSuccess);
-        Assert.NotEqual(Guid.Empty, result.ReadValue());
     }
 
     [Fact]
@@ -107,9 +106,9 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
         var service = _serviceProvider.GetRequiredService<IPresetChatOptionsEndpointService>();
         await service.CreateAsync(new PresetChatOptionsDto("p1", new ChatOptionsDto(null, "A", null, null, null, null, null, null, null, null, null, null, null, null, null)));
         await service.CreateAsync(new PresetChatOptionsDto("p2", new ChatOptionsDto(null, "B", null, null, null, null, null, null, null, null, null, null, null, null, null)));
-        
+
         var result = await service.GetAllAsync();
-        
+
         Assert.True(result.IsSuccess);
         var all = result.ReadValue();
         Assert.Equal(2, all.Count);
@@ -124,9 +123,9 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
         var preset = new PresetChatOptionsDto("to-update", new ChatOptionsDto(null, "Old", null, null, null, null, null, null, null, null, null, null, null, null, null));
         await service.CreateAsync(preset);
         var updated = new PresetChatOptionsDto("to-update", new ChatOptionsDto(null, "New", null, null, null, null, null, null, null, null, null, null, null, null, null));
-        
+
         var updateResult = await service.UpdateAsync("to-update", updated);
-        
+
         Assert.True(updateResult.IsSuccess);
         var fetchResult = await service.GetByNameAsync("to-update");
         Assert.True(fetchResult.IsSuccess);
@@ -139,9 +138,9 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
         var service = _serviceProvider.GetRequiredService<IPresetChatOptionsEndpointService>();
         var preset = new PresetChatOptionsDto("to-delete", new ChatOptionsDto(null, "Del", null, null, null, null, null, null, null, null, null, null, null, null, null));
         await service.CreateAsync(preset);
-        
+
         var deleteResult = await service.DeleteAsync("to-delete");
-        
+
         Assert.True(deleteResult.IsSuccess);
         var fetchResult = await service.GetByNameAsync("to-delete");
         Assert.False(fetchResult.IsSuccess);
@@ -151,9 +150,9 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
     public async Task GetByName_NonExistent_ShouldReturnFailure()
     {
         var service = _serviceProvider.GetRequiredService<IPresetChatOptionsEndpointService>();
-        
+
         var result = await service.GetByNameAsync("not-exist");
-        
+
         Assert.False(result.IsSuccess);
     }
 
@@ -162,9 +161,9 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
     {
         var service = _serviceProvider.GetRequiredService<IPresetChatOptionsEndpointService>();
         var updated = new PresetChatOptionsDto("not-exist", new ChatOptionsDto(null, "X", null, null, null, null, null, null, null, null, null, null, null, null, null));
-        
+
         var result = await service.UpdateAsync("not-exist", updated);
-        
+
         Assert.False(result.IsSuccess);
     }
 
@@ -172,9 +171,9 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
     public async Task Delete_NonExistent_ShouldReturnFailure()
     {
         var service = _serviceProvider.GetRequiredService<IPresetChatOptionsEndpointService>();
-        
+
         var result = await service.DeleteAsync("not-exist");
-        
+
         Assert.False(result.IsSuccess);
     }
 
@@ -183,9 +182,9 @@ public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
     {
         var service = _serviceProvider.GetRequiredService<IPresetChatOptionsEndpointService>();
         var preset = new PresetChatOptionsDto("", new ChatOptionsDto(null, "Test", null, null, null, null, null, null, null, null, null, null, null, null, null));
-        
+
         var result = await service.CreateAsync(preset);
-        
+
         Assert.False(result.IsSuccess);
         Assert.Contains("Validation failed", result.ReadError().Message);
     }

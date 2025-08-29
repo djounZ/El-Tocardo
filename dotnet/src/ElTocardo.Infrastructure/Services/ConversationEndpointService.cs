@@ -15,13 +15,15 @@ using Microsoft.Extensions.Logging;
 namespace ElTocardo.Infrastructure.Services;
 
 public sealed class ConversationEndpointService(ILogger<ConversationEndpointService> logger,
+    IQueryHandler<GetAllConversationsQuery, ConversationSummaryDto[]> conversationSummariesHandler,
     ICommandHandler<CreateConversationCommand, string> createConversationCommandHandler,
     ICommandHandler<UpdateConversationUpdateRoundCommand,Conversation> updateRoundCommandHandler,
     ICommandHandler<UpdateConversationAddNewRoundCommand,Conversation> addNewRoundCommandHandler,
     IQueryHandler<GetConversationByIdQuery, ConversationDto> getConversationByIdQueryHandler,
     ChatClientProvider clientProvider,
     AiToolsProviderService aiToolsProviderService,
-    ConversationDtoChatDtoMapper conversationDtoChatDtoMapper) : AbstractChatCompletionsService(logger,  clientProvider, aiToolsProviderService),IConversationEndpointService
+    ConversationDtoChatDtoMapper conversationDtoChatDtoMapper,
+    ICommandHandler<DeleteConversationCommand> deleteCommandHandler) : AbstractChatCompletionsService(logger,  clientProvider, aiToolsProviderService),IConversationEndpointService
 {
     public async Task<ConversationResponseDto> StartConversationAsync(StartConversationRequestDto startConversationRequestDto,
         CancellationToken cancellationToken)
@@ -87,6 +89,16 @@ public sealed class ConversationEndpointService(ILogger<ConversationEndpointServ
     public async Task<Result<ConversationDto>> GetConversation(string conversationId, CancellationToken cancellationToken)
     {
         return await getConversationByIdQueryHandler.HandleAsync(new GetConversationByIdQuery(conversationId), cancellationToken);
+    }
+
+    public async Task<Result<ConversationSummaryDto[]>> GetConversations(CancellationToken cancellationToken)
+    {
+       return await conversationSummariesHandler.HandleAsync(GetAllConversationsQuery.Instance, cancellationToken);
+    }
+
+    public async Task<VoidResult> DeleteConversationAsync(string conversationId, CancellationToken cancellationToken)
+    {
+       return await deleteCommandHandler.HandleAsync(new DeleteConversationCommand(conversationId), cancellationToken);
     }
 
     private record ChatRequestContext(IEnumerable<ChatMessage> ChatMessages, ChatOptions? ChatOptions, string ConversationId, IChatClient ChatClient);

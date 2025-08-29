@@ -93,7 +93,6 @@ public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
 
         // Assert
         Assert.True(result.IsSuccess);
-        Assert.NotEqual(Guid.Empty, result.ReadValue());
     }
 
     [Fact]

@@ -13,3 +13,10 @@ public class GetAllConversationsQueryHandler(
     ILogger<GetAllConversationsQueryHandler> logger,
     ConversationDomainGetAllDtoMapper mapper)
     : GetAllEntitiesQueryHandler<Conversation, string, string, GetAllConversationsQuery,ConversationDto[]>(repository, logger, mapper);
+
+
+public class GetAllConversationSummariesQueryHandler(
+    IConversationRepository repository,
+    ILogger<GetAllConversationSummariesQueryHandler> logger,
+    ConversationDomainGetAllSummariesDtoMapper mapper)
+    : GetAllEntitiesQueryHandler<Conversation, string, string, GetAllConversationsQuery,ConversationSummaryDto[]>(repository, logger, mapper);

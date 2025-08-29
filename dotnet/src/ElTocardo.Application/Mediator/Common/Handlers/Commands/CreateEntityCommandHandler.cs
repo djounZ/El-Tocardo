@@ -1,6 +1,8 @@
+using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Application.Mediator.Common.Mappers;
 using ElTocardo.Domain.Mediator.Common.Entities;
 using ElTocardo.Domain.Mediator.Common.Repositories;
+using ElTocardo.Domain.Models;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 
@@ -11,34 +13,26 @@ public class CreateEntityCommandHandler<TEntity, TId,  TKey, TCommand>(
     ILogger<CreateEntityCommandHandler<TEntity,  TId, TKey, TCommand>> logger,
     IValidator<TCommand> validator,
     AbstractDomainCreateCommandMapper<TEntity,TId,TKey,TCommand> commandMapper)
-    : CommandHandlerBase<TCommand, TId>(logger) where TEntity: IEntity<TId,TKey>
+    : ICommandHandler<TCommand, TId> where TEntity: IEntity<TId,TKey>
 {
 
     private string EntityName => typeof(TEntity).Name;
-    protected override async Task<TId> HandleAsyncImplementation(TCommand command,
+    public async Task<Result<TId>> HandleAsync(TCommand command,
         CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Creating {@Entity}: {ServerName}",EntityName, command);
 
         // Validate command
-        await validator.ValidateAndThrowAsync(command, cancellationToken);
+        var validationResult = await validator.ValidateAsync(command, cancellationToken);
+        if (!validationResult.IsValid)
+        {
+            return new ValidationException(validationResult.Errors);
+        }
 
         // Create domain entity
         var configuration = commandMapper.CreateFromCommand(command);
-
-        var byKeyAsync = await repository.GetByKeyAsync(configuration.GetKey(), cancellationToken);
-        if (byKeyAsync.IsSuccess)
-        {
-            throw new InvalidOperationException(
-                $"{EntityName} with key {configuration.GetKey()} already exists.");
-        }
         // Add to repository
-        await repository.AddAsync(configuration, cancellationToken);
-
-        logger.LogInformation("{@Entity} created successfully: {ServerName} with ID: {Id}",EntityName,
-            command, configuration.Id);
-
-        return configuration.Id;
+        return await repository.AddAsync(configuration, cancellationToken);
     }
 
 }

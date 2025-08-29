@@ -78,7 +78,7 @@ public static class ConversationEndpoints
             .WithOpenApi();
 
         // Get Conversation by ID
-        app.MapGet("/v1/conversation/{conversationId}", async (
+        app.MapGet("/v1/conversations/{conversationId}", async (
                 IConversationEndpointService conversationService,
                 string conversationId,
                 CancellationToken cancellationToken) =>
@@ -94,6 +94,39 @@ public static class ConversationEndpoints
             .Produces(404)
             .WithOpenApi();
 
+
+        // Get All Conversations
+        app.MapGet("/v1/conversations", async (
+                IConversationEndpointService conversationService,
+                CancellationToken cancellationToken) =>
+            {
+                var result = await conversationService.GetConversations(cancellationToken);
+                return result.IsSuccess ? Results.Ok(result.ReadValue()) : Results.InternalServerError(result.ReadError());
+            })
+            .WithName("GetAllConversations")
+            .WithSummary("Get All Conversations")
+            .WithDescription("Retrieves All conversation")
+            .WithTags(Tags)
+            .Produces<ConversationSummaryDto[]>()
+            .WithOpenApi();
+
+
+
+        app.MapDelete("/v1/conversations/{conversationId}",
+                async ( IConversationEndpointService conversationService,
+                    string conversationId,
+                    CancellationToken cancellationToken) =>
+                {
+                    var result = await conversationService.DeleteConversationAsync(conversationId, cancellationToken);
+                    return result.IsSuccess ? Results.NoContent() : Results.NotFound(result.ReadError());
+                })
+            .WithName("DeleteConversation")
+            .WithSummary("Delete Conversation")
+            .WithDescription("Deletes a Conversation by Id")
+            .WithTags(Tags)
+            .Produces(StatusCodes.Status204NoContent)
+            .Produces(StatusCodes.Status404NotFound)
+            .WithOpenApi();
         return app;
     }
 }

@@ -12,4 +12,6 @@ public interface IConversationEndpointService
     public IAsyncEnumerable<ConversationUpdateResponseDto>  ContinueStreamingConversationAsync(ContinueConversationDto continueConversationDto, CancellationToken cancellationToken);
 
     public Task<Result<ConversationDto>> GetConversation(string conversationId, CancellationToken cancellationToken);
+    public Task<Result<ConversationSummaryDto[]>> GetConversations(CancellationToken cancellationToken);
+    public Task<VoidResult> DeleteConversationAsync(string conversationId, CancellationToken cancellationToken);
 }

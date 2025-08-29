@@ -58,7 +58,7 @@ public abstract class DbSetEntityRepository<TEntity, TId, TKey>(
         CancellationToken cancellationToken = default);
 
 
-    public async Task<VoidResult> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public async Task<Result<TId>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         logger.LogDebug("Adding {@Entity}: {key}", EntityName, entity.GetKey());
 
@@ -66,7 +66,7 @@ public abstract class DbSetEntityRepository<TEntity, TId, TKey>(
         {
             await dbSet.AddAsync(entity, cancellationToken);
             await context.SaveChangesAsync(cancellationToken);
-            return VoidResult.Success;
+            return entity.Id;
         }
         catch (Exception ex)
         {

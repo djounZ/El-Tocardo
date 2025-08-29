@@ -1,10 +1,10 @@
 meta {
-  name: Get Simple Conversation
+  name: Delete Simple Conversation
   type: http
-  seq: 3
+  seq: 6
 }
 
-get {
+delete {
   url: {{api_backend}}/v1/conversations/{{simple_conversation_id}}
   body: none
   auth: inherit

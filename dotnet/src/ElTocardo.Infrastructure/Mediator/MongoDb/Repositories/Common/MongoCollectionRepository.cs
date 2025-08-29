@@ -50,7 +50,7 @@ public abstract class MongoCollectionRepository<TEntity, TId, TKey>(ILogger<Mong
         }
     }
 
-    public async Task<VoidResult> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public async Task<Result<TId>> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -58,7 +58,7 @@ public abstract class MongoCollectionRepository<TEntity, TId, TKey>(ILogger<Mong
             logger.LogDebug("Adding {EntityName} with ID: {Id}", EntityName, entity.Id);
             await EntityCollection.InsertOneAsync(entity, cancellationToken: cancellationToken);
             logger.LogDebug("Successfully added {EntityName} with ID: {Id}", EntityName, entity.Id);
-            return VoidResult.Success;
+            return entity.Id;
         }
         catch (Exception ex)
         {

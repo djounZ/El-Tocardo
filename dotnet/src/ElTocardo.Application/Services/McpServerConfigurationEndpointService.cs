@@ -27,7 +27,7 @@ public class McpServerConfigurationEndpointService(
         return await getByNameQueryHandler.HandleAsync(new GetMcpServerByNameQuery(serverName), cancellationToken);
     }
 
-    public async Task<Result<Guid>> CreateServerAsync(string serverName, McpServerConfigurationItemDto item,
+    public async Task<VoidResult> CreateServerAsync(string serverName, McpServerConfigurationItemDto item,
         CancellationToken cancellationToken = default)
     {
         var command = new CreateMcpServerCommand(

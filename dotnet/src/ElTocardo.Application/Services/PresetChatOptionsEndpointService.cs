@@ -10,7 +10,7 @@ namespace ElTocardo.Application.Services;
 public class PresetChatOptionsEndpointService(
     IQueryHandler<GetAllPresetChatOptionsQuery, List<PresetChatOptionsDto>> getAllQueryHandler,
     IQueryHandler<GetPresetChatOptionsByNameQuery, PresetChatOptionsDto> getByNameQueryHandler,
-    ICommandHandler<CreatePresetChatOptionsCommand, Guid> createCommandHandler,
+    ICommandHandler<CreatePresetChatOptionsCommand,Guid> createCommandHandler,
     ICommandHandler<UpdatePresetChatOptionsCommand> updateCommandHandler,
     ICommandHandler<DeletePresetChatOptionsCommand> deleteCommandHandler)
     : IPresetChatOptionsEndpointService
@@ -25,7 +25,7 @@ public class PresetChatOptionsEndpointService(
         return await getByNameQueryHandler.HandleAsync(new GetPresetChatOptionsByNameQuery(name), cancellationToken);
     }
 
-    public async Task<Result<Guid>> CreateAsync(PresetChatOptionsDto dto, CancellationToken cancellationToken = default)
+    public async Task<VoidResult> CreateAsync(PresetChatOptionsDto dto, CancellationToken cancellationToken = default)
     {
         var command = new CreatePresetChatOptionsCommand(
             dto.Name,

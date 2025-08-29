@@ -11,7 +11,7 @@ public interface IMcpServerConfigurationEndpointService
     public Task<Result<McpServerConfigurationItemDto>> GetServerAsync(string serverName,
         CancellationToken cancellationToken = default);
 
-    public Task<Result<Guid>> CreateServerAsync(string serverName, McpServerConfigurationItemDto item,
+    public Task<VoidResult> CreateServerAsync(string serverName, McpServerConfigurationItemDto item,
         CancellationToken cancellationToken = default);
 
     public Task<VoidResult> UpdateServerAsync(string serverName, McpServerConfigurationItemDto item,
