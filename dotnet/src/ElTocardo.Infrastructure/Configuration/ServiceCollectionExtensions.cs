@@ -5,22 +5,28 @@ using AI.GithubCopilot.Configuration;
 using ElTocardo.Application.Configuration;
 using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Domain.Mediator.ConversationMediator.Repositories;
+using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
+using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Entities;
+using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Entities;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Repositories;
 using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator;
 using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator.Commands;
 using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator.Handlers.Commands;
 using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator.Handlers.Queries;
 using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator.Queries;
+using ElTocardo.Infrastructure.Mediator.EntityFramework.Configurations;
 using ElTocardo.Infrastructure.Mediator.EntityFramework.Data;
 using ElTocardo.Infrastructure.Mediator.MongoDb.Repositories.Conversation;
 using ElTocardo.Infrastructure.Options;
 using ElTocardo.Infrastructure.Services;
 using ElTocardo.Infrastructure.Services.Endpoints;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
@@ -61,10 +67,20 @@ public static class ServiceCollectionExtensions
         services
             .AddSingleton<IDbContextOptionsConfiguration<ApplicationDbContext>,
                 TApplicationDbContextOptionsConfiguration>()
+            .AddEntityTypeConfigurations()
             .AddDbContext<ApplicationDbContext>();
         return services;
     }
 
+    private static IServiceCollection
+        AddEntityTypeConfigurations(this IServiceCollection services)
+    {
+        services.TryAddSingleton<IEntityTypeConfiguration<PresetChatInstruction>, PresetChatInstructionConfiguration>();
+        services.TryAddSingleton<IEntityTypeConfiguration<PresetChatOptions>, PresetChatOptionsConfiguration>();
+        services.TryAddSingleton<IEntityTypeConfiguration<McpServerConfiguration>, McpServerConfigurationConfiguration>();
+
+        return services;
+    }
 
 
     private static IServiceCollection AddMongoDb(this IServiceCollection services, MongoClientSettings mongoClientSettings, string mongoDatabaseName)
