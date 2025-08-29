@@ -1,5 +1,4 @@
 using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
-using ElTocardo.Application.Mappers.Dtos.AI;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 

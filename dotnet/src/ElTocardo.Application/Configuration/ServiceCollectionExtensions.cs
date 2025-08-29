@@ -1,6 +1,7 @@
 using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Dtos.Conversation;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
+using ElTocardo.Application.Dtos.PresetChatInstruction;
 using ElTocardo.Application.Mappers.Dtos.AI;
 using ElTocardo.Application.Mappers.Dtos.Conversation;
 using ElTocardo.Application.Mappers.Dtos.ModelContextProtocol;
@@ -15,6 +16,11 @@ using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Com
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Handlers.Queries;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Mappers;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Queries;
+using ElTocardo.Application.Mediator.PresetChatInstructionMediator.Commands;
+using ElTocardo.Application.Mediator.PresetChatInstructionMediator.Handlers.Commands;
+using ElTocardo.Application.Mediator.PresetChatInstructionMediator.Handlers.Queries;
+using ElTocardo.Application.Mediator.PresetChatInstructionMediator.Mappers;
+using ElTocardo.Application.Mediator.PresetChatInstructionMediator.Queries;
 using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Commands;
 using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Handlers.Commands;
 using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Handlers.Queries;
@@ -43,8 +49,30 @@ public static class ServiceCollectionExtensions
             .AddValidation()
             .AddMcpServerConfigurationService()
             .AddPresetChatOptionsService()
-            .AddConversationService()
-            ;
+            .AddPresetChatInstructionService()
+            .AddConversationService();
+    }
+
+    private static IServiceCollection AddPresetChatInstructionService(this IServiceCollection services)
+    {
+        // Add mappers if needed
+        services.AddSingleton<PresetChatInstructionDomainGetDtoMapper>();
+        services.AddSingleton<PresetChatInstructionDomainGetAllDtoMapper>();
+        services.AddSingleton<PresetChatInstructionDomainUpdateCommandMapper>();
+        services.AddSingleton<PresetChatInstructionDomainCreateCommandMapper>();
+
+        // Command handlers (if you have them)
+        services.AddScoped<ICommandHandler<CreatePresetChatInstructionCommand, Guid>, CreatePresetChatInstructionCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdatePresetChatInstructionCommand>, UpdatePresetChatInstructionCommandHandler>();
+        services.AddScoped<ICommandHandler<DeletePresetChatInstructionCommand>, DeletePresetChatInstructionCommandHandler>();
+
+        // Query handlers (if you have them)
+        services.AddScoped<IQueryHandler<GetAllPresetChatInstructionsQuery, List<PresetChatInstructionDto>>, GetAllPresetChatInstructionsQueryHandler>();
+        services.AddScoped<IQueryHandler<GetPresetChatInstructionByNameQuery, PresetChatInstructionDto>, GetPresetChatInstructionByNameQueryHandler>();
+
+        // Service registration
+        services.AddScoped<IPresetChatInstructionEndpointService, PresetChatInstructionEndpointService>();
+        return services;
     }
 
 
@@ -56,7 +84,6 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddDtos(this IServiceCollection services)
     {
         services.AddAi();
-
 
         services.TryAddSingleton<ConversationDtoChatDtoMapper>();
 

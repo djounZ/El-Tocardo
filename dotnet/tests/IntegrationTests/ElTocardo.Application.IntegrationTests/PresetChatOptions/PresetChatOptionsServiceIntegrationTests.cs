@@ -11,8 +11,6 @@ using ElTocardo.Application.Services;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Repositories;
 using ElTocardo.Infrastructure.Mediator.EntityFramework.Data;
 using ElTocardo.Infrastructure.Mediator.EntityFramework.Repositories;
-using ElTocardo.Infrastructure.Services;
-using ElTocardo.Infrastructure.Services.Endpoints;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

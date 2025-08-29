@@ -1,4 +1,3 @@
-using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.Conversation;
 using ElTocardo.Domain.Models;
 

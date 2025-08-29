@@ -1,0 +1,24 @@
+meta {
+  name: Update PresetChatInstruction
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{api_backend}}/v1/preset-chat-instructions/example-instruction
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "example-instruction",
+    "description": "Updated description for integration testing.",
+    "content_type": "text/markdown",
+    "content": "Updated instruction content."
+  }
+}
+
+settings {
+  encodeUrl: true
+}

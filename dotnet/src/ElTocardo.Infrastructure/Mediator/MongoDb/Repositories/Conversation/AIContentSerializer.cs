@@ -10,7 +10,9 @@ public class AIContentSerializer : SerializerBase<AIContent>
         var doc = BsonDocumentSerializer.Instance.Deserialize(context);
 
         if (!doc.Contains("$type"))
+        {
             throw new FormatException("AIContent must have a $type discriminator.");
+        }
 
         var typeDiscriminator = doc["$type"].AsString;
 

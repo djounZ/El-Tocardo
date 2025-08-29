@@ -1,12 +1,5 @@
-using ElTocardo.API.Options;
 using ElTocardo.Application.Services;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using OpenIddict.Abstractions;
-using OpenIddict.Server.AspNetCore;
 
 namespace ElTocardo.API.Endpoints;
 

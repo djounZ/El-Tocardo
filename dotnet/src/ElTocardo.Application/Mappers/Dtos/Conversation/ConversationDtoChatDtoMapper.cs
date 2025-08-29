@@ -1,5 +1,3 @@
-using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
-using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Dtos.Conversation;
 using ElTocardo.Application.Mappers.Dtos.AI;
 using Microsoft.Extensions.AI;

@@ -42,6 +42,7 @@ public static class WebApplicationExtensions
             .MapMcpClientToolsEndpoints()
             .MapChatCompletionsEndpoints()
             .MapConversationEndpoints()
+            .MapPresetChatInstructionEndpoints()
             .MapPresetChatOptionsEndpoints();
     }
 }

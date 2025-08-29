@@ -1,4 +1,3 @@
-using ElTocardo.Application.Mediator.Common.Handlers;
 using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Application.Mediator.ConversationMediator.Commands;
 using ElTocardo.Domain.Mediator.ConversationMediator.Entities;

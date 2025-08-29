@@ -1,7 +1,9 @@
+using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Repositories;
+using ElTocardo.Infrastructure.Mediator.EntityFramework.Repositories;
+using ElTocardo.Application.Services;
 using AI.GithubCopilot.Configuration;
 using ElTocardo.Application.Configuration;
 using ElTocardo.Application.Mediator.Common.Interfaces;
-using ElTocardo.Application.Services;
 using ElTocardo.Domain.Mediator.ConversationMediator.Repositories;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Repositories;
@@ -11,8 +13,6 @@ using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator.
 using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator.Handlers.Queries;
 using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator.Queries;
 using ElTocardo.Infrastructure.Mediator.EntityFramework.Data;
-using ElTocardo.Infrastructure.Mediator.EntityFramework.Repositories;
-using ElTocardo.Infrastructure.Mediator.MongoDb.Repositories;
 using ElTocardo.Infrastructure.Mediator.MongoDb.Repositories.Conversation;
 using ElTocardo.Infrastructure.Options;
 using ElTocardo.Infrastructure.Services;
@@ -117,11 +117,17 @@ public static class ServiceCollectionExtensions
                 .AddTransient<ClientTransportFactoryService>()
                 .AddUserService()
                 .AddMcpServerConfigurationService()
+                .AddPresetChatInstructionService()
                 .AddPresetChatOptionsService()
                 .AddConversationService()
             ;
     }
 
+    private static IServiceCollection AddPresetChatInstructionService(this IServiceCollection services)
+    {
+        services.AddScoped<IPresetChatInstructionRepository, PresetChatInstructionRepository>();
+        return services;
+    }
     private static IServiceCollection AddPresetChatOptionsService(this IServiceCollection services)
     {
         services.AddScoped<IPresetChatOptionsRepository, PresetChatOptionsRepository>();

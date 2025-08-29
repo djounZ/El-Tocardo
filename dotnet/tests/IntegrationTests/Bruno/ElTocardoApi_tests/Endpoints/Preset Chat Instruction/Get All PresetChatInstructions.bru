@@ -1,0 +1,14 @@
+meta {
+  name: Get All PresetChatInstructions
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{api_backend}}/v1/preset-chat-instructions
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
