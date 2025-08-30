@@ -1,4 +1,5 @@
 using AI.GithubCopilot.Infrastructure.Services;
+using ElTocardo.API.Configuration.EntityFramework;
 using ElTocardo.API.Options;
 using ElTocardo.Infrastructure.Configuration;
 using ElTocardo.Infrastructure.Mediator.EntityFramework.Data;

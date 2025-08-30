@@ -1,10 +1,9 @@
 using System.Text.Json;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
-using ElTocardo.Infrastructure.Mediator.EntityFramework.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ElTocardo.Infrastructure.Mediator.EntityFramework.Configurations;
+namespace ElTocardo.API.Configuration.EntityFramework.EntityTypeConfiguration;
 
 public class McpServerConfigurationConfiguration : IEntityTypeConfiguration<McpServerConfiguration>
 {

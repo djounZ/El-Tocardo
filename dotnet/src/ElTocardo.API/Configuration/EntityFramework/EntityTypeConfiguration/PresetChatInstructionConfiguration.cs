@@ -1,8 +1,8 @@
+using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Entities;
 
-namespace ElTocardo.Infrastructure.Mediator.EntityFramework.Configurations;
+namespace ElTocardo.API.Configuration.EntityFramework.EntityTypeConfiguration;
 
 public class PresetChatInstructionConfiguration : IEntityTypeConfiguration<PresetChatInstruction>
 {

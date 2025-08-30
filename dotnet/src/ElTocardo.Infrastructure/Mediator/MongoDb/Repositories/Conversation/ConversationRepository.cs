@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using ElTocardo.Domain.Mediator.ConversationMediator.Entities;
 using ElTocardo.Domain.Mediator.ConversationMediator.Repositories;
 using ElTocardo.Domain.Models;
+using ElTocardo.Infrastructure.Mediator.MongoDb.Repositories.Common;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;

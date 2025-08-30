@@ -1,10 +1,11 @@
-
 using System.Linq.Expressions;
 using ElTocardo.Domain.Mediator.Common.Entities;
 using ElTocardo.Domain.Mediator.Common.Repositories;
 using ElTocardo.Domain.Models;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+
+namespace ElTocardo.Infrastructure.Mediator.MongoDb.Repositories.Common;
 
 public abstract class MongoCollectionRepository<TEntity, TId, TKey>(ILogger<MongoCollectionRepository<TEntity, TId, TKey>> logger, IMongoDatabase mongoDatabase)  :IEntityRepository<TEntity,TId,TKey> where TEntity: AbstractEntity<TId,TKey>
 {

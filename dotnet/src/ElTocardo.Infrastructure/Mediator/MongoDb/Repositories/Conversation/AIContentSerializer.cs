@@ -1,7 +1,9 @@
+using Microsoft.Extensions.AI;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
-using Microsoft.Extensions.AI;
+
+namespace ElTocardo.Infrastructure.Mediator.MongoDb.Repositories.Conversation;
 
 public class AIContentSerializer : SerializerBase<AIContent>
 {

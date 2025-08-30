@@ -5,10 +5,7 @@ using AI.GithubCopilot.Configuration;
 using ElTocardo.Application.Configuration;
 using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Domain.Mediator.ConversationMediator.Repositories;
-using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
-using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Entities;
-using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Entities;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Repositories;
 using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator;
 using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator.Commands;
@@ -22,7 +19,6 @@ using ElTocardo.Infrastructure.Options;
 using ElTocardo.Infrastructure.Services;
 using ElTocardo.Infrastructure.Services.Endpoints;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,7 +38,7 @@ public static class ServiceCollectionExtensions
     ///     Requires IMemoryCache to be registered in the service collection.
     /// </summary>
     public static IServiceCollection AddElTocardoInfrastructure<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services,
-        IConfiguration configuration, MongoClientSettings mongoClientSettings, string mongoDatabaseName) where TApplicationDbContextOptionsConfiguration : class, IDbContextOptionsConfiguration<ApplicationDbContext>
+        IConfiguration configuration, MongoClientSettings mongoClientSettings, string mongoDatabaseName) where TApplicationDbContextOptionsConfiguration : class, IElTocardoDbContextOptionsConfiguration
     {
         return services
             .AddAiClients(configuration)
@@ -52,7 +48,7 @@ public static class ServiceCollectionExtensions
             .AddElTocardoApplication(configuration);
     }
 
-    private static IServiceCollection AddMediator<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services, MongoClientSettings mongoClientSettings, string mongoDatabaseName) where TApplicationDbContextOptionsConfiguration : class, IDbContextOptionsConfiguration<ApplicationDbContext>
+    private static IServiceCollection AddMediator<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services, MongoClientSettings mongoClientSettings, string mongoDatabaseName) where TApplicationDbContextOptionsConfiguration : class, IElTocardoDbContextOptionsConfiguration
     {
 
         return services
@@ -61,24 +57,20 @@ public static class ServiceCollectionExtensions
     }
 
 
-    private static IServiceCollection AddEntityFramework<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services) where TApplicationDbContextOptionsConfiguration : class, IDbContextOptionsConfiguration<ApplicationDbContext>
+    private static IServiceCollection AddEntityFramework<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services) where TApplicationDbContextOptionsConfiguration : class, IElTocardoDbContextOptionsConfiguration
     {
 
         services
-            .AddSingleton<IDbContextOptionsConfiguration<ApplicationDbContext>,
+            .AddSingleton<IElTocardoDbContextOptionsConfiguration,
                 TApplicationDbContextOptionsConfiguration>()
-            .AddEntityTypeConfigurations()
-            .AddDbContext<ApplicationDbContext>();
-        return services;
-    }
+            .AddSingleton<IDbContextOptionsConfiguration<ApplicationDbContext>>(sc =>
+                sc.GetRequiredService<IElTocardoDbContextOptionsConfiguration>())
+            .AddSingleton<IElTocardoEntityFrameworkConfiguration>(sc =>
+                sc.GetRequiredService<IElTocardoDbContextOptionsConfiguration>());
 
-    private static IServiceCollection
-        AddEntityTypeConfigurations(this IServiceCollection services)
-    {
-        services.TryAddSingleton<IEntityTypeConfiguration<PresetChatInstruction>, PresetChatInstructionConfiguration>();
-        services.TryAddSingleton<IEntityTypeConfiguration<PresetChatOptions>, PresetChatOptionsConfiguration>();
-        services.TryAddSingleton<IEntityTypeConfiguration<McpServerConfiguration>, McpServerConfigurationConfiguration>();
+        services.TryAddSingleton<ElTocardoEntityFrameworkConfigurationEnumerator>();
 
+        services.AddDbContext<ApplicationDbContext>();
         return services;
     }
 
