@@ -1,9 +1,10 @@
 using ElTocardo.Application.Mediator.Common.Handlers;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator.Commands;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
-namespace ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator.Handlers.Commands;
+namespace ElTocardo.Infrastructure.Mediator.Identity.ApplicationUserMediator.Handlers.Commands;
 
 public class CreateUserCommandHandler(ILogger<CreateUserCommandHandler> logger, UserManager<ApplicationUser> userManager): CommandHandlerBase<CreateUserCommand>(logger)
 {

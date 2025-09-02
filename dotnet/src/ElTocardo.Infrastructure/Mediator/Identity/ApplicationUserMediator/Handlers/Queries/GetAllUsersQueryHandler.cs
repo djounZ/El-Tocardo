@@ -1,9 +1,10 @@
 using ElTocardo.Application.Mediator.Common.Handlers;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator.Queries;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
-namespace ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator.Handlers.Queries;
+namespace ElTocardo.Infrastructure.Mediator.Identity.ApplicationUserMediator.Handlers.Queries;
 
 public class GetAllUsersQueryHandler(ILogger<GetAllUsersQueryHandler> logger, UserManager<ApplicationUser> userManager): QueryHandlerBase<GetAllUsersQuery, ApplicationUser[]>(logger)
 {

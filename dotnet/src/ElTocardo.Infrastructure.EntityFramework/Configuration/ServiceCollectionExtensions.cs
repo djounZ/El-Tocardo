@@ -1,19 +1,12 @@
-using ElTocardo.Application.Services;
-using ElTocardo.Domain.Mediator.Interfaces;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
 using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Repositories;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Repositories;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator.Commands;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator.Handlers.Commands;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator.Handlers.Queries;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator.Queries;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Configurations;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.McpServerConfigurationMediator;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.PresetChatInstructionMediator;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.PresetChatOptionsMediator;
-using ElTocardo.Infrastructure.EntityFramework.Services.Endpoints;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
@@ -88,19 +81,6 @@ public static class ServiceCollectionExtensions
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
-
-        // User Command handlers
-        services.AddScoped<ICommandHandler<AuthenticateUserCommand>, AuthenticateUserCommandHandler>();
-        services
-            .AddScoped<ICommandHandler<InitiatePasswordResetCommand, string>, InitiatePasswordResetCommandHandler>();
-        services.AddScoped<ICommandHandler<ConfirmPasswordResetCommand>, ConfirmPasswordResetCommandHandler>();
-        services.AddScoped<ICommandHandler<UnregisterUserCommand>, UnregisterUserCommandHandler>();
-        services.AddScoped<ICommandHandler<CreateUserCommand>, CreateUserCommandHandler>();
-
-        // User Query handlers
-        services.AddScoped<IQueryHandler<GetAllUsersQuery, ApplicationUser[]>, GetAllUsersQueryHandler>();
-
-        services.AddScoped<IUserEndpointService, UserEndpointService>();
         return services;
     }
 

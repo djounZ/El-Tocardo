@@ -42,9 +42,8 @@ public static class ServiceCollectionExtensions
         });
         var mongoClientSettings = MongoClientSettings.FromConnectionString(configuration.GetConnectionString("el-tocardo-db-mongodb"));
 
-        services.AddElTocardoInfrastructureEntityFramework<ApiDbContextOptionsConfiguration>();
         services
-            .AddElTocardoInfrastructure(configuration, mongoClientSettings,"el-tocardo-db-mongodb");
+            .AddElTocardoInfrastructure<ApiDbContextOptionsConfiguration>(configuration, mongoClientSettings,"el-tocardo-db-mongodb");
 
         services.AddOpenTelemetryExporters(configuration)
             .AddOpenTelemetry()

@@ -8,6 +8,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ElTocardo.Application\ElTocardo.Application.csproj" />
       <ProjectReference Include="..\ElTocardo.Infrastructure.EntityFramework\ElTocardo.Infrastructure.EntityFramework.csproj" />
     </ItemGroup>
 

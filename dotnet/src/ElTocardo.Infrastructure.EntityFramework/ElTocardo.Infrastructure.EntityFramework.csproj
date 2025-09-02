@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <ProjectReference Include="..\ElTocardo.Application\ElTocardo.Application.csproj" />
+    <ProjectReference Include="..\ElTocardo.Domain\ElTocardo.Domain.csproj" />
   </ItemGroup>
 
 
@@ -14,6 +14,9 @@
 
 
     <ItemGroup>
-      <Folder Include="Mediator\Common\" />
+      <Folder Include="Services\Endpoints\" />
     </ItemGroup>
+
+
+
 </Project>

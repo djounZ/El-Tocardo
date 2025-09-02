@@ -30,7 +30,7 @@ public static class FirstTimeInitialization
 
             // Check if we need to migrate data from JSON file
             await MigrateFromJsonFileIfNeededAsync(context, infrastructureOptions.Value, logger, cancellationToken);
-            await ClientIdAsyn(manager, cancellationToken);
+            await ClientIdAsync(manager, cancellationToken);
 
             var roleManager =  scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             string[] roles = new[] { "ADMIN", "USER", "MANAGER" };
@@ -68,7 +68,7 @@ public static class FirstTimeInitialization
         }
     }
 
-    private static async Task ClientIdAsyn(IOpenIddictApplicationManager manager, CancellationToken cancellationToken)
+    private static async Task ClientIdAsync(IOpenIddictApplicationManager manager, CancellationToken cancellationToken)
     {
         if (await manager.FindByClientIdAsync("postman", cancellationToken) == null)
         {

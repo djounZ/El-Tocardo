@@ -4,7 +4,7 @@ using ElTocardo.Domain.Mediator.Interfaces;
 using ElTocardo.Domain.Models;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator.Commands;
 
-namespace ElTocardo.Infrastructure.EntityFramework.Services.Endpoints;
+namespace ElTocardo.Infrastructure.Services.Endpoints;
 
 /// <summary>
 /// Service for user management operations, orchestrating command and query handlers.
