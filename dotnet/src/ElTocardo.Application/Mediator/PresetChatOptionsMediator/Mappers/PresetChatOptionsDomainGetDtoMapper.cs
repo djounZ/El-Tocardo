@@ -1,7 +1,7 @@
 using System.Text.Json;
 using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.Configuration;
-using ElTocardo.Application.Mediator.Common.Mappers;
+using ElTocardo.Domain.Mediator.Mappers;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Entities;
 
 namespace ElTocardo.Application.Mediator.PresetChatOptionsMediator.Mappers;

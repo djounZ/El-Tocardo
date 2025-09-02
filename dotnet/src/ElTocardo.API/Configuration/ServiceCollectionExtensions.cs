@@ -2,7 +2,8 @@ using AI.GithubCopilot.Infrastructure.Services;
 using ElTocardo.API.Configuration.EntityFramework;
 using ElTocardo.API.Options;
 using ElTocardo.Infrastructure.Configuration;
-using ElTocardo.Infrastructure.Mediator.EntityFramework.Data;
+using ElTocardo.Infrastructure.EntityFramework.Configuration;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.Data;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -41,8 +42,10 @@ public static class ServiceCollectionExtensions
         });
 
         var fromConnectionString = MongoClientSettings.FromConnectionString(configuration.GetConnectionString("el-tocardo-db-mongodb"));
+
+        services.AddElTocardoInfrastructureEntityFramework<DbContextOptionsConfiguration>();
         services
-            .AddElTocardoInfrastructure<DbContextOptionsConfiguration>(configuration, fromConnectionString,"el-tocardo-db-mongodb");
+            .AddElTocardoInfrastructure(configuration, fromConnectionString,"el-tocardo-db-mongodb");
 
         services.AddOpenTelemetryExporters(configuration)
             .AddOpenTelemetry()

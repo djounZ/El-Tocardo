@@ -1,4 +1,4 @@
-using ElTocardo.Application.Mediator.Common.Commands;
+using ElTocardo.Domain.Mediator.Commands;
 
 namespace ElTocardo.Application.Mediator.PresetChatOptionsMediator.Commands;
 

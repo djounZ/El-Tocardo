@@ -1,8 +1,10 @@
-using ElTocardo.API.Configuration.EntityFramework.EntityTypeConfiguration;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Entities;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Entities;
-using ElTocardo.Infrastructure.Mediator.EntityFramework.Configurations;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.Configurations;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.McpServerConfigurationMediator;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.PresetChatInstructionMediator;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.PresetChatOptionsMediator;
 using Microsoft.EntityFrameworkCore;
 
 namespace ElTocardo.API.Configuration.EntityFramework;
@@ -17,7 +19,7 @@ public sealed class DbContextOptionsConfiguration : IElTocardoDbContextOptionsCo
     }
 
 
-    public IEntityTypeConfiguration<McpServerConfiguration>  McpServerConfiguration { get;  } = new McpServerConfigurationConfiguration();
-    public IEntityTypeConfiguration<PresetChatInstruction>   PresetChatInstruction { get;  } = new PresetChatInstructionConfiguration();
-    public IEntityTypeConfiguration<PresetChatOptions>   PresetChatOptions { get;  } = new PresetChatOptionsConfiguration();
+    public IEntityTypeConfiguration<McpServerConfiguration>  McpServerConfiguration { get;  } = new McpServerConfigurationEntityTypeConfiguration();
+    public IEntityTypeConfiguration<PresetChatInstruction>   PresetChatInstruction { get;  } = new PresetChatInstructionEntityTypeConfiguration();
+    public IEntityTypeConfiguration<PresetChatOptions>   PresetChatOptions { get;  } = new PresetChatOptionsEntityTypeConfiguration();
 }

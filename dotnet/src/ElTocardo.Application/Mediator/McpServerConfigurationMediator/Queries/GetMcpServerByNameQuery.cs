@@ -1,4 +1,4 @@
-using ElTocardo.Application.Mediator.Common.Queries;
+using ElTocardo.Domain.Mediator.Queries;
 
 namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Queries;
 

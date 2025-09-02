@@ -1,8 +1,8 @@
-using ElTocardo.Application.Mediator.Common.Interfaces;
-using ElTocardo.Application.Mediator.Common.Mappers;
-using ElTocardo.Application.Mediator.Common.Queries;
 using ElTocardo.Domain.Mediator.Common.Entities;
 using ElTocardo.Domain.Mediator.Common.Repositories;
+using ElTocardo.Domain.Mediator.Interfaces;
+using ElTocardo.Domain.Mediator.Mappers;
+using ElTocardo.Domain.Mediator.Queries;
 using ElTocardo.Domain.Models;
 using Microsoft.Extensions.Logging;
 

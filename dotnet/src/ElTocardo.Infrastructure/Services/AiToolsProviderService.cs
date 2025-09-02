@@ -1,7 +1,7 @@
 using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
-using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Queries;
+using ElTocardo.Domain.Mediator.Interfaces;
 using Microsoft.Extensions.AI;
 using ModelContextProtocol.Client;
 

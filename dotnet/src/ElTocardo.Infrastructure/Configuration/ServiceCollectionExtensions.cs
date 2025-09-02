@@ -1,28 +1,13 @@
-using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Repositories;
-using ElTocardo.Infrastructure.Mediator.EntityFramework.Repositories;
 using ElTocardo.Application.Services;
 using AI.GithubCopilot.Configuration;
 using ElTocardo.Application.Configuration;
-using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Domain.Mediator.ConversationMediator.Repositories;
-using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
-using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Repositories;
-using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator;
-using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator.Commands;
-using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator.Handlers.Commands;
-using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator.Handlers.Queries;
-using ElTocardo.Infrastructure.Mediator.EntityFramework.ApplicationUserMediator.Queries;
-using ElTocardo.Infrastructure.Mediator.EntityFramework.Configurations;
-using ElTocardo.Infrastructure.Mediator.EntityFramework.Data;
 using ElTocardo.Infrastructure.Mediator.MongoDb.Repositories.Conversation;
 using ElTocardo.Infrastructure.Options;
 using ElTocardo.Infrastructure.Services;
 using ElTocardo.Infrastructure.Services.Endpoints;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
@@ -37,41 +22,22 @@ public static class ServiceCollectionExtensions
     ///     Requires AiGithubCopilotUserProvider to be registered in the service collection.
     ///     Requires IMemoryCache to be registered in the service collection.
     /// </summary>
-    public static IServiceCollection AddElTocardoInfrastructure<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services,
-        IConfiguration configuration, MongoClientSettings mongoClientSettings, string mongoDatabaseName) where TApplicationDbContextOptionsConfiguration : class, IElTocardoDbContextOptionsConfiguration
+    public static IServiceCollection AddElTocardoInfrastructure(this IServiceCollection services,
+        IConfiguration configuration, MongoClientSettings mongoClientSettings, string mongoDatabaseName)
     {
         return services
             .AddAiClients(configuration)
-            .AddMediator<TApplicationDbContextOptionsConfiguration>(mongoClientSettings, mongoDatabaseName)
+            .AddMediator(mongoClientSettings, mongoDatabaseName)
             .AddOptions(configuration)
             .AddServices()
             .AddElTocardoApplication(configuration);
     }
 
-    private static IServiceCollection AddMediator<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services, MongoClientSettings mongoClientSettings, string mongoDatabaseName) where TApplicationDbContextOptionsConfiguration : class, IElTocardoDbContextOptionsConfiguration
+    private static IServiceCollection AddMediator(this IServiceCollection services, MongoClientSettings mongoClientSettings, string mongoDatabaseName)
     {
 
         return services
-            .AddEntityFramework<TApplicationDbContextOptionsConfiguration>()
             .AddMongoDb(mongoClientSettings, mongoDatabaseName);
-    }
-
-
-    private static IServiceCollection AddEntityFramework<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services) where TApplicationDbContextOptionsConfiguration : class, IElTocardoDbContextOptionsConfiguration
-    {
-
-        services
-            .AddSingleton<IElTocardoDbContextOptionsConfiguration,
-                TApplicationDbContextOptionsConfiguration>()
-            .AddSingleton<IDbContextOptionsConfiguration<ApplicationDbContext>>(sc =>
-                sc.GetRequiredService<IElTocardoDbContextOptionsConfiguration>())
-            .AddSingleton<IElTocardoEntityFrameworkConfiguration>(sc =>
-                sc.GetRequiredService<IElTocardoDbContextOptionsConfiguration>());
-
-        services.TryAddSingleton<ElTocardoEntityFrameworkConfigurationEnumerator>();
-
-        services.AddDbContext<ApplicationDbContext>();
-        return services;
     }
 
 
@@ -123,44 +89,8 @@ public static class ServiceCollectionExtensions
         return
             services
                 .AddTransient<ClientTransportFactoryService>()
-                .AddUserService()
-                .AddMcpServerConfigurationService()
-                .AddPresetChatInstructionService()
-                .AddPresetChatOptionsService()
                 .AddConversationService()
             ;
-    }
-
-    private static IServiceCollection AddPresetChatInstructionService(this IServiceCollection services)
-    {
-        services.AddScoped<IPresetChatInstructionRepository, PresetChatInstructionRepository>();
-        return services;
-    }
-    private static IServiceCollection AddPresetChatOptionsService(this IServiceCollection services)
-    {
-        services.AddScoped<IPresetChatOptionsRepository, PresetChatOptionsRepository>();
-        return services;
-    }
-
-    private static IServiceCollection AddUserService(this IServiceCollection services)
-    {
-        services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
-
-        // User Command handlers
-        services.AddScoped<ICommandHandler<AuthenticateUserCommand>, AuthenticateUserCommandHandler>();
-        services
-            .AddScoped<ICommandHandler<InitiatePasswordResetCommand, string>, InitiatePasswordResetCommandHandler>();
-        services.AddScoped<ICommandHandler<ConfirmPasswordResetCommand>, ConfirmPasswordResetCommandHandler>();
-        services.AddScoped<ICommandHandler<UnregisterUserCommand>, UnregisterUserCommandHandler>();
-        services.AddScoped<ICommandHandler<CreateUserCommand>, CreateUserCommandHandler>();
-
-        // User Query handlers
-        services.AddScoped<IQueryHandler<GetAllUsersQuery, ApplicationUser[]>, GetAllUsersQueryHandler>();
-
-        services.AddScoped<IUserEndpointService, UserEndpointService>();
-        return services;
     }
 
 
@@ -171,12 +101,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IConversationRepository, ConversationRepository>();
         services.AddScoped<IConversationEndpointService, ConversationEndpointService>();
 
-        return services;
-    }
-
-    private static IServiceCollection AddMcpServerConfigurationService(this IServiceCollection services)
-    {
-        services.AddScoped<IMcpServerConfigurationRepository, McpServerConfigurationRepository>();
         return services;
     }
 }

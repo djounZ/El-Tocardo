@@ -1,4 +1,4 @@
-using ElTocardo.Application.Mediator.Common.Commands;
+using ElTocardo.Domain.Mediator.Commands;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.ValueObjects;
 
 namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Commands;

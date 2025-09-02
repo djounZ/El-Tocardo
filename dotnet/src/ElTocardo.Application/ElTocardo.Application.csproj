@@ -9,5 +9,9 @@
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="$(FluentValidationCommonPackagesVersion)" />
         <PackageReference Include="ModelContextProtocol.Core" Version="$(ModelContextProtocolPackagesCommonVersion)"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Mediator\Common\" />
+    </ItemGroup>
 </Project>
 

@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\ElTocardo.Infrastructure.EntityFramework\ElTocardo.Infrastructure.EntityFramework.csproj" />
         <ProjectReference Include="..\ElTocardo.Infrastructure\ElTocardo.Infrastructure.csproj"/>
     </ItemGroup>
 </Project>

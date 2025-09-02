@@ -1,4 +1,4 @@
-using ElTocardo.Application.Mediator.Common.Commands;
+using ElTocardo.Domain.Mediator.Commands;
 using Microsoft.Extensions.AI;
 
 namespace ElTocardo.Application.Mediator.ConversationMediator.Commands;

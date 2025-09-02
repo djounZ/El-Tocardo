@@ -1,8 +1,8 @@
 using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.Conversation;
 using ElTocardo.Application.Mappers.Dtos.AI;
-using ElTocardo.Application.Mediator.Common.Mappers;
 using ElTocardo.Domain.Mediator.ConversationMediator.Entities;
+using ElTocardo.Domain.Mediator.Mappers;
 
 namespace ElTocardo.Application.Mediator.ConversationMediator.Mappers;
 

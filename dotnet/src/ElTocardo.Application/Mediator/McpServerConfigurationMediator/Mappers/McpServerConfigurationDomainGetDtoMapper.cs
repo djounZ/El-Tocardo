@@ -1,5 +1,5 @@
 using ElTocardo.Application.Dtos.ModelContextProtocol;
-using ElTocardo.Application.Mediator.Common.Mappers;
+using ElTocardo.Domain.Mediator.Mappers;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.ValueObjects;
 

@@ -1,6 +1,5 @@
-
-using ElTocardo.Application.Mediator.Common.Interfaces;
 using ElTocardo.Application.Mediator.PresetChatInstructionMediator.Commands;
+using ElTocardo.Domain.Mediator.Interfaces;
 using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Repositories;
 using ElTocardo.Domain.Models;
 
