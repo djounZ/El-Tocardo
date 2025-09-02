@@ -9,6 +9,10 @@ var postgres = builder.AddPostgres("postgres")
 var database = postgres.AddDatabase("el-tocardo-db-postgres");
 
 
+var migrationService = builder.AddProject<ElTocardo_Migrations>("migrations")
+        .WithReference(database)
+        .WaitFor(postgres)
+    ;
 // Add MongoDB server resource (containerized via Docker)
 var mongo = builder.AddMongoDB("mongodb")
   //  .WithDataVolume() // persists DB data across container restarts
@@ -23,6 +27,7 @@ _ = builder.AddProject<ElTocardo_API>("ElTocardoAPI")
     .WithReference(mongodb)// Connect the API to the database
     .WaitFor(postgres)
     .WaitFor(mongodb)
+    .WaitForCompletion(migrationService)
     // .WithEnvironment("OllamaOptions:Uri", ollama.GetEndpoint("ollama"))
     // .WaitFor(ollama)
     .WithExternalHttpEndpoints();

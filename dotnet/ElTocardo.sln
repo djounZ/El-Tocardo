@@ -52,6 +52,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElTocardo.Application.Integ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElTocardo.Infrastructure.EntityFramework", "src\ElTocardo.Infrastructure.EntityFramework\ElTocardo.Infrastructure.EntityFramework.csproj", "{7198BB95-6E59-43AE-8A25-FDC8C1DE1B66}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElTocardo.Migrations", "src\ElTocardo.Migrations\ElTocardo.Migrations.csproj", "{D26A1275-9572-434C-A0E0-FA3A7505C6A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,6 +116,10 @@ Global
 		{7198BB95-6E59-43AE-8A25-FDC8C1DE1B66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7198BB95-6E59-43AE-8A25-FDC8C1DE1B66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7198BB95-6E59-43AE-8A25-FDC8C1DE1B66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D26A1275-9572-434C-A0E0-FA3A7505C6A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D26A1275-9572-434C-A0E0-FA3A7505C6A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D26A1275-9572-434C-A0E0-FA3A7505C6A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D26A1275-9572-434C-A0E0-FA3A7505C6A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -138,6 +144,7 @@ Global
 		{66C614E1-F657-EE3C-036E-FACBB96B4191} = {1F1759E1-9447-43AB-97F8-C48A58215B85}
 		{79E637FB-95CD-4BA8-B45C-CA3B492500FD} = {59174D55-8CA0-4F75-B934-9E9F11F32C80}
 		{7198BB95-6E59-43AE-8A25-FDC8C1DE1B66} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{D26A1275-9572-434C-A0E0-FA3A7505C6A5} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F1C61BC4-FFB1-4407-A2BB-26EDFAE75511}
