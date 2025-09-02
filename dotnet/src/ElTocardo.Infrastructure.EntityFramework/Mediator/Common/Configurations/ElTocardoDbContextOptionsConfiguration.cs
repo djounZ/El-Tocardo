@@ -6,7 +6,7 @@ using ElTocardo.Infrastructure.EntityFramework.Mediator.PresetChatInstructionMed
 using ElTocardo.Infrastructure.EntityFramework.Mediator.PresetChatOptionsMediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace ElTocardo.Infrastructure.EntityFramework.Mediator.Configurations;
+namespace ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Configurations;
 
 public abstract class ElTocardoDbContextOptionsConfiguration : IElTocardoDbContextOptionsConfiguration
 {

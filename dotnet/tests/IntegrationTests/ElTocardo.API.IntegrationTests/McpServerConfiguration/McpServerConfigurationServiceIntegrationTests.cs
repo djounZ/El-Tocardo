@@ -8,7 +8,7 @@ using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Validators;
 using ElTocardo.Application.Services;
 using ElTocardo.Domain.Mediator.Interfaces;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Data;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.McpServerConfigurationMediator;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
-namespace ElTocardo.Application.IntegrationTests.McpServerConfiguration;
+namespace ElTocardo.API.IntegrationTests.McpServerConfiguration;
 
 public class McpServerConfigurationServiceIntegrationTests : IAsyncDisposable
 {

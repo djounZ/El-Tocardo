@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
-namespace ElTocardo.Application.IntegrationTests.McpServerConfiguration;
+namespace ElTocardo.API.IntegrationTests.PresetChatOptions;
 
 public class TestOutputLoggerProvider(ITestOutputHelper output) : ILoggerProvider
 {

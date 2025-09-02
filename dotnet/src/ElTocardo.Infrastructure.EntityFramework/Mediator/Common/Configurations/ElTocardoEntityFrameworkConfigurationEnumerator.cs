@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace ElTocardo.Infrastructure.EntityFramework.Mediator.Configurations;
+namespace ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Configurations;
 
 public class ElTocardoEntityFrameworkConfigurationEnumerator(IElTocardoEntityFrameworkConfiguration entityFrameworkConfiguration) : IEnumerable
 {

@@ -9,7 +9,7 @@ using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Validators;
 using ElTocardo.Application.Services;
 using ElTocardo.Domain.Mediator.Interfaces;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Repositories;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Data;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.PresetChatOptionsMediator;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
-namespace ElTocardo.Application.IntegrationTests.PresetChatOptions;
+namespace ElTocardo.API.IntegrationTests.PresetChatOptions;
 
 public class PresetChatOptionsServiceIntegrationTests : IAsyncDisposable
 {

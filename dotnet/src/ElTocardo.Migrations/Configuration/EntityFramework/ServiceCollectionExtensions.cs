@@ -1,5 +1,5 @@
 using ElTocardo.Infrastructure.EntityFramework.Configuration;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Data;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 using ElTocardo.Migrations.Options;
 
 namespace ElTocardo.Migrations.Configuration.EntityFramework;

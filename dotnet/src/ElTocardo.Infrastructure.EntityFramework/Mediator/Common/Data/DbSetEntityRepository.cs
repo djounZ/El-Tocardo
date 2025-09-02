@@ -4,7 +4,7 @@ using ElTocardo.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace ElTocardo.Infrastructure.EntityFramework.Mediator.Data;
+namespace ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 
 public abstract class DbSetEntityRepository<TEntity, TId, TKey>(
     ApplicationDbContext context,

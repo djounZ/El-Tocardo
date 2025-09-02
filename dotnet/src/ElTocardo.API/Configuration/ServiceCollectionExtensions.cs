@@ -3,7 +3,7 @@ using ElTocardo.API.Configuration.EntityFramework;
 using ElTocardo.API.Options;
 using ElTocardo.Infrastructure.Configuration;
 using ElTocardo.Infrastructure.EntityFramework.Configuration;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Data;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;

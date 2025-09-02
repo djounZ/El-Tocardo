@@ -10,8 +10,4 @@
 
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Mediator\EntityFramework\ApplicationUserMediator\" />
-    </ItemGroup>
-
 </Project>

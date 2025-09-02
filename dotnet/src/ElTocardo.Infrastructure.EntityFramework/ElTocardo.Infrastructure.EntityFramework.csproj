@@ -10,4 +10,10 @@
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(MicrosoftExtensionsPackagesCommonVersion)" />
         <PackageReference Include="Microsoft.AspNetCore.Identity" Version="$(MicrosoftAspNetCoreIdentityVersion)" />
     </ItemGroup>
+
+
+
+    <ItemGroup>
+      <Folder Include="Mediator\Common\" />
+    </ItemGroup>
 </Project>

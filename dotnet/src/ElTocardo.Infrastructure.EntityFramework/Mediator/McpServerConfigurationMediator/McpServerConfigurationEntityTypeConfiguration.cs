@@ -1,6 +1,6 @@
 using System.Text.Json;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Data;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,4 +1,4 @@
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Configurations;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Configurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace ElTocardo.API.Configuration.EntityFramework;

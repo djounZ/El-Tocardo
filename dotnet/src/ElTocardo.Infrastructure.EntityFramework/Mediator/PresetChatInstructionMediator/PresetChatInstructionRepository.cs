@@ -1,6 +1,6 @@
 using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Entities;
 using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Repositories;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Data;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

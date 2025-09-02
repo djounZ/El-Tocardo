@@ -8,8 +8,8 @@ using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator.
 using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator.Handlers.Commands;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator.Handlers.Queries;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator.Queries;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Configurations;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Data;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Configurations;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.McpServerConfigurationMediator;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.PresetChatInstructionMediator;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.PresetChatOptionsMediator;

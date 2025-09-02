@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace ElTocardo.Infrastructure.EntityFramework.Mediator.Data;
+namespace ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 
 public static class ValueComparers
 {

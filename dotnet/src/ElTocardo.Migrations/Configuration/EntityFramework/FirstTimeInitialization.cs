@@ -3,7 +3,7 @@ using ElTocardo.Application.Dtos.ModelContextProtocol;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.ValueObjects;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Data;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 using ElTocardo.Migrations.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

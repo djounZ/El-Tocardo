@@ -2,11 +2,11 @@ using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Entities;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Entities;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Configurations;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Configurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace ElTocardo.Infrastructure.EntityFramework.Mediator.Data;
+namespace ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 
 public class ApplicationDbContext(
     DbContextOptions<ApplicationDbContext> options,

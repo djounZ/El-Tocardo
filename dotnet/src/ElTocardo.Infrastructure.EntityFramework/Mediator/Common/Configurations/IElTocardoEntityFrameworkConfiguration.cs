@@ -3,7 +3,7 @@ using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Entities;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ElTocardo.Infrastructure.EntityFramework.Mediator.Configurations;
+namespace ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Configurations;
 
 public interface IElTocardoEntityFrameworkConfiguration
 {
