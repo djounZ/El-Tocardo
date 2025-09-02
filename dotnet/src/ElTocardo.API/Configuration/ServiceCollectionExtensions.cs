@@ -40,12 +40,11 @@ public static class ServiceCollectionExtensions
             return new AiGithubCopilotUserProvider(() =>
                 sc.GetRequiredService<IHttpContextAccessor>().HttpContext?.User.Identity?.Name ?? string.Empty);
         });
-
-        var fromConnectionString = MongoClientSettings.FromConnectionString(configuration.GetConnectionString("el-tocardo-db-mongodb"));
+        var mongoClientSettings = MongoClientSettings.FromConnectionString(configuration.GetConnectionString("el-tocardo-db-mongodb"));
 
         services.AddElTocardoInfrastructureEntityFramework<ApiDbContextOptionsConfiguration>();
         services
-            .AddElTocardoInfrastructure(configuration, fromConnectionString,"el-tocardo-db-mongodb");
+            .AddElTocardoInfrastructure(configuration, mongoClientSettings,"el-tocardo-db-mongodb");
 
         services.AddOpenTelemetryExporters(configuration)
             .AddOpenTelemetry()

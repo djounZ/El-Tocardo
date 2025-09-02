@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
-namespace ElTocardo.API.IntegrationTests.McpServerConfiguration;
+namespace ElTocardo.API.IntegrationTests.Configuration;
 
 public class TestOutputLoggerProvider(ITestOutputHelper output) : ILoggerProvider
 {
@@ -24,14 +24,13 @@ public class TestOutputLoggerProvider(ITestOutputHelper output) : ILoggerProvide
             return DisposableMock;
         }
 
-        private class NoOpDisposable : IDisposable { public void Dispose() { } }
-
         public bool IsEnabled(LogLevel logLevel)
         {
             return true;
         }
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
+            Func<TState, Exception?, string> formatter)
         {
             try
             {
@@ -45,6 +44,11 @@ public class TestOutputLoggerProvider(ITestOutputHelper output) : ILoggerProvide
             {
                 /* Ignore output errors */
             }
+        }
+
+        private class NoOpDisposable : IDisposable
+        {
+            public void Dispose() { }
         }
     }
 }

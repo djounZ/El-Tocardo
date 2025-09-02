@@ -9,9 +9,10 @@
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)"/>
         <PackageReference Include="xunit" Version="$(XunitVersion)"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitRunnerVisualStudioVersion)"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(MicrosoftExtensionsPackagesCommonVersion)" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(MicrosoftExtensionsPackagesCommonVersion)"/>
+        <PackageReference Include="Testcontainers.MongoDb" Version="$(TestcontainersVersion)"/>
+        <PackageReference Include="Testcontainers.PostgreSql" Version="$(TestcontainersVersion)"/>
     </ItemGroup>
-
 
 
     <ItemGroup>
@@ -19,9 +20,16 @@
     </ItemGroup>
 
 
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\src\ElTocardo.API\ElTocardo.API.csproj"/>
+    </ItemGroup>
+
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\ElTocardo.API\ElTocardo.API.csproj" />
+        <Content Include="..\..\..\src\ElTocardo.API\appsettings.json">
+            <Link>appsettings.json</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>

@@ -37,6 +37,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{1F1759E1-9447-43AB-97F8-C48A58215B85}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTests", "IntegrationTests", "{59174D55-8CA0-4F75-B934-9E9F11F32C80}"
+	ProjectSection(SolutionItems) = preProject
+		src\ElTocardo.API\appsettings.json = src\ElTocardo.API\appsettings.json
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElTocardo.API.UnitTests", "tests\UnitTests\ElTocardo.API.UnitTests\ElTocardo.API.UnitTests.csproj", "{2690254B-AB61-DA4F-A8F7-890A31CB8347}"
 EndProject
