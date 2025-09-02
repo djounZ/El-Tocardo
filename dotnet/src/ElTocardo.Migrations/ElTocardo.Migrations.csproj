@@ -6,5 +6,13 @@
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(MicrosoftExtensionsPackagesCommonVersion)" />
         <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="$(OpenIddictCommonPackagesVersion)" />
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ElTocardo.Infrastructure.EntityFramework\ElTocardo.Infrastructure.EntityFramework.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Properties\launchSettings.json" />
+    </ItemGroup>
 </Project>
 

@@ -43,7 +43,7 @@ public static class ServiceCollectionExtensions
 
         var fromConnectionString = MongoClientSettings.FromConnectionString(configuration.GetConnectionString("el-tocardo-db-mongodb"));
 
-        services.AddElTocardoInfrastructureEntityFramework<DbContextOptionsConfiguration>();
+        services.AddElTocardoInfrastructureEntityFramework<ApiDbContextOptionsConfiguration>();
         services
             .AddElTocardoInfrastructure(configuration, fromConnectionString,"el-tocardo-db-mongodb");
 
