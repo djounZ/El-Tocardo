@@ -59,6 +59,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElTocardo.API.IntegrationTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElTocardo.Authorization.Server", "src\ElTocardo.Authorization.Server\ElTocardo.Authorization.Server.csproj", "{1FDCA404-8321-493A-AE03-742935842341}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElTocardo.ServiceDefaults", "src\ElTocardo.ServiceDefaults \ElTocardo.ServiceDefaults.csproj", "{3BB4DBCD-308E-46F6-9108-38A61A21B4C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +131,10 @@ Global
 		{1FDCA404-8321-493A-AE03-742935842341}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FDCA404-8321-493A-AE03-742935842341}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FDCA404-8321-493A-AE03-742935842341}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BB4DBCD-308E-46F6-9108-38A61A21B4C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BB4DBCD-308E-46F6-9108-38A61A21B4C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BB4DBCD-308E-46F6-9108-38A61A21B4C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BB4DBCD-308E-46F6-9108-38A61A21B4C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -155,6 +161,7 @@ Global
 		{D26A1275-9572-434C-A0E0-FA3A7505C6A5} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{C03BF60D-1FE4-410A-9F08-0CFEE376AC9E} = {59174D55-8CA0-4F75-B934-9E9F11F32C80}
 		{1FDCA404-8321-493A-AE03-742935842341} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{3BB4DBCD-308E-46F6-9108-38A61A21B4C8} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F1C61BC4-FFB1-4407-A2BB-26EDFAE75511}

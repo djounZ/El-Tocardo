@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(MicrosoftExtensionsPackagesCommonVersion)"/>
         <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="$(OpenTelemetryPackagesCommonVersion)"/>
         <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="$(OpenTelemetryPackagesCommonVersion)"/>
         <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="$(OpenTelemetryPackagesCommonVersion)"/>
@@ -9,14 +9,5 @@
         <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="$(OpenTelemetryPackagesCommonVersion)"/>
         <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" Version="$(AspireHostingAppHostCommonVersion)"/>
         <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="$(MicrosoftExtensionsHttpResilienceVersion)"/>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(NpgsqlEntityFrameworkCorePostgreSQLVersion)"/>
-        <PackageReference Include="OpenIddict.Validation.AspNetCore" Version="$(OpenIddictCommonPackagesVersion)" />
-        <PackageReference Include="OpenIddict.Validation.SystemNetHttp" Version="$(OpenIddictCommonPackagesVersion)" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\ElTocardo.Infrastructure.EntityFramework\ElTocardo.Infrastructure.EntityFramework.csproj" />
-        <ProjectReference Include="..\ElTocardo.Infrastructure\ElTocardo.Infrastructure.csproj"/>
-        <ProjectReference Include="..\ElTocardo.ServiceDefaults \ElTocardo.ServiceDefaults.csproj" />
     </ItemGroup>
 </Project>

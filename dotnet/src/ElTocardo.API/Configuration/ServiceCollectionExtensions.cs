@@ -6,9 +6,6 @@ using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using OpenIddict.Validation.AspNetCore;
-using OpenTelemetry;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Trace;
 
 namespace ElTocardo.API.Configuration;
 
@@ -16,18 +13,6 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddElTocardoApi(this IServiceCollection services, IConfiguration configuration, string applicationName)
     {
-        services.AddServiceDiscovery();
-        services.ConfigureHttpClientDefaults(http =>
-        {
-            if (http.Name != nameof(GithubCopilotChatCompletion))
-            {
-                // Turn on resilience by default
-                http.AddStandardResilienceHandler();
-            }
-
-            // Turn on service discovery by default
-            http.AddServiceDiscovery();
-        });
 
         services.Configure<ElTocardoApiOptions>(configuration.GetSection(nameof(ElTocardoApiOptions)));
         services.AddHttpContextAccessor();
@@ -39,26 +24,12 @@ public static class ServiceCollectionExtensions
         });
         var mongoClientSettings = MongoClientSettings.FromConnectionString(configuration.GetConnectionString("el-tocardo-db-mongodb"));
 
-        services
-            .AddElTocardoInfrastructure<ApiDbContextOptionsConfiguration>(configuration, mongoClientSettings,"el-tocardo-db-mongodb");
-
-        services.AddOpenTelemetryExporters(configuration)
-            .AddOpenTelemetry()
-            .WithMetrics(metrics =>
-            {
-                metrics.AddAspNetCoreInstrumentation()
-                    .AddHttpClientInstrumentation()
-                    .AddRuntimeInstrumentation();
-            })
-            .WithTracing(tracing =>
-            {
-                tracing
-                    .AddSource(applicationName)
-                    .AddAspNetCoreInstrumentation()
-                    .AddHttpClientInstrumentation();
-            });
-        services.AddOAuth2Oidc(configuration);
-        return services;
+        return services
+            .AddElTocardoInfrastructure<ApiDbContextOptionsConfiguration>(
+                configuration,
+                mongoClientSettings,
+                "el-tocardo-db-mongodb")
+            .AddOAuth2Oidc(configuration);
     }
 
     private static IServiceCollection AddCaching(this IServiceCollection services)
@@ -97,16 +68,6 @@ public static class ServiceCollectionExtensions
                 options.DefaultChallengeScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
             });
         services.AddAuthorization();
-
-        return services;
-    }
-    private static IServiceCollection AddOpenTelemetryExporters(this IServiceCollection services, IConfiguration configuration)
-    {
-        var useOtlpExporter = !string.IsNullOrWhiteSpace(configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
-        if (useOtlpExporter)
-        {
-            services.AddOpenTelemetry().UseOtlpExporter();
-        }
 
         return services;
     }

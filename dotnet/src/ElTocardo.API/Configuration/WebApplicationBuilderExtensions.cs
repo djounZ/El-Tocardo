@@ -2,7 +2,7 @@ namespace ElTocardo.API.Configuration;
 
 public static class WebApplicationBuilderExtensions
 {
-    public static WebApplicationBuilder ConfigureElTocardoApi(this WebApplicationBuilder builder)
+    public static IHostApplicationBuilder ConfigureElTocardoApi(this IHostApplicationBuilder builder)
     {
 
         builder.Services.AddElTocardoApi(builder.Configuration, builder.Environment.ApplicationName);
