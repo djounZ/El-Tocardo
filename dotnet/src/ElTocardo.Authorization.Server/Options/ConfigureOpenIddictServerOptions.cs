@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Options;
 
-namespace ElTocardo.API.Options;
+namespace ElTocardo.Authorization.Server.Options;
 
-public sealed class ConfigureOpenIddictServerOptions(IOptions<ElTocardoApiOptions> infrastructureOptions) :  IConfigureNamedOptions<OpenIddict.Server.OpenIddictServerOptions>
+public sealed class ConfigureOpenIddictServerOptions(IOptions<ElTocardoAuthorizationServerOptions> infrastructureOptions) :  IConfigureNamedOptions<OpenIddict.Server.OpenIddictServerOptions>
 {
     private  OpenIddictServerOptions OpenIddictServerOptions => infrastructureOptions.Value.OpenIddictServerOptions;
 

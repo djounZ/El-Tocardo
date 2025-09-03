@@ -1,6 +1,5 @@
 using System.Security.Claims;
-using ElTocardo.API.Options;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator;
+using ElTocardo.Authorization.Server.Options;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -9,7 +8,7 @@ using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 
-namespace ElTocardo.API.Endpoints;
+namespace ElTocardo.Authorization.Server.Endpoints;
 
 /// <summary>
 /// Minimal API endpoints for user registration, login, password reset, and unregistration.
@@ -20,12 +19,12 @@ public static class AuthorizationEndpoints
 
     public static IEndpointRouteBuilder MapAuthorizationEndpoints(this IEndpointRouteBuilder app)
     {
-        var options = app.ServiceProvider.GetRequiredService<IOptions<ElTocardoApiOptions>>().Value.OpenIddictServerOptions;
+        var options = app.ServiceProvider.GetRequiredService<IOptions<ElTocardoAuthorizationServerOptions>>().Value.OpenIddictServerOptions;
 
         app.MapPost(options.TokenEndpointUri, async (
                 HttpContext context,
-                UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager) =>
+                UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager) =>
         {
 
 

@@ -34,7 +34,7 @@ public static class WebApplicationExtensions
 
     private static void MapEndpoints(this WebApplication app)
     {
-        app.MapAuthorizationEndpoints()
+        app
             .MapRegistrationEndpoints()
             .MapDevelopmentTestEndpoints()
             .MapMcpServerConfigurationEndpoints()

@@ -2,8 +2,6 @@ using AI.GithubCopilot.Infrastructure.Services;
 using ElTocardo.API.Configuration.EntityFramework;
 using ElTocardo.API.Options;
 using ElTocardo.Infrastructure.Configuration;
-using ElTocardo.Infrastructure.EntityFramework.Configuration;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -11,7 +9,6 @@ using OpenIddict.Validation.AspNetCore;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
-using OpenIddictServerOptions = OpenIddict.Server.OpenIddictServerOptions;
 
 namespace ElTocardo.API.Configuration;
 
@@ -60,7 +57,7 @@ public static class ServiceCollectionExtensions
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation();
             });
-        services.AddOAuth2Oidc();
+        services.AddOAuth2Oidc(configuration);
         return services;
     }
 
@@ -81,61 +78,17 @@ public static class ServiceCollectionExtensions
 
 
 
-    private static IServiceCollection AddOAuth2Oidc(this IServiceCollection services)
+    private static IServiceCollection AddOAuth2Oidc(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<IConfigureOptions<OpenIddictServerOptions>, ConfigureOpenIddictServerOptions>();
       services.AddOpenIddict()
-          .AddCore(options =>
-          {
-              options.UseEntityFrameworkCore()
-                  .UseDbContext<ApplicationDbContext>();
-          })
-          .AddServer(options =>
-          {
-              options.AllowPasswordFlow()
-                  .AllowRefreshTokenFlow()
-                  .AllowClientCredentialsFlow();
-
-
-              // Environment-specific certificate configuration
-              var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-              if (environment == "Development")
-              {
-                  // Development certificates (auto-generated)
-                  options.AddDevelopmentEncryptionCertificate()
-                      .AddDevelopmentSigningCertificate();
-              }
-              else
-              {
-                  // Production certificates
-                  // var signingCertPath = configuration["OpenIddict:SigningCertificate:Path"];
-                  // var signingCertPassword = configuration["OpenIddict:SigningCertificate:Password"];
-                  // var encryptionCertPath = configuration["OpenIddict:EncryptionCertificate:Path"];
-                  // var encryptionCertPassword = configuration["OpenIddict:EncryptionCertificate:Password"];
-                  //
-                  // if (!string.IsNullOrEmpty(signingCertPath))
-                  // {
-                  //     options.AddSigningCertificate(signingCertPath, signingCertPassword);
-                  // }
-                  //
-                  // if (!string.IsNullOrEmpty(encryptionCertPath))
-                  // {
-                  //     options.AddEncryptionCertificate(encryptionCertPath, encryptionCertPassword);
-                  // }
-
-                  // Alternative: Use certificates from store
-                  // options.AddSigningCertificate("thumbprint");
-                  // options.AddEncryptionCertificate("thumbprint");
-              }
-              options.UseAspNetCore()
-                  .EnableTokenEndpointPassthrough()
-                  .EnableAuthorizationEndpointPassthrough()
-                  .EnableEndSessionEndpointPassthrough()
-                  .EnableUserInfoEndpointPassthrough();
-          })
           .AddValidation(options =>
           {
-              options.UseLocalServer();
+              options.SetIssuer(configuration["OpenIddictIssuer"]!);
+              options.UseIntrospection()
+                  .SetClientId("postman")
+                  .SetClientSecret("postman-secret");
+
+              options.UseSystemNetHttp();
               options.UseAspNetCore();
           });
         services.AddAuthentication(options =>

@@ -6,11 +6,11 @@ var builder = DistributedApplication.CreateBuilder(args);
 var postgres = builder.AddPostgres("postgres")
    // .WithDataVolume("el-tocardo-postgres-data") // Persistent volume for database data
     .WithPgAdmin(); // Optional: Add pgAdmin for database management
-var database = postgres.AddDatabase("el-tocardo-db-postgres");
+var sqlDb = postgres.AddDatabase("el-tocardo-db-postgres");
 
 
 var migrationService = builder.AddProject<ElTocardo_Migrations>("migrations")
-        .WithReference(database)
+        .WithReference(sqlDb)
         .WaitFor(postgres)
     ;
 // Add MongoDB server resource (containerized via Docker)
@@ -21,13 +21,21 @@ var mongo = builder.AddMongoDB("mongodb")
 // Add a database resource within the MongoDB server
 var mongodb = mongo.AddDatabase("el-tocardo-db-mongodb");
 
+var authorizationServer = builder.AddProject<ElTocardo_Authorization_Server>("authorization-server")
+
+        .WithReference(sqlDb)
+        .WaitFor(postgres)
+        .WaitForCompletion(migrationService)
+    ;
 
 _ = builder.AddProject<ElTocardo_API>("ElTocardoAPI")
-    .WithReference(database)
-    .WithReference(mongodb)// Connect the API to the database
+    .WithReference(sqlDb)
+    .WithReference(mongodb)
+    .WithReference(authorizationServer)
     .WaitFor(postgres)
     .WaitFor(mongodb)
-    .WaitForCompletion(migrationService)
+    .WaitFor(authorizationServer)
+    .WithEnvironment("OpenIddictIssuer", authorizationServer.GetEndpoint("http"))
     // .WithEnvironment("OllamaOptions:Uri", ollama.GetEndpoint("ollama"))
     // .WaitFor(ollama)
     .WithExternalHttpEndpoints();

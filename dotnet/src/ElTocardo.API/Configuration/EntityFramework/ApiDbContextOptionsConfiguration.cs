@@ -9,7 +9,6 @@ public sealed class ApiDbContextOptionsConfiguration : ElTocardoDbContextOptions
     {
         var configuration = serviceProvider.GetRequiredService<IConfiguration>();
         optionsBuilder.UseNpgsql(configuration.GetConnectionString("el-tocardo-db-postgres"));
-        optionsBuilder.UseOpenIddict();
     }
 
 }
