@@ -1,21 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 
-    <Sdk Name="Aspire.AppHost.Sdk" Version="$(AspireHostingAppHostCommonVersion)"/>
+    <Sdk Name="Aspire.AppHost.Sdk" Version="$(AspireHostingAppHostCommonVersion)" />
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-    </PropertyGroup>
+      <UserSecretsId>88cdad76-31a2-4582-a180-9f4b75192d97</UserSecretsId>
+  </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Hosting.AppHost" Version="$(AspireHostingAppHostCommonVersion)"/>
-        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="$(AspireHostingAppHostCommonVersion)"/>
-        <PackageReference Include="Aspire.Hosting.MongoDB" Version="$(AspireHostingAppHostCommonVersion)"/>
+        <PackageReference Include="Aspire.Hosting.AppHost" Version="$(AspireHostingAppHostCommonVersion)" />
+        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="$(AspireHostingAppHostCommonVersion)" />
+        <PackageReference Include="Aspire.Hosting.MongoDB" Version="$(AspireHostingAppHostCommonVersion)" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\ElTocardo.API\ElTocardo.API.csproj"/>
+        <ProjectReference Include="..\ElTocardo.API\ElTocardo.API.csproj" />
         <ProjectReference Include="..\ElTocardo.Authorization.Server\ElTocardo.Authorization.Server.csproj" />
         <ProjectReference Include="..\ElTocardo.Migrations\ElTocardo.Migrations.csproj" />
-        <ProjectReference Include="..\ElTocardo.ServiceDefaults\ElTocardo.ServiceDefaults.csproj" IsAspireProjectResource="false"/>
+        <ProjectReference Include="..\ElTocardo.ServiceDefaults\ElTocardo.ServiceDefaults.csproj" IsAspireProjectResource="false" />
     </ItemGroup>
 </Project>
