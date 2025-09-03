@@ -21,12 +21,7 @@ public static class ServiceCollectionExtensions
 
         services.Configure<ElTocardoApiOptions>(configuration.GetSection(nameof(ElTocardoApiOptions)));
         services.AddHttpContextAccessor();
-        services.AddCaching()
-            .AddSingleton<AiGithubCopilotUserProvider>(sc =>
-        {
-            return new AiGithubCopilotUserProvider(() =>
-                sc.GetRequiredService<IHttpContextAccessor>().HttpContext?.User.Identity?.Name ?? string.Empty);
-        });
+        services.AddCaching();
         var mongoClientSettings = MongoClientSettings.FromConnectionString(configuration.GetConnectionString(MongoDbDatabaseResourceName));
 
         return services
@@ -84,7 +79,7 @@ public static class ServiceCollectionExtensions
         services.TryAddTransient<HttpListener>();
         services.TryAddTransient<TaskCompletionSource<bool>>();
         services.TryAddSingleton<HttpClientRunner>();
-        services.TryAddSingleton<EncryptedEnvironment>();
+        services.TryAddSingleton<ElTocardoEncryptor>();
         services.TryAddTransient<GithubAuthenticator>();
         services.TryAddTransient<GithubAccessTokenProvider>();
         return services;

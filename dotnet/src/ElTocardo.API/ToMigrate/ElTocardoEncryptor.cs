@@ -2,51 +2,11 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
 
 namespace ElTocardo.API.ToMigrate;
 
-public sealed class EncryptedEnvironment(ILogger<EncryptedEnvironment> logger)
+public sealed class ElTocardoEncryptor
 {
-    public async Task<T?> GetEnvironmentVariableAsync<T>(string environmentVariableName, CancellationToken cancellationToken)
-    {
-
-        try
-        {
-            var environmentVariable = Environment.GetEnvironmentVariable(environmentVariableName);
-            if (environmentVariable == null)
-            {
-                return default;
-            }
-            var decryptTokenAesStringAsync = await DecryptTokenAesStringAsync(environmentVariable, cancellationToken);
-
-            return JsonSerializer.Deserialize<T>(decryptTokenAesStringAsync);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to deserialize GitHub device code response from environment variable.");
-            return default;
-        }
-    }
-
-
-
-
-    public async Task SetEnvironmentVariableAsync<T>(string environmentVariableName, T value, CancellationToken cancellationToken)
-    {
-
-        try
-        {
-            var serialize = JsonSerializer.Serialize(value);
-            var encryptTokenAesAsync = await EncryptTokenAesStringAsync(serialize, cancellationToken);
-            Environment.SetEnvironmentVariable(environmentVariableName, encryptTokenAesAsync,EnvironmentVariableTarget.User);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to deserialize GitHub device code response from environment variable.");
-        }
-    }
-
     public async Task<string> EncryptTokenAesStringAsync(string token, CancellationToken cancellationToken)
     {
         var encryptTokenAesAsync = await EncryptTokenAesAsync(token, cancellationToken);
@@ -82,7 +42,7 @@ public sealed class EncryptedEnvironment(ILogger<EncryptedEnvironment> logger)
     /// <summary>
     /// Converts a SecureString back to a regular string (use sparingly and clear immediately after use)
     /// </summary>
-    public string SecureStringToString(SecureString secureString)
+    private string SecureStringToString(SecureString secureString)
     {
         if (secureString.Length == 0)
         {
@@ -104,7 +64,7 @@ public sealed class EncryptedEnvironment(ILogger<EncryptedEnvironment> logger)
         }
     }
 
-    public void SecureClearString(string sensitiveString)
+    private void SecureClearString(string sensitiveString)
     {
         if (string.IsNullOrEmpty(sensitiveString))
         {
@@ -122,7 +82,7 @@ public sealed class EncryptedEnvironment(ILogger<EncryptedEnvironment> logger)
     /// <summary>
     /// Creates a SecureString from a regular string and then clears the original string
     /// </summary>
-    public SecureString CreateSecureString(string value)
+    private SecureString CreateSecureString(string value)
     {
         var secureString = new SecureString();
         if (string.IsNullOrEmpty(value))
@@ -142,8 +102,7 @@ public sealed class EncryptedEnvironment(ILogger<EncryptedEnvironment> logger)
         return secureString;
     }
 
-    // AES encryption for secure token storage
-    public async Task<byte[]> EncryptTokenAesAsync(byte[] data, CancellationToken cancellationToken)
+    private async Task<byte[]> EncryptTokenAesAsync(byte[] data, CancellationToken cancellationToken)
     {
         var keyMaterial = Environment.MachineName + Environment.UserName + "CopilotServiceKey2025";
         var key = SHA256.HashData(Encoding.UTF8.GetBytes(keyMaterial))[..32];
@@ -166,7 +125,6 @@ public sealed class EncryptedEnvironment(ILogger<EncryptedEnvironment> logger)
         return msEncrypt.ToArray();
     }
 
-
     public async Task<string> DecryptTokenAesStringAsync(string envValue, CancellationToken cancellationToken)
     {
 
@@ -180,7 +138,7 @@ public sealed class EncryptedEnvironment(ILogger<EncryptedEnvironment> logger)
         return await DecryptTokenAesAsync(byteArray, cancellationToken);
     }
 
-    public async Task<byte[]> DecryptTokenAesAsync(byte[] encryptedData, CancellationToken cancellationToken)
+    private async Task<byte[]> DecryptTokenAesAsync(byte[] encryptedData, CancellationToken cancellationToken)
     {
         var keyMaterial = Environment.MachineName + Environment.UserName + "CopilotServiceKey2025";
         var key = SHA256.HashData(Encoding.UTF8.GetBytes(keyMaterial))[..32];

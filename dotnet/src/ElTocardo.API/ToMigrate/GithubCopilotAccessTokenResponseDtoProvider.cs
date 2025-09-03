@@ -7,11 +7,12 @@ namespace ElTocardo.API.ToMigrate;
 public sealed class GithubCopilotAccessTokenResponseDtoProvider(
     ILogger<GithubCopilotAccessTokenResponseDtoProvider> logger,
     GithubCopilotAccessTokenResponseDtoHttpClient githubCopilotAccessTokenResponseDtoHttpClient,
-    IMemoryCache memoryCache, AiGithubCopilotUserProvider aiGithubCopilotUserProvider) : IGithubCopilotAccessTokenResponseDtoProvider
+    IMemoryCache memoryCache, IHttpContextAccessor httpContextAccessor) : IGithubCopilotAccessTokenResponseDtoProvider
 {
     public async Task<GithubCopilotAccessTokenResponseDto> GetGithubCopilotTokenAsync(CancellationToken cancellationToken)
     {
-        var orAddAsync = await GetOrAddAsync(aiGithubCopilotUserProvider.GetCurrentUser(),
+        var identityName = httpContextAccessor.HttpContext?.User.Identity?.Name ?? string.Empty;
+        var orAddAsync = await GetOrAddAsync(identityName,
             async ()=> await githubCopilotAccessTokenResponseDtoHttpClient.GetGithubCopilotAccessTokenResponseDtoAsync(cancellationToken));
 
         return  orAddAsync!;
