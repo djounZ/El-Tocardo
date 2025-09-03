@@ -1,9 +1,12 @@
 
 using ElTocardo.Migrations.Configuration.EntityFramework;
+using ElTocardo.ServiceDefaults;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Services.AddElTocardoMigrations(builder.Configuration);
+builder
+    .AddServiceDefaults()
+    .Services.AddElTocardoMigrations(builder.Configuration);
 
 var app =  builder
     .Build();

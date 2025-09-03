@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using OpenIddict.Validation.AspNetCore;
+using static ElTocardo.ServiceDefaults.Constants;
 
 namespace ElTocardo.API.Configuration;
 
@@ -22,13 +23,13 @@ public static class ServiceCollectionExtensions
             return new AiGithubCopilotUserProvider(() =>
                 sc.GetRequiredService<IHttpContextAccessor>().HttpContext?.User.Identity?.Name ?? string.Empty);
         });
-        var mongoClientSettings = MongoClientSettings.FromConnectionString(configuration.GetConnectionString("el-tocardo-db-mongodb"));
+        var mongoClientSettings = MongoClientSettings.FromConnectionString(configuration.GetConnectionString(MongoDbDatabaseResourceName));
 
         return services
             .AddElTocardoInfrastructure<ApiDbContextOptionsConfiguration>(
                 configuration,
                 mongoClientSettings,
-                "el-tocardo-db-mongodb")
+                MongoDbDatabaseResourceName)
             .AddOAuth2Oidc(configuration);
     }
 
@@ -54,7 +55,7 @@ public static class ServiceCollectionExtensions
       services.AddOpenIddict()
           .AddValidation(options =>
           {
-              options.SetIssuer(configuration["OpenIddictIssuer"]!);
+              options.SetIssuer(configuration[OpenIddictIssuerEnvironmentVariableName]!);
               options.UseIntrospection()
                   .SetClientId("postman")
                   .SetClientSecret("postman-secret");

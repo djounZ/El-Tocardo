@@ -16,5 +16,6 @@
         <ProjectReference Include="..\ElTocardo.API\ElTocardo.API.csproj"/>
         <ProjectReference Include="..\ElTocardo.Authorization.Server\ElTocardo.Authorization.Server.csproj" />
         <ProjectReference Include="..\ElTocardo.Migrations\ElTocardo.Migrations.csproj" />
+        <ProjectReference Include="..\ElTocardo.ServiceDefaults\ElTocardo.ServiceDefaults.csproj" IsAspireProjectResource="false"/>
     </ItemGroup>
 </Project>

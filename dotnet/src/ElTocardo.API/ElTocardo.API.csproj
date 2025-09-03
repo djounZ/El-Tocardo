@@ -17,6 +17,6 @@
     <ItemGroup>
         <ProjectReference Include="..\ElTocardo.Infrastructure.EntityFramework\ElTocardo.Infrastructure.EntityFramework.csproj" />
         <ProjectReference Include="..\ElTocardo.Infrastructure\ElTocardo.Infrastructure.csproj"/>
-        <ProjectReference Include="..\ElTocardo.ServiceDefaults \ElTocardo.ServiceDefaults.csproj" />
+        <ProjectReference Include="..\ElTocardo.ServiceDefaults\ElTocardo.ServiceDefaults.csproj" />
     </ItemGroup>
 </Project>

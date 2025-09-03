@@ -10,5 +10,6 @@ builder
 
 var app = await builder
     .Build()
+    .MapDefaultEndpoints()
     .ConfigureElTocardoApiAsync(CancellationToken.None);
 app.Run();

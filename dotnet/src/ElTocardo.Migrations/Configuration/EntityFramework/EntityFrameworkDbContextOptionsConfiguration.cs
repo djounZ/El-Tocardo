@@ -1,5 +1,6 @@
 using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Configurations;
 using Microsoft.EntityFrameworkCore;
+using static ElTocardo.ServiceDefaults.Constants;
 
 namespace ElTocardo.Migrations.Configuration.EntityFramework;
 
@@ -8,7 +9,7 @@ public sealed class EntityFrameworkDbContextOptionsConfiguration : ElTocardoDbCo
     public override void Configure(IServiceProvider serviceProvider, DbContextOptionsBuilder optionsBuilder)
     {
         var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-        optionsBuilder.UseNpgsql(configuration.GetConnectionString("el-tocardo-db-postgres"));
+        optionsBuilder.UseNpgsql(configuration.GetConnectionString(PostgresDatabaseResourceName));
         optionsBuilder.UseOpenIddict();
     }
 
