@@ -1,4 +1,4 @@
-namespace AI.GithubCopilot.Infrastructure.Services;
+namespace ElTocardo.API.ToMigrate;
 
 public sealed class AiGithubCopilotUserProvider(Func<string> getCurrentUser)
 {

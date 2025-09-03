@@ -2,20 +2,20 @@ using System.Diagnostics;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
-using Microsoft.Extensions.Logging;
+using AI.GithubCopilot.Infrastructure.Dtos.Authorizations;
 
-namespace AI.GithubCopilot.Infrastructure.Services.ToMigrate;
+namespace ElTocardo.API.ToMigrate;
 
 public sealed class GithubAuthenticator(ILogger<GithubAuthenticator> logger, HttpListener httpListener, TaskCompletionSource<bool> authenticationCompleted)
 {
-    public async Task AuthenticateAsync(GithubDeviceCodeResponse deviceResponse, CancellationToken cancellationToken)
+    public async Task AuthenticateAsync(GithubDeviceCodeResponseDto deviceResponseDto, CancellationToken cancellationToken)
     {
         logger.LogInformation("Device registration initiated successfully!");
-        logger.LogInformation("User Code: {UserCode}", deviceResponse.UserCode);
-        logger.LogInformation("Verification URI: {VerificationUri}", deviceResponse.VerificationUri);
+        logger.LogInformation("User Code: {UserCode}", deviceResponseDto.UserCode);
+        logger.LogInformation("Verification URI: {VerificationUri}", deviceResponseDto.VerificationUri);
         var callbackPort = await StartCallbackServerAsync(cancellationToken);
         var htmlFilePath =
-            await CreateAuthenticationPageAsync(deviceResponse.UserCode, deviceResponse.VerificationUri, callbackPort, cancellationToken);
+            await CreateAuthenticationPageAsync(deviceResponseDto.UserCode, deviceResponseDto.VerificationUri, callbackPort, cancellationToken);
         await OpenBrowserAsync(htmlFilePath, cancellationToken);
         await WaitForCloseButtonClickAsync(htmlFilePath, cancellationToken);
 

@@ -3,9 +3,8 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Logging;
 
-namespace AI.GithubCopilot.Infrastructure.Services.ToMigrate;
+namespace ElTocardo.API.ToMigrate;
 
 public sealed class EncryptedEnvironment(ILogger<EncryptedEnvironment> logger)
 {

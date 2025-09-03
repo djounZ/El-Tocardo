@@ -1,5 +1,6 @@
 using ElTocardo.Application.Services;
 using AI.GithubCopilot.Configuration;
+using AI.GithubCopilot.Infrastructure.Services;
 using ElTocardo.Application.Configuration;
 using ElTocardo.Domain.Mediator.ConversationMediator.Repositories;
 using ElTocardo.Domain.Mediator.Interfaces;
@@ -30,12 +31,12 @@ public static class ServiceCollectionExtensions
     ///     Requires AiGithubCopilotUserProvider to be registered in the service collection.
     ///     Requires IMemoryCache to be registered in the service collection.
     /// </summary>
-    public static IServiceCollection AddElTocardoInfrastructure<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services,
-        IConfiguration configuration, MongoClientSettings mongoClientSettings, string mongoDatabaseName) where TApplicationDbContextOptionsConfiguration : class, IElTocardoDbContextOptionsConfiguration
+    public static IServiceCollection AddElTocardoInfrastructure<TApplicationDbContextOptionsConfiguration,TGithubCopilotAccessTokenResponseDtoProvider, TGithubAccessTokenResponseDtoProvider>(this IServiceCollection services,
+        IConfiguration configuration, MongoClientSettings mongoClientSettings, string mongoDatabaseName) where TApplicationDbContextOptionsConfiguration : class, IElTocardoDbContextOptionsConfiguration  where TGithubCopilotAccessTokenResponseDtoProvider: class, IGithubCopilotAccessTokenResponseDtoProvider where TGithubAccessTokenResponseDtoProvider: class, IGithubAccessTokenResponseDtoProvider
     {
         return services
             .AddElTocardoInfrastructureEntityFramework<TApplicationDbContextOptionsConfiguration>()
-            .AddAiClients(configuration)
+            .AddAiClients<TGithubCopilotAccessTokenResponseDtoProvider, TGithubAccessTokenResponseDtoProvider>(configuration)
             .AddMediator(mongoClientSettings, mongoDatabaseName)
             .AddOptions(configuration)
             .AddServices()
@@ -78,10 +79,10 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddAiClients(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddAiClients<TGithubCopilotAccessTokenResponseDtoProvider, TGithubAccessTokenResponseDtoProvider>(this IServiceCollection services, IConfiguration configuration) where TGithubCopilotAccessTokenResponseDtoProvider: class, IGithubCopilotAccessTokenResponseDtoProvider where TGithubAccessTokenResponseDtoProvider: class, IGithubAccessTokenResponseDtoProvider
     {
         return services
-            .AddAiGithubCopilot(configuration)
+            .AddAiGithubCopilot<TGithubCopilotAccessTokenResponseDtoProvider, TGithubAccessTokenResponseDtoProvider>(configuration)
             .AddOllamaApiClient(configuration);
     }
 

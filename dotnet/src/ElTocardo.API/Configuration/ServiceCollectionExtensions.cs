@@ -1,8 +1,11 @@
+using System.Net;
 using AI.GithubCopilot.Infrastructure.Services;
 using ElTocardo.API.Configuration.EntityFramework;
 using ElTocardo.API.Options;
+using ElTocardo.API.ToMigrate;
 using ElTocardo.Infrastructure.Configuration;
 using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using OpenIddict.Validation.AspNetCore;
@@ -14,6 +17,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddElTocardoApi(this IServiceCollection services, IConfiguration configuration, string applicationName)
     {
+        services.AddToMigrate();
 
         services.Configure<ElTocardoApiOptions>(configuration.GetSection(nameof(ElTocardoApiOptions)));
         services.AddHttpContextAccessor();
@@ -26,7 +30,7 @@ public static class ServiceCollectionExtensions
         var mongoClientSettings = MongoClientSettings.FromConnectionString(configuration.GetConnectionString(MongoDbDatabaseResourceName));
 
         return services
-            .AddElTocardoInfrastructure<ApiDbContextOptionsConfiguration>(
+            .AddElTocardoInfrastructure<ApiDbContextOptionsConfiguration, GithubCopilotAccessTokenResponseDtoProvider, GithubAccessTokenStore>(
                 configuration,
                 mongoClientSettings,
                 MongoDbDatabaseResourceName)
@@ -74,5 +78,16 @@ public static class ServiceCollectionExtensions
     }
 
 
+
+    private static IServiceCollection AddToMigrate(this IServiceCollection services)
+    {
+        services.TryAddTransient<HttpListener>();
+        services.TryAddTransient<TaskCompletionSource<bool>>();
+        services.TryAddSingleton<HttpClientRunner>();
+        services.TryAddSingleton<EncryptedEnvironment>();
+        services.TryAddTransient<GithubAuthenticator>();
+        services.TryAddTransient<GithubAccessTokenProvider>();
+        return services;
+    }
 
 }

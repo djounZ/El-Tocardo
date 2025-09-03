@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace AI.GithubCopilot.Infrastructure.Services.ToMigrate;
+namespace AI.GithubCopilot.Infrastructure.Dtos.Authorizations;
 
-public class GithubDeviceCodeResponse
+public class GithubDeviceCodeResponseDto
 {
     [JsonPropertyName("device_code")]
     public string DeviceCode { get; set; } = string.Empty;

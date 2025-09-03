@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace AI.GithubCopilot.Infrastructure.Services.ToMigrate;
+namespace AI.GithubCopilot.Infrastructure.Dtos.Authorizations;
 
-public record GithubAccessTokenResponse
+public record GithubAccessTokenResponseDto
 {
     [JsonPropertyName("access_token")] public string AccessToken { get; set; } = string.Empty;
 

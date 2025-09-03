@@ -1,8 +1,6 @@
-using System.Net;
 using AI.GithubCopilot.Domain.Services;
 using AI.GithubCopilot.Infrastructure.Mappers.Dtos;
 using AI.GithubCopilot.Infrastructure.Services;
-using AI.GithubCopilot.Infrastructure.Services.ToMigrate;
 using AI.GithubCopilot.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,11 +16,11 @@ public static class ServiceCollectionExtensions
     /// Requires AiGithubCopilotUserProvider to be registered in the service collection.
     /// Requires IMemoryCache to be registered in the service collection.
     /// </summary>
-    public static IServiceCollection AddAiGithubCopilot(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAiGithubCopilot<TGithubCopilotAccessTokenResponseDtoProvider, TGithubAccessTokenResponseDtoProvider>(this IServiceCollection services, IConfiguration configuration) where TGithubCopilotAccessTokenResponseDtoProvider: class, IGithubCopilotAccessTokenResponseDtoProvider where TGithubAccessTokenResponseDtoProvider: class, IGithubAccessTokenResponseDtoProvider
     {
         return services
             .AddDomain()
-            .AddInfrastructure()
+            .AddInfrastructure<TGithubCopilotAccessTokenResponseDtoProvider, TGithubAccessTokenResponseDtoProvider>()
             .AddOptions(configuration);
     }
 
@@ -37,19 +35,19 @@ public static class ServiceCollectionExtensions
     {
 
         return services
-            .AddSingleton<GithubCopilotChatClient>();
+            .AddTransient<GithubCopilotChatClient>();
     }
     private static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<AiGithubOptions>(configuration.GetSection(nameof(AiGithubOptions)));
         return services;
     }
-    private static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    private static IServiceCollection AddInfrastructure<TGithubCopilotAccessTokenResponseDtoProvider, TGithubAccessTokenResponseDtoProvider>(this IServiceCollection services) where TGithubCopilotAccessTokenResponseDtoProvider: class, IGithubCopilotAccessTokenResponseDtoProvider where TGithubAccessTokenResponseDtoProvider: class, IGithubAccessTokenResponseDtoProvider
     {
 
         return services
             .AddInfrastructureMappers()
-            .AddInfrastructureServices();
+            .AddInfrastructureServices<TGithubCopilotAccessTokenResponseDtoProvider, TGithubAccessTokenResponseDtoProvider>();
     }
 
     private static IServiceCollection AddInfrastructureMappers(this IServiceCollection services)
@@ -58,9 +56,17 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
+    private static IServiceCollection AddInfrastructureServices<TGithubCopilotAccessTokenResponseDtoProvider, TGithubAccessTokenResponseDtoProvider>(this IServiceCollection services) where TGithubCopilotAccessTokenResponseDtoProvider: class, IGithubCopilotAccessTokenResponseDtoProvider where TGithubAccessTokenResponseDtoProvider: class, IGithubAccessTokenResponseDtoProvider
     {
-        return services.AddGithubCopilotChatCompletionServices();
+        services.TryAddTransient<IGithubAccessTokenResponseDtoProvider, TGithubAccessTokenResponseDtoProvider>();
+        services.TryAddTransient<IGithubCopilotAccessTokenResponseDtoProvider, TGithubCopilotAccessTokenResponseDtoProvider>();
+
+        services.AddHttpClient<GithubAccessTokenResponseHttpClient>();
+        services.TryAddTransient<GithubCopilotTokenAuthorizationHandler>();
+        services.AddHttpClient<GithubCopilotAccessTokenResponseDtoHttpClient>()
+            .AddHttpMessageHandler<GithubCopilotTokenAuthorizationHandler>();
+        return services
+            .AddGithubCopilotChatCompletionServices();
     }
 
     /// <summary>
@@ -71,28 +77,12 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddGithubCopilotChatCompletionServices(this IServiceCollection services)
     {
         services
-            .AddToMigrate()
             .TryAddTransient<GithubCopilotChatCompletionAuthorizationHandler>();
         services
             .AddHttpClient<GithubCopilotChatCompletion>()
             .AddHttpMessageHandler<GithubCopilotChatCompletionAuthorizationHandler>();
 
 
-        return services;
-    }
-
-    private static IServiceCollection AddToMigrate(this IServiceCollection services)
-    {
-        services.TryAddTransient<HttpListener>();
-        services.TryAddTransient<TaskCompletionSource<bool>>();
-        services.TryAddSingleton<HttpClientRunner>();
-        services.TryAddSingleton<EncryptedEnvironment>();
-        services.TryAddSingleton<GithubAccessTokenStore>();
-        services.TryAddTransient<GithubAuthenticator>();
-        services.AddHttpClient<GithubAccessTokenProvider>();
-        services.TryAddTransient<GithubCopilotTokenAuthorizationHandler>();
-        services.AddHttpClient<GithubCopilotTokenProvider>()
-            .AddHttpMessageHandler<GithubCopilotTokenAuthorizationHandler>();
         return services;
     }
 }

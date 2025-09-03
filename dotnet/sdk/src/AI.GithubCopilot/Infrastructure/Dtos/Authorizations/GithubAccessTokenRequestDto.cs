@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace AI.GithubCopilot.Infrastructure.Services.ToMigrate;
+namespace AI.GithubCopilot.Infrastructure.Dtos.Authorizations;
 
-public record GithubAccessTokenRequest
+public record GithubAccessTokenRequestDto
 {
     [JsonPropertyName("client_id")] public string ClientId { get; init; } = string.Empty;
 
