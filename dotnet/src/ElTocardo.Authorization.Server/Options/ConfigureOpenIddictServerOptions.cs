@@ -25,5 +25,6 @@ public sealed class ConfigureOpenIddictServerOptions(IOptions<ElTocardoAuthoriza
         options.EndSessionEndpointUris.Add(endSessionEndpointUri);
         options.UserInfoEndpointUris.Add(userInfoEndpointUri);
         options.IntrospectionEndpointUris.Add(introspectionEndpointUri);
+        // options.Issuer = new Uri("http://localhost:5095/");
     }
 }

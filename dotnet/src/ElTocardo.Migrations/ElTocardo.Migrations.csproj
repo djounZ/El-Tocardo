@@ -8,8 +8,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ElTocardo.Application\ElTocardo.Application.csproj" />
-      <ProjectReference Include="..\ElTocardo.Infrastructure.EntityFramework\ElTocardo.Infrastructure.EntityFramework.csproj" />
+      <ProjectReference Include="..\api\ElTocardo.Application\ElTocardo.Application.csproj" />
+      <ProjectReference Include="..\api\ElTocardo.Infrastructure.EntityFramework\ElTocardo.Infrastructure.EntityFramework.csproj" />
       <ProjectReference Include="..\ElTocardo.ServiceDefaults\ElTocardo.ServiceDefaults.csproj" />
     </ItemGroup>
 

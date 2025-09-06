@@ -1,4 +1,3 @@
-using ElTocardo.Authorization.Server.Endpoints;
 
 namespace ElTocardo.Authorization.Server.Configuration;
 
@@ -12,17 +11,23 @@ public static class WebApplicationExtensions
         {
             // GET {{MCP.WebApi_HostAddress}}/openapi/v1.json
             app.MapOpenApi();
-            app.UseDeveloperExceptionPage();
+            app.UseExceptionHandler("/Home/Error");
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
         }
-
+        //app.UseForwardedHeaders();
         app.UseHttpsRedirection();
-        app.MapEndpoints();
-        return app;
-    }
+        app.UseStaticFiles();
 
-    private static void MapEndpoints(this WebApplication app)
-    {
-        app.MapAuthorizationEndpoints()
-            ;
+        app.UseRouting();
+
+        app.UseAuthentication();
+
+        app.UseAuthorization();
+
+        app.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
+        return app;
     }
 }

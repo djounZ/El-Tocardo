@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\sdk\src\AI.GithubCopilot\AI.GithubCopilot.csproj" />
+        <ProjectReference Include="..\ElTocardo.Application\ElTocardo.Application.csproj"/>
+        <ProjectReference Include="..\ElTocardo.Infrastructure.EntityFramework\ElTocardo.Infrastructure.EntityFramework.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="OllamaSharp" Version="$(OllamaSharpVersion)"/>
+        <PackageReference Include="MongoDB.Driver" Version="3.4.0" />
+
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Mediator\Identity\ApplicationUserMediator\" />
+    </ItemGroup>
+
+</Project>

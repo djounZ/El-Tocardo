@@ -11,6 +11,6 @@ var app = builder
     .MapDefaultEndpoints()
     ;
 app.ConfigureElTocardoAuthorizationServer();
-app.MapGet("/", () => "Hello World!");
+// app.MapGet("/", () => "Hello World!");
 
 app.Run();

@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="coverlet.collector" Version="$(CoverletCollectorVersion)"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)"/>
+        <PackageReference Include="xunit" Version="$(XunitVersion)"/>
+        <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitRunnerVisualStudioVersion)"/>
+        <PackageReference Include="FluentAssertions" Version="$(FluentAssertionsVersion)"/>
+        <PackageReference Include="Moq" Version="$(MoqVersion)"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Xunit"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\..\src\api\ElTocardo.Infrastructure\ElTocardo.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>

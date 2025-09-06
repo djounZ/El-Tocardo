@@ -3,11 +3,12 @@
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(MicrosoftExtensionsPackagesCommonVersion)"/>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(NpgsqlEntityFrameworkCorePostgreSQLVersion)"/>
         <PackageReference Include="OpenIddict.AspNetCore" Version="$(OpenIddictCommonPackagesVersion)" />
-        <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="$(OpenIddictCommonPackagesVersion)" /> 
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(MicrosoftExtensionsPackagesCommonVersion)" />
+        <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="$(OpenIddictCommonPackagesVersion)" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="$(MicrosoftExtensionsPackagesCommonVersion)" />
 
     </ItemGroup>
     <ItemGroup>
+      <ProjectReference Include="..\api\ElTocardo.Infrastructure.EntityFramework\ElTocardo.Infrastructure.EntityFramework.csproj" />
       <ProjectReference Include="..\ElTocardo.ServiceDefaults\ElTocardo.ServiceDefaults.csproj" />
     </ItemGroup>
 
