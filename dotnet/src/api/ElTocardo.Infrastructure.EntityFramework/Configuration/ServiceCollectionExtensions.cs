@@ -29,7 +29,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddElTocardoInfrastructureEntityFramework<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>(this IServiceCollection services, string applicationName) where TApplicationDbContextOptionsConfiguration : class,  IDbContextOptionsConfiguration<TApplicationDbContext> where TApplicationDbContext : DbContext, IApplicationDbContext
     {
         services.AddDataProtection()
-            .PersistKeysToDbContext<ApplicationDbContext>()
+            .PersistKeysToDbContext<TApplicationDbContext>()
             .SetApplicationName(applicationName);
         return services
             .AddMediator<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>();

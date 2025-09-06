@@ -2,6 +2,8 @@ using System.Text.Json;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.ValueObjects;
+using ElTocardo.Domain.Mediator.UserExternalTokenMediator.Entities;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.UserExternalTokenMediator;
 using ElTocardo.Migrations.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +18,7 @@ public static class FirstTimeInitialization
     public static async Task InitializeDatabaseAsync(this IServiceProvider serviceProvider, CancellationToken cancellationToken)
     {
         using var scope = serviceProvider.CreateScope();
+        var userExternalTokenProtector = scope.ServiceProvider.GetRequiredService<UserExternalTokenProtector>();
         var context = scope.ServiceProvider.GetRequiredService<MigrationDbContext>();
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<MigrationDbContext>>();
         var infrastructureOptions = scope.ServiceProvider.GetRequiredService<IOptions<ElTocardoMigrationsOptions>>();
@@ -60,6 +63,11 @@ public static class FirstTimeInitialization
 
             }
 
+            var userId = findByNameAsync!.Id;
+
+            var protectedToken = userExternalTokenProtector.Protect(githubAccessTokenResponseDtoJsonString!);
+            await context.UserExternalTokens.AddAsync(new UserExternalToken(userId,"github_copilot", protectedToken), cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
             logger.LogInformation("Database initialization completed successfully");
         }
         catch (Exception ex)

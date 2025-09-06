@@ -1,4 +1,5 @@
 using ElTocardo.API.ToMigrate;
+using ElTocardo.Domain.Mediator.UserExternalTokenMediator.Repositories;
 using ElTocardo.Infrastructure.Configuration;
 
 namespace ElTocardo.API.Configuration;
@@ -17,7 +18,9 @@ public static class ServiceProviderExtensions
     public static async Task UseAiGithubCopilotAsync(this IServiceProvider serviceProvider,
         CancellationToken cancellationToken)
     {
-        var githubAccessTokenProvider = serviceProvider.GetRequiredService<GithubAccessTokenProvider>();
+        var serviceScopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
+        using var serviceScope = serviceScopeFactory.CreateScope();
+        var githubAccessTokenProvider = serviceScope.ServiceProvider.GetRequiredService<GithubAccessTokenProvider>();
         await githubAccessTokenProvider.GetGithubAccessToken(cancellationToken);
     }
 }
