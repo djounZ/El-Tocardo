@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -11,9 +10,9 @@ using OpenIddict.Server.AspNetCore;
 
 namespace ElTocardo.Authorization.Server.Controllers
 {
-    public class AuthorizationController(UserManager<ApplicationUser> userManager) : Controller
+    public class AuthorizationController(UserManager<IdentityUser> userManager) : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager = userManager;
+        private readonly UserManager<IdentityUser> _userManager = userManager;
 
         [HttpGet("~/connect/authorize")]
         [HttpPost("~/connect/authorize")]

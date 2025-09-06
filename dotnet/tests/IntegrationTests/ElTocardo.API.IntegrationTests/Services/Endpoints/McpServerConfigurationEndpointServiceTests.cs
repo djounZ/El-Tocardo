@@ -2,6 +2,7 @@ using ElTocardo.API.IntegrationTests.Configuration;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
 using ElTocardo.Application.Services;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
+using ElTocardo.Infrastructure.EntityFramework.Mediator;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 using Microsoft.Extensions.DependencyInjection;
 

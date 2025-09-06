@@ -1,13 +1,11 @@
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Repositories;
 using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Repositories;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Repositories;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Configurations;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
+using ElTocardo.Infrastructure.EntityFramework.Mediator;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.McpServerConfigurationMediator;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.PresetChatInstructionMediator;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.PresetChatOptionsMediator;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -21,34 +19,30 @@ public static class ServiceCollectionExtensions
     ///     Requires AiGithubCopilotUserProvider to be registered in the service collection.
     ///     Requires IMemoryCache to be registered in the service collection.
     /// </summary>
-    public static IServiceCollection AddElTocardoInfrastructureEntityFramework<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services) where TApplicationDbContextOptionsConfiguration : class, IElTocardoDbContextOptionsConfiguration
+    public static IServiceCollection AddElTocardoInfrastructureEntityFramework<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>(this IServiceCollection services) where TApplicationDbContextOptionsConfiguration : class,  IDbContextOptionsConfiguration<TApplicationDbContext> where TApplicationDbContext : DbContext, IApplicationDbContext
     {
         return services
-            .AddMediator<TApplicationDbContextOptionsConfiguration>();
+            .AddMediator<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>();
     }
 
-    private static IServiceCollection AddMediator<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services) where TApplicationDbContextOptionsConfiguration : class, IElTocardoDbContextOptionsConfiguration
+    private static IServiceCollection AddMediator<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>(this IServiceCollection services) where TApplicationDbContextOptionsConfiguration : class,  IDbContextOptionsConfiguration<TApplicationDbContext> where TApplicationDbContext : DbContext, IApplicationDbContext
     {
 
         return services
-            .AddEntityFramework<TApplicationDbContextOptionsConfiguration>();
+            .AddEntityFramework<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>();
     }
 
 
-    private static IServiceCollection AddEntityFramework<TApplicationDbContextOptionsConfiguration>(this IServiceCollection services) where TApplicationDbContextOptionsConfiguration : class, IElTocardoDbContextOptionsConfiguration
+    private static IServiceCollection AddEntityFramework<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>(this IServiceCollection services) where TApplicationDbContextOptionsConfiguration : class,  IDbContextOptionsConfiguration<TApplicationDbContext> where TApplicationDbContext : DbContext, IApplicationDbContext
     {
 
         services
-            .AddSingleton<IElTocardoDbContextOptionsConfiguration,
-                TApplicationDbContextOptionsConfiguration>()
-            .AddSingleton<IDbContextOptionsConfiguration<ApplicationDbContext>>(sc =>
-                sc.GetRequiredService<IElTocardoDbContextOptionsConfiguration>())
-            .AddSingleton<IElTocardoEntityFrameworkConfiguration>(sc =>
-                sc.GetRequiredService<IElTocardoDbContextOptionsConfiguration>());
+            .TryAddSingleton<IDbContextOptionsConfiguration<TApplicationDbContext>,
+                TApplicationDbContextOptionsConfiguration>();
 
-        services.TryAddSingleton<ElTocardoEntityFrameworkConfigurationEnumerator>();
+        services.TryAddSingleton<ElTocardoEntityFrameworkModelBuilder>();
 
-        services.AddDbContext<ApplicationDbContext>();
+        services.AddDbContext<TApplicationDbContext>();
         return services
             .AddServices();
     }
@@ -58,7 +52,6 @@ public static class ServiceCollectionExtensions
     {
         return
             services
-                .AddUserService()
                 .AddMcpServerConfigurationService()
                 .AddPresetChatInstructionService()
                 .AddPresetChatOptionsService()
@@ -76,13 +69,6 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddUserService(this IServiceCollection services)
-    {
-        services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
-        return services;
-    }
 
 
     private static IServiceCollection AddMcpServerConfigurationService(this IServiceCollection services)

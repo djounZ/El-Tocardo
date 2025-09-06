@@ -11,8 +11,4 @@
 
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Mediator\Identity\ApplicationUserMediator\" />
-    </ItemGroup>
-
 </Project>

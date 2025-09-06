@@ -8,7 +8,7 @@
 
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\api\ElTocardo.Infrastructure.EntityFramework\ElTocardo.Infrastructure.EntityFramework.csproj" />
+      <ProjectReference Include="..\authorization\ElTocardo.Authorization.EntityFramework\ElTocardo.Authorization.EntityFramework.csproj" />
       <ProjectReference Include="..\ElTocardo.ServiceDefaults\ElTocardo.ServiceDefaults.csproj" />
     </ItemGroup>
 

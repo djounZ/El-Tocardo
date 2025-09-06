@@ -1,16 +1,12 @@
+using ElTocardo.Authorization.EntityFramework.Infrastructure;
 using ElTocardo.Authorization.Server.Configuration.EntityFramework;
 using ElTocardo.Authorization.Server.Options;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 
 namespace ElTocardo.Authorization.Server.Configuration;
 
@@ -52,7 +48,7 @@ public static class ServiceCollectionExtensions
                 ApiDbContextOptionsConfiguration>();
         services.AddDbContext<AuthorizationDbContext>();
 
-        services.AddIdentity<ApplicationUser, IdentityRole>()
+        services.AddIdentity<IdentityUser, IdentityRole>()
             .AddEntityFrameworkStores<AuthorizationDbContext>()
             .AddDefaultTokenProviders()
             .AddDefaultUI();;

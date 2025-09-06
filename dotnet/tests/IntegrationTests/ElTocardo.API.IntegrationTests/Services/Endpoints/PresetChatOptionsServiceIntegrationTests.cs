@@ -3,6 +3,7 @@ using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Services;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Entities;
+using ElTocardo.Infrastructure.EntityFramework.Mediator;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 using Microsoft.Extensions.DependencyInjection;
 

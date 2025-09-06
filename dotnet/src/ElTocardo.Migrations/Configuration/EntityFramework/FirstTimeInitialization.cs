@@ -2,8 +2,6 @@ using System.Text.Json;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.ValueObjects;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 using ElTocardo.Migrations.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -18,8 +16,8 @@ public static class FirstTimeInitialization
     public static async Task InitializeDatabaseAsync(this IServiceProvider serviceProvider, CancellationToken cancellationToken)
     {
         using var scope = serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<ApplicationDbContext>>();
+        var context = scope.ServiceProvider.GetRequiredService<MigrationDbContext>();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<MigrationDbContext>>();
         var infrastructureOptions = scope.ServiceProvider.GetRequiredService<IOptions<ElTocardoMigrationsOptions>>();
 
         var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
@@ -43,12 +41,12 @@ public static class FirstTimeInitialization
                 }
             }
 
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
             var findByNameAsync = await userManager.FindByNameAsync("test");
             if (findByNameAsync == null)
             {
-                var identityResult = await userManager.CreateAsync(new ApplicationUser("test") { Email = "test@test.com",}, password: "Test66*");
+                var identityResult = await userManager.CreateAsync(new IdentityUser("test") { Email = "test@test.com",}, password: "Test66*");
                 if (!identityResult.Succeeded)
                 {
                     throw new ApplicationException(identityResult.Errors.First().Description);
@@ -88,7 +86,7 @@ public static class FirstTimeInitialization
     }
 
     private static async Task MigrateFromJsonFileIfNeededAsync(
-        ApplicationDbContext context,
+        MigrationDbContext context,
         ElTocardoMigrationsOptions options,
         ILogger logger,
         CancellationToken cancellationToken)

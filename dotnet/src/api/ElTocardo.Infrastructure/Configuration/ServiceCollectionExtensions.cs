@@ -3,18 +3,13 @@ using AI.GithubCopilot.Configuration;
 using AI.GithubCopilot.Infrastructure.Services;
 using ElTocardo.Application.Configuration;
 using ElTocardo.Domain.Mediator.ConversationMediator.Repositories;
-using ElTocardo.Domain.Mediator.Interfaces;
 using ElTocardo.Infrastructure.EntityFramework.Configuration;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator.Commands;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.ApplicationUserMediator.Queries;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Configurations;
-using ElTocardo.Infrastructure.Mediator.Identity.ApplicationUserMediator.Handlers.Commands;
-using ElTocardo.Infrastructure.Mediator.Identity.ApplicationUserMediator.Handlers.Queries;
+using ElTocardo.Infrastructure.EntityFramework.Mediator;
 using ElTocardo.Infrastructure.Mediator.MongoDb.Repositories.Conversation;
 using ElTocardo.Infrastructure.Options;
 using ElTocardo.Infrastructure.Services;
 using ElTocardo.Infrastructure.Services.Endpoints;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -32,10 +27,10 @@ public static class ServiceCollectionExtensions
     ///     Requires IMemoryCache to be registered in the service collection.
     /// </summary>
     public static IServiceCollection AddElTocardoInfrastructure<TApplicationDbContextOptionsConfiguration,TGithubCopilotAccessTokenResponseDtoProvider, TGithubAccessTokenResponseDtoProvider>(this IServiceCollection services,
-        IConfiguration configuration, MongoClientSettings mongoClientSettings, string mongoDatabaseName) where TApplicationDbContextOptionsConfiguration : class, IElTocardoDbContextOptionsConfiguration  where TGithubCopilotAccessTokenResponseDtoProvider: class, IGithubCopilotAccessTokenResponseDtoProvider where TGithubAccessTokenResponseDtoProvider: class, IGithubAccessTokenResponseDtoProvider
+        IConfiguration configuration, MongoClientSettings mongoClientSettings, string mongoDatabaseName) where TApplicationDbContextOptionsConfiguration : class, IDbContextOptionsConfiguration<ApplicationDbContext>  where TGithubCopilotAccessTokenResponseDtoProvider: class, IGithubCopilotAccessTokenResponseDtoProvider where TGithubAccessTokenResponseDtoProvider: class, IGithubAccessTokenResponseDtoProvider
     {
         return services
-            .AddElTocardoInfrastructureEntityFramework<TApplicationDbContextOptionsConfiguration>()
+            .AddElTocardoInfrastructureEntityFramework<TApplicationDbContextOptionsConfiguration, ApplicationDbContext>()
             .AddAiClients<TGithubCopilotAccessTokenResponseDtoProvider, TGithubAccessTokenResponseDtoProvider>(configuration)
             .AddMediator(mongoClientSettings, mongoDatabaseName)
             .AddOptions(configuration)
@@ -47,26 +42,7 @@ public static class ServiceCollectionExtensions
     {
 
         return services
-            .AddIdentity()
             .AddMongoDb(mongoClientSettings, mongoDatabaseName);
-    }
-
-    private static IServiceCollection AddIdentity(this IServiceCollection services)
-    {
-
-            // User Command handlers
-            services.AddScoped<ICommandHandler<AuthenticateUserCommand>, AuthenticateUserCommandHandler>();
-            services
-                .AddScoped<ICommandHandler<InitiatePasswordResetCommand, string>, InitiatePasswordResetCommandHandler>();
-            services.AddScoped<ICommandHandler<ConfirmPasswordResetCommand>, ConfirmPasswordResetCommandHandler>();
-            services.AddScoped<ICommandHandler<UnregisterUserCommand>, UnregisterUserCommandHandler>();
-            services.AddScoped<ICommandHandler<CreateUserCommand>, CreateUserCommandHandler>();
-
-            // User Query handlers
-            services.AddScoped<IQueryHandler<GetAllUsersQuery, ApplicationUser[]>, GetAllUsersQueryHandler>();
-
-            services.AddScoped<IUserEndpointService, UserEndpointService>();
-            return services;
     }
 
     private static IServiceCollection AddMongoDb(this IServiceCollection services, MongoClientSettings mongoClientSettings, string mongoDatabaseName)
