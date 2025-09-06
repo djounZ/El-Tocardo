@@ -9,6 +9,7 @@ using ElTocardo.Infrastructure.Mediator.MongoDb.Repositories.Conversation;
 using ElTocardo.Infrastructure.Options;
 using ElTocardo.Infrastructure.Services;
 using ElTocardo.Infrastructure.Services.Endpoints;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,8 +28,11 @@ public static class ServiceCollectionExtensions
     ///     Requires IMemoryCache to be registered in the service collection.
     /// </summary>
     public static IServiceCollection AddElTocardoInfrastructure<TApplicationDbContextOptionsConfiguration,TGithubCopilotAccessTokenResponseDtoProvider, TGithubAccessTokenResponseDtoProvider>(this IServiceCollection services,
-        IConfiguration configuration, MongoClientSettings mongoClientSettings, string mongoDatabaseName) where TApplicationDbContextOptionsConfiguration : class, IDbContextOptionsConfiguration<ApplicationDbContext>  where TGithubCopilotAccessTokenResponseDtoProvider: class, IGithubCopilotAccessTokenResponseDtoProvider where TGithubAccessTokenResponseDtoProvider: class, IGithubAccessTokenResponseDtoProvider
+        IConfiguration configuration, MongoClientSettings mongoClientSettings, string mongoDatabaseName, string applicationName) where TApplicationDbContextOptionsConfiguration : class, IDbContextOptionsConfiguration<ApplicationDbContext>  where TGithubCopilotAccessTokenResponseDtoProvider: class, IGithubCopilotAccessTokenResponseDtoProvider where TGithubAccessTokenResponseDtoProvider: class, IGithubAccessTokenResponseDtoProvider
     {
+        services.AddDataProtection()
+            .PersistKeysToDbContext<ApplicationDbContext>()
+            .SetApplicationName(applicationName);
         return services
             .AddElTocardoInfrastructureEntityFramework<TApplicationDbContextOptionsConfiguration, ApplicationDbContext>()
             .AddAiClients<TGithubCopilotAccessTokenResponseDtoProvider, TGithubAccessTokenResponseDtoProvider>(configuration)

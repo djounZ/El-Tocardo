@@ -24,11 +24,13 @@ public static class ServiceCollectionExtensions
         services.AddCaching();
         var mongoClientSettings = MongoClientSettings.FromConnectionString(configuration.GetConnectionString(MongoDbDatabaseResourceName));
 
+
         return services
             .AddElTocardoInfrastructure<ApiDbContextOptionsConfiguration, GithubCopilotAccessTokenResponseDtoProvider, GithubAccessTokenStore>(
                 configuration,
                 mongoClientSettings,
-                MongoDbDatabaseResourceName)
+                MongoDbDatabaseResourceName,
+                ElTocardoApiProjectResourceName)
             .AddOAuth2Oidc(configuration);
     }
 

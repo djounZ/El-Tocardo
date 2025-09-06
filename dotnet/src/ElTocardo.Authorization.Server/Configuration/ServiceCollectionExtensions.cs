@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.VisualBasic;
 
 namespace ElTocardo.Authorization.Server.Configuration;
 
@@ -24,7 +25,7 @@ public static class ServiceCollectionExtensions
 
         services.AddDataProtection()
             .PersistKeysToDbContext<AuthorizationDbContext>()
-            .SetApplicationName("AuthServerApp") // more instance
+            .SetApplicationName(ServiceDefaults.Constants.ElTocardoAuthorizationServerProjectResourceName) // more instance
             .UseCryptographicAlgorithms(new Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorConfiguration()
             {
                 EncryptionAlgorithm = Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.EncryptionAlgorithm.AES_256_CBC,

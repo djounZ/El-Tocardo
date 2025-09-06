@@ -1,6 +1,4 @@
 using ElTocardo.Infrastructure.EntityFramework.Configuration;
-using ElTocardo.Infrastructure.EntityFramework.Mediator;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 using ElTocardo.Migrations.Options;
 using Microsoft.AspNetCore.Identity;
 
