@@ -1,6 +1,7 @@
 using ElTocardo.Infrastructure.EntityFramework.Configuration;
 using ElTocardo.Migrations.Options;
 using Microsoft.AspNetCore.Identity;
+using static ElTocardo.ServiceDefaults.Constants;
 
 namespace ElTocardo.Migrations.Configuration.EntityFramework;
 
@@ -12,7 +13,7 @@ public static class ServiceCollectionExtensions
         services.AddIdentity<IdentityUser, IdentityRole>()
             .AddEntityFrameworkStores<MigrationDbContext>()
             .AddDefaultTokenProviders();
-        return services.AddElTocardoInfrastructureEntityFramework<EntityFrameworkDbContextOptionsConfiguration, MigrationDbContext>()
+        return services.AddElTocardoInfrastructureEntityFramework<EntityFrameworkDbContextOptionsConfiguration, MigrationDbContext>(ElTocardoDataProtectionApplicationName)
             .AddOpenIddict();
 
     }

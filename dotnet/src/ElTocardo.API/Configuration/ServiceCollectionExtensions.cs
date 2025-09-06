@@ -30,7 +30,7 @@ public static class ServiceCollectionExtensions
                 configuration,
                 mongoClientSettings,
                 MongoDbDatabaseResourceName,
-                ElTocardoApiProjectResourceName)
+                ElTocardoDataProtectionApplicationName)
             .AddOAuth2Oidc(configuration);
     }
 

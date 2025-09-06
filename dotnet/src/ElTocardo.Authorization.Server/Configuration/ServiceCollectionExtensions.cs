@@ -25,12 +25,7 @@ public static class ServiceCollectionExtensions
 
         services.AddDataProtection()
             .PersistKeysToDbContext<AuthorizationDbContext>()
-            .SetApplicationName(ServiceDefaults.Constants.ElTocardoAuthorizationServerProjectResourceName) // more instance
-            .UseCryptographicAlgorithms(new Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorConfiguration()
-            {
-                EncryptionAlgorithm = Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.EncryptionAlgorithm.AES_256_CBC,
-                ValidationAlgorithm = Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ValidationAlgorithm.HMACSHA256
-            });
+            .SetApplicationName(ServiceDefaults.Constants.ElTocardoDataProtectionApplicationName);
 
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>

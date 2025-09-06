@@ -4,10 +4,14 @@ using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Entities;
 using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Repositories;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Entities;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Repositories;
+using ElTocardo.Domain.Mediator.UserExternalTokenMediator.Entities;
+using ElTocardo.Domain.Mediator.UserExternalTokenMediator.Repositories;
 using ElTocardo.Infrastructure.EntityFramework.Mediator;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.McpServerConfigurationMediator;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.PresetChatInstructionMediator;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.PresetChatOptionsMediator;
+using ElTocardo.Infrastructure.EntityFramework.Mediator.UserExternalTokenMediator;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,8 +26,11 @@ public static class ServiceCollectionExtensions
     ///     Requires AiGithubCopilotUserProvider to be registered in the service collection.
     ///     Requires IMemoryCache to be registered in the service collection.
     /// </summary>
-    public static IServiceCollection AddElTocardoInfrastructureEntityFramework<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>(this IServiceCollection services) where TApplicationDbContextOptionsConfiguration : class,  IDbContextOptionsConfiguration<TApplicationDbContext> where TApplicationDbContext : DbContext, IApplicationDbContext
+    public static IServiceCollection AddElTocardoInfrastructureEntityFramework<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>(this IServiceCollection services, string applicationName) where TApplicationDbContextOptionsConfiguration : class,  IDbContextOptionsConfiguration<TApplicationDbContext> where TApplicationDbContext : DbContext, IApplicationDbContext
     {
+        services.AddDataProtection()
+            .PersistKeysToDbContext<ApplicationDbContext>()
+            .SetApplicationName(applicationName);
         return services
             .AddMediator<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>();
     }
@@ -60,7 +67,16 @@ public static class ServiceCollectionExtensions
                 .AddMcpServerConfigurationService()
                 .AddPresetChatInstructionService()
                 .AddPresetChatOptionsService()
+                .AddUserExternalTokenService()
             ;
+    }
+
+    private static IServiceCollection AddUserExternalTokenService(this IServiceCollection services)
+    {
+        services.AddSingleton<UserExternalTokenProtector>();
+        services.AddTransient<DbSet<UserExternalToken>>( sc=> sc.GetRequiredService<IApplicationDbContext>().UserExternalTokens);
+        services.AddScoped<IUserExternalTokenRepository, UserExternalTokenRepository>();
+        return services;
     }
 
     private static IServiceCollection AddPresetChatInstructionService(this IServiceCollection services)

@@ -30,11 +30,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddElTocardoInfrastructure<TApplicationDbContextOptionsConfiguration,TGithubCopilotAccessTokenResponseDtoProvider, TGithubAccessTokenResponseDtoProvider>(this IServiceCollection services,
         IConfiguration configuration, MongoClientSettings mongoClientSettings, string mongoDatabaseName, string applicationName) where TApplicationDbContextOptionsConfiguration : class, IDbContextOptionsConfiguration<ApplicationDbContext>  where TGithubCopilotAccessTokenResponseDtoProvider: class, IGithubCopilotAccessTokenResponseDtoProvider where TGithubAccessTokenResponseDtoProvider: class, IGithubAccessTokenResponseDtoProvider
     {
-        services.AddDataProtection()
-            .PersistKeysToDbContext<ApplicationDbContext>()
-            .SetApplicationName(applicationName);
         return services
-            .AddElTocardoInfrastructureEntityFramework<TApplicationDbContextOptionsConfiguration, ApplicationDbContext>()
+            .AddElTocardoInfrastructureEntityFramework<TApplicationDbContextOptionsConfiguration, ApplicationDbContext>(applicationName)
             .AddAiClients<TGithubCopilotAccessTokenResponseDtoProvider, TGithubAccessTokenResponseDtoProvider>(configuration)
             .AddMediator(mongoClientSettings, mongoDatabaseName)
             .AddOptions(configuration)

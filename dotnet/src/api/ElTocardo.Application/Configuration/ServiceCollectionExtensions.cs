@@ -2,6 +2,7 @@ using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Dtos.Conversation;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
 using ElTocardo.Application.Dtos.PresetChatInstruction;
+using ElTocardo.Application.Dtos.UserExternalToken;
 using ElTocardo.Application.Mappers.Dtos.AI;
 using ElTocardo.Application.Mappers.Dtos.Conversation;
 using ElTocardo.Application.Mappers.Dtos.ModelContextProtocol;
@@ -25,11 +26,17 @@ using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Handlers.Commands
 using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Handlers.Queries;
 using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Mappers;
 using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Queries;
+using ElTocardo.Application.Mediator.UserExternalTokenMediator.Commands;
+using ElTocardo.Application.Mediator.UserExternalTokenMediator.Handlers.Commands;
+using ElTocardo.Application.Mediator.UserExternalTokenMediator.Handlers.Queries;
+using ElTocardo.Application.Mediator.UserExternalTokenMediator.Mappers;
+using ElTocardo.Application.Mediator.UserExternalTokenMediator.Queries;
 using ElTocardo.Application.Options;
 using ElTocardo.Application.Services;
 using ElTocardo.Domain.Configuration;
 using ElTocardo.Domain.Mediator.Common.Interfaces;
 using ElTocardo.Domain.Mediator.ConversationMediator.Entities;
+using ElTocardo.Domain.Mediator.UserExternalTokenMediator.Entities;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,7 +57,9 @@ public static class ServiceCollectionExtensions
             .AddMcpServerConfigurationService()
             .AddPresetChatOptionsService()
             .AddPresetChatInstructionService()
-            .AddConversationService();
+            .AddConversationService()
+            .AddUserExternalToken()
+            ;
     }
 
     private static IServiceCollection AddPresetChatInstructionService(this IServiceCollection services)
@@ -98,6 +107,35 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+
+
+    private static IServiceCollection AddUserExternalToken(this IServiceCollection services)
+    {
+
+        // MCP Mappers
+        services.AddSingleton<UserExternalTokenDomainCreateCommandMapper>();
+        services.AddSingleton<UserExternalTokenDomainGetAllDtoMapper>();
+        services.AddSingleton<UserExternalTokenDomainGetDtoMapper>();
+        services.AddSingleton<UserExternalTokenDomainUpdateCommandMapper>();
+
+
+        // MCP Command handlers
+        services.AddScoped<ICommandHandler<CreateUserExternalTokenCommand, Guid>, CreateUserExternalTokenCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdateUserExternalTokenCommand>, UpdateUserExternalTokenCommandHandler>();
+        services.AddScoped<ICommandHandler<DeleteUserExternalTokenCommand>, DeleteUserExternalTokenCommandHandler>();
+
+        // MCP Query handlers
+        services
+            .AddScoped<IQueryHandler<GetAllUserExternalTokensQuery, Dictionary<UserExternalTokenKey, UserExternalTokenItemDto>>,
+                GetAllUserExternalTokensQueryHandler>();
+        services
+            .AddScoped<IQueryHandler<GetUserExternalTokenByKeyQuery, UserExternalTokenItemDto>,
+                GetUserExternalTokenByKeyQueryHandler>();
+
+        services.AddScoped<IUserExternalTokenEndpointService, UserExternalTokenEndpointService>();
+
+        return services;
+    }
 
     private static IServiceCollection AddMcpServerConfigurationService(this IServiceCollection services)
     {

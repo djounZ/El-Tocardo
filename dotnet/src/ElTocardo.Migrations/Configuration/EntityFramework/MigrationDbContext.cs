@@ -1,6 +1,7 @@
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Entities;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Entities;
+using ElTocardo.Domain.Mediator.UserExternalTokenMediator.Entities;
 using ElTocardo.Infrastructure.EntityFramework.Mediator;
 using Microsoft.EntityFrameworkCore;
 using AuthorizationDbContext = ElTocardo.Authorization.EntityFramework.Infrastructure.AuthorizationDbContext;
@@ -13,7 +14,7 @@ public class MigrationDbContext(DbContextOptions<MigrationDbContext> options,
     public DbSet<McpServerConfiguration> McpServerConfigurations { get; set; } = null!;
     public DbSet<PresetChatOptions> PresetChatOptions { get; set; } = null!;
     public DbSet<PresetChatInstruction> PresetChatInstructions { get; set; } = null!;
-
+    public DbSet<UserExternalToken> UserExternalTokens { get; set; } = null!;
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
