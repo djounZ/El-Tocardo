@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ElTocardoMigrations": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

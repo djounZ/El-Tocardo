@@ -21,6 +21,9 @@ public static class FirstTimeInitialization
         var infrastructureOptions = scope.ServiceProvider.GetRequiredService<IOptions<ElTocardoMigrationsOptions>>();
 
         var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
+
+        var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+        var githubAccessTokenResponseDtoJsonString = configuration["GithubAccessTokenResponseDto"];
         try
         {
             logger.LogInformation("Ensuring database is created and up to date");

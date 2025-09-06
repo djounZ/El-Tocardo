@@ -7,9 +7,10 @@ using Microsoft.Extensions.Logging;
 namespace ElTocardo.Infrastructure.EntityFramework.Mediator.McpServerConfigurationMediator;
 
 public class McpServerConfigurationRepository(
-    ApplicationDbContext context,
+    DbContext context,
+    DbSet<McpServerConfiguration> dbSet,
     ILogger<McpServerConfigurationRepository> logger)
-    : DbSetEntityRepository<McpServerConfiguration,Guid, string>(context, context.McpServerConfigurations, logger), IMcpServerConfigurationRepository
+    : DbSetEntityRepository<McpServerConfiguration,Guid, string>(context, dbSet, logger), IMcpServerConfigurationRepository
 {
     protected override async Task<McpServerConfiguration?> GetByKeyAsync(string key, DbSet<McpServerConfiguration> dbSet, CancellationToken cancellationToken = default)
     {

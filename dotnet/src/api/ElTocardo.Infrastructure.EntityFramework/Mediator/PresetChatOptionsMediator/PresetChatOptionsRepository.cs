@@ -7,9 +7,10 @@ using Microsoft.Extensions.Logging;
 namespace ElTocardo.Infrastructure.EntityFramework.Mediator.PresetChatOptionsMediator;
 
 public class PresetChatOptionsRepository(
-    ApplicationDbContext context,
+    DbContext context,
+    DbSet<PresetChatOptions> dbSet,
     ILogger<PresetChatOptionsRepository> logger)
-    : DbSetEntityRepository<PresetChatOptions,Guid, string>(context, context.PresetChatOptions, logger), IPresetChatOptionsRepository
+    : DbSetEntityRepository<PresetChatOptions,Guid, string>(context,dbSet, logger), IPresetChatOptionsRepository
 {
     protected override async Task<PresetChatOptions?> GetByKeyAsync(string key, DbSet<PresetChatOptions> dbSet, CancellationToken cancellationToken = default)
     {

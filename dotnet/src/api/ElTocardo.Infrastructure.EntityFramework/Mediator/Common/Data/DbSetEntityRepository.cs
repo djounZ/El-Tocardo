@@ -7,9 +7,9 @@ using Microsoft.Extensions.Logging;
 namespace ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 
 public abstract class DbSetEntityRepository<TEntity, TId, TKey>(
-    ApplicationDbContext context,
+    DbContext context,
     DbSet<TEntity> dbSet,
-    ILogger<DbSetEntityRepository<TEntity,TId,  TKey>> logger) :IEntityRepository<TEntity,TId,TKey> where TEntity: AbstractEntity<TId,TKey>
+    ILogger<DbSetEntityRepository<TEntity,TId,  TKey>> logger) : IEntityRepository<TEntity,TId,TKey> where TEntity: AbstractEntity<TId,TKey>
 {
     private static string EntityName => typeof(TEntity).Name;
 

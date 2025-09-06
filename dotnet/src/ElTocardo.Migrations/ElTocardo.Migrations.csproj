@@ -1,8 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker"><PropertyGroup>  <UserSecretsId>15735b43-54ff-4bff-b70d-49b216c90620</UserSecretsId>
+  </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(MicrosoftExtensionsPackagesCommonVersion)"/>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(NpgsqlEntityFrameworkCorePostgreSQLVersion)"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(MicrosoftExtensionsPackagesCommonVersion)" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(NpgsqlEntityFrameworkCorePostgreSQLVersion)" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(MicrosoftExtensionsPackagesCommonVersion)" />
         <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="$(OpenIddictCommonPackagesVersion)" />
     </ItemGroup>
@@ -12,10 +13,6 @@
       <ProjectReference Include="..\api\ElTocardo.Infrastructure.EntityFramework\ElTocardo.Infrastructure.EntityFramework.csproj" />
       <ProjectReference Include="..\authorization\ElTocardo.Authorization.EntityFramework\ElTocardo.Authorization.EntityFramework.csproj" />
       <ProjectReference Include="..\ElTocardo.ServiceDefaults\ElTocardo.ServiceDefaults.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="Properties\launchSettings.json" />
     </ItemGroup>
 </Project>
 
