@@ -1,4 +1,4 @@
-using ElTocardo.Domain.Mediator.Commands;
+using ElTocardo.Domain.Mediator.Common.Commands;
 
 namespace ElTocardo.Application.Mediator.ConversationMediator.Commands;
 

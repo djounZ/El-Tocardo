@@ -2,7 +2,7 @@ using System.Text.Json;
 using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Commands;
 using ElTocardo.Application.Mediator.PresetChatOptionsMediator.Queries;
-using ElTocardo.Domain.Mediator.Interfaces;
+using ElTocardo.Domain.Mediator.Common.Interfaces;
 using ElTocardo.Domain.Models;
 
 namespace ElTocardo.Application.Services;

@@ -1,4 +1,4 @@
-using ElTocardo.Domain.Mediator.Queries;
+using ElTocardo.Domain.Mediator.Common.Queries;
 
 namespace ElTocardo.Application.Mediator.PresetChatOptionsMediator.Queries;
 

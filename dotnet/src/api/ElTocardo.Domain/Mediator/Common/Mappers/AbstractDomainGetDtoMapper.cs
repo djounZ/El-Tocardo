@@ -1,6 +1,6 @@
 using ElTocardo.Domain.Mediator.Common.Entities;
 
-namespace ElTocardo.Domain.Mediator.Mappers;
+namespace ElTocardo.Domain.Mediator.Common.Mappers;
 
 public abstract class AbstractDomainGetDtoMapper<TEntity,TId,TKey, TDto> where TEntity : IEntity<TId,TKey>
 {

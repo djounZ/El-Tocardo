@@ -1,5 +1,5 @@
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Commands;
-using ElTocardo.Domain.Mediator.Mappers;
+using ElTocardo.Domain.Mediator.Common.Mappers;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 
 namespace ElTocardo.Application.Mediator.McpServerConfigurationMediator.Mappers;

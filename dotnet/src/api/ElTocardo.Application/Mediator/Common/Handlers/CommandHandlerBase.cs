@@ -1,4 +1,4 @@
-using ElTocardo.Domain.Mediator.Interfaces;
+using ElTocardo.Domain.Mediator.Common.Interfaces;
 using ElTocardo.Domain.Models;
 using Microsoft.Extensions.Logging;
 

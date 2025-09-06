@@ -1,7 +1,7 @@
 using ElTocardo.Application.Dtos.PresetChatInstruction;
 using ElTocardo.Application.Mediator.PresetChatInstructionMediator.Queries;
 using ElTocardo.Application.Mediator.PresetChatInstructionMediator.Mappers;
-using ElTocardo.Domain.Mediator.Interfaces;
+using ElTocardo.Domain.Mediator.Common.Interfaces;
 using ElTocardo.Domain.Mediator.PresetChatInstructionMediator.Repositories;
 using ElTocardo.Domain.Models;
 

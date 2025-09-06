@@ -1,5 +1,5 @@
 using ElTocardo.Application.Dtos.Configuration;
-using ElTocardo.Domain.Mediator.Mappers;
+using ElTocardo.Domain.Mediator.Common.Mappers;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Entities;
 
 namespace ElTocardo.Application.Mediator.PresetChatOptionsMediator.Mappers;

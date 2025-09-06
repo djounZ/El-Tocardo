@@ -1,6 +1,6 @@
 using ElTocardo.Domain.Models;
 
-namespace ElTocardo.Domain.Mediator.Interfaces;
+namespace ElTocardo.Domain.Mediator.Common.Interfaces;
 
 public interface ICommandHandler<in TCommand, TResult>
 {

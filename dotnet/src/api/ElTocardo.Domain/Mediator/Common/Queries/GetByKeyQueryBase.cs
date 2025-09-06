@@ -1,4 +1,4 @@
-namespace ElTocardo.Domain.Mediator.Queries;
+namespace ElTocardo.Domain.Mediator.Common.Queries;
 
 public abstract record GetByKeyQueryBase<TKey>(TKey Key);
 public abstract record GetByIdQueryBase<TKey>(TKey Id);

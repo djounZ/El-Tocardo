@@ -1,6 +1,6 @@
 using ElTocardo.Application.Mediator.ConversationMediator.Commands;
+using ElTocardo.Domain.Mediator.Common.Mappers;
 using ElTocardo.Domain.Mediator.ConversationMediator.Entities;
-using ElTocardo.Domain.Mediator.Mappers;
 
 namespace ElTocardo.Application.Mediator.ConversationMediator.Mappers;
 

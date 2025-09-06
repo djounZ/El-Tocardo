@@ -1,7 +1,7 @@
 using ElTocardo.Application.Mediator.ConversationMediator.Commands;
+using ElTocardo.Domain.Mediator.Common.Interfaces;
 using ElTocardo.Domain.Mediator.ConversationMediator.Entities;
 using ElTocardo.Domain.Mediator.ConversationMediator.Repositories;
-using ElTocardo.Domain.Mediator.Interfaces;
 using ElTocardo.Domain.Models;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
