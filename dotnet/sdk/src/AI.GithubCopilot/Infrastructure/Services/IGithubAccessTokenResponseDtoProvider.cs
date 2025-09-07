@@ -4,5 +4,5 @@ namespace AI.GithubCopilot.Infrastructure.Services;
 
 public interface IGithubAccessTokenResponseDtoProvider
 {
-    public Task<GithubAccessTokenResponseDto?> GetTokenAsync(CancellationToken cancellationToken);
+    public Task<GithubAccessTokenResponseDto> GetTokenAsync(CancellationToken cancellationToken);
 }

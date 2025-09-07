@@ -4,5 +4,5 @@ public record UserExternalTokenItemDto(
     string UserId,
     string Provider,
     string Value,
-    DateTime CreatedAt,
-    DateTime UpdatedAt);
+    DateTimeOffset CreatedAt,
+    DateTimeOffset UpdatedAt);

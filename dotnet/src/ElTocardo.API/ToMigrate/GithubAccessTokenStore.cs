@@ -1,60 +1,58 @@
 using System.Text.Json;
 using AI.GithubCopilot.Infrastructure.Dtos.Authorizations;
 using AI.GithubCopilot.Infrastructure.Services;
+using ElTocardo.Application.Dtos.UserExternalToken;
+using ElTocardo.Application.Mediator.UserExternalTokenMediator.Queries;
+using ElTocardo.Domain.Mediator.Common.Interfaces;
 using ElTocardo.Domain.Mediator.UserExternalTokenMediator.Entities;
+using ElTocardo.Domain.Models;
 using ElTocardo.Infrastructure.EntityFramework.Mediator;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.UserExternalTokenMediator;
 using Microsoft.EntityFrameworkCore;
 
 namespace ElTocardo.API.ToMigrate;
 
-public sealed class GithubAccessTokenStore(ILogger<GithubAccessTokenStore> logger, ElTocardoEncryptor elTocardoEncryptor, IConfiguration configuration, DbSet<UserExternalToken> userExternalTokenDbSet, UserExternalTokenProtector userExternalTokenProtector) : IGithubAccessTokenResponseDtoProvider
+public sealed class GithubAccessTokenStore(
+    IHttpContextAccessor httpContextAccessor,
+    DbSet<UserExternalToken>  userExternalTokensDbSet,
+    IQueryHandler<GetUserExternalTokenByKeyQuery, UserExternalTokenItemDto> getByNameQueryHandler,
+    UserExternalTokenProtector userExternalTokenProtector) : IGithubAccessTokenResponseDtoProvider
 {
 
-    public async Task SetAccessToken(GithubAccessTokenResponseDto input, CancellationToken cancellationToken)
-    {
 
+    public async Task<GithubAccessTokenResponseDto> GetTokenAsync(CancellationToken cancellationToken)
+    {
+        var identityName = httpContextAccessor.HttpContext?.User.Identity?.Name ?? string.Empty;
+        Result<UserExternalTokenItemDto> userExternalToken;
+        if(!string.IsNullOrWhiteSpace(identityName))
+        {
+            userExternalToken = await getByNameQueryHandler.HandleAsync(new(new(identityName, "github")), cancellationToken);
+        }
+        else
+        {
+            userExternalToken = await GetDefaultTokenAsync(cancellationToken);
+        }
+
+        if (!userExternalToken.IsSuccess)
+        {
+            throw userExternalToken.ReadError();
+        }
+
+        var userExternalTokenItemDto = userExternalToken.ReadValue();
+        return JsonSerializer.Deserialize<GithubAccessTokenResponseDto>(userExternalTokenProtector.Unprotect(userExternalTokenItemDto.Value))!;
+    }
+
+    private async Task<Result<UserExternalTokenItemDto>> GetDefaultTokenAsync(CancellationToken cancellationToken)
+    {
         try
         {
-            var serialize = JsonSerializer.Serialize(input);
-            var encryptTokenAesAsync = await elTocardoEncryptor.EncryptTokenAesStringAsync(serialize, cancellationToken);
-            configuration[nameof(GithubAccessTokenResponseDto)] = encryptTokenAesAsync;
+            var userExternalToken = await userExternalTokensDbSet.SingleAsync(cancellationToken);
+            return new UserExternalTokenItemDto(userExternalToken.UserId, userExternalToken.Provider,
+                userExternalToken.Value, userExternalToken.CreatedAt, userExternalToken.UpdatedAt);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Failed to deserialize GitHub device code response from environment variable.");
+            return ex;
         }
-    }
-
-    public async Task<bool> IsValidAsync(CancellationToken cancellationToken)
-    {
-        var githubAccessTokenResponse =
-            await GetTokenAsync(
-                cancellationToken);
-        return !string.IsNullOrEmpty(githubAccessTokenResponse?.AccessToken);
-    }
-
-
-    public async Task<GithubAccessTokenResponseDto?> GetTokenAsync(CancellationToken cancellationToken)
-    {
-        var userExternalToken = await userExternalTokenDbSet.SingleAsync(cancellationToken);
-        return JsonSerializer.Deserialize<GithubAccessTokenResponseDto>(
-            userExternalTokenProtector.Unprotect(userExternalToken.Value));
-        // try
-        // {
-        //     var environmentVariable = configuration[nameof(GithubAccessTokenResponseDto)];
-        //     if (environmentVariable == null)
-        //     {
-        //         return null;
-        //     }
-        //     var decryptTokenAesStringAsync = await elTocardoEncryptor.DecryptTokenAesStringAsync(environmentVariable, cancellationToken);
-        //
-        //     return JsonSerializer.Deserialize<GithubAccessTokenResponseDto?>(decryptTokenAesStringAsync);
-        // }
-        // catch (Exception ex)
-        // {
-        //     logger.LogError(ex, "Failed to deserialize GitHub device code response from environment variable.");
-        //     return null;
-        // }
     }
 }

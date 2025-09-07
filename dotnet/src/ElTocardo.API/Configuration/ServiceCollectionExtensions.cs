@@ -81,7 +81,6 @@ public static class ServiceCollectionExtensions
         services.TryAddTransient<HttpListener>();
         services.TryAddTransient<TaskCompletionSource<bool>>();
         services.TryAddSingleton<HttpClientRunner>();
-        services.TryAddSingleton<ElTocardoEncryptor>();
         services.TryAddTransient<GithubAuthenticator>();
         services.TryAddTransient<GithubAccessTokenProvider>();
         return services;

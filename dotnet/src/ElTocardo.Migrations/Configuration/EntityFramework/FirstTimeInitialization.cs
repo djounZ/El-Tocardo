@@ -66,7 +66,7 @@ public static class FirstTimeInitialization
             var userId = findByNameAsync!.Id;
 
             var protectedToken = userExternalTokenProtector.Protect(githubAccessTokenResponseDtoJsonString!);
-            await context.UserExternalTokens.AddAsync(new UserExternalToken(userId,"github_copilot", protectedToken), cancellationToken);
+            await context.UserExternalTokens.AddAsync(new UserExternalToken(userId,"github", protectedToken), cancellationToken);
             await context.SaveChangesAsync(cancellationToken);
             logger.LogInformation("Database initialization completed successfully");
         }

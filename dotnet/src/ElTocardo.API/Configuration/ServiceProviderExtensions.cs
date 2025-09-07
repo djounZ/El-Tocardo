@@ -9,7 +9,7 @@ public static class ServiceProviderExtensions
     internal static async Task UseElTocardoApiAsync(this IServiceProvider serviceProvider,
         CancellationToken cancellationToken)
     {
-        await serviceProvider.UseAiGithubCopilotAsync(cancellationToken);
+        //await serviceProvider.UseAiGithubCopilotAsync(cancellationToken);
         await serviceProvider.UseElTocardoInfrastructureAsync(cancellationToken);
     }
 
@@ -21,6 +21,6 @@ public static class ServiceProviderExtensions
         var serviceScopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
         using var serviceScope = serviceScopeFactory.CreateScope();
         var githubAccessTokenProvider = serviceScope.ServiceProvider.GetRequiredService<GithubAccessTokenProvider>();
-        await githubAccessTokenProvider.GetGithubAccessToken(cancellationToken);
+        await githubAccessTokenProvider.GetGithubAccessToken("",cancellationToken);
     }
 }
