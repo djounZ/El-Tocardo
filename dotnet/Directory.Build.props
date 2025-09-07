@@ -58,7 +58,7 @@
         <ModelContextProtocolPackagesCommonVersion>0.3.0-preview.3</ModelContextProtocolPackagesCommonVersion>
 
         <!-- Aspire packages -->
-        <AspireHostingAppHostCommonVersion>9.4.1</AspireHostingAppHostCommonVersion>
+        <AspireHostingAppHostCommonVersion>9.4.2</AspireHostingAppHostCommonVersion>
         <CommunityToolkitAspireHostingOllamaVersion>9.7.0</CommunityToolkitAspireHostingOllamaVersion>
 
     </PropertyGroup>
