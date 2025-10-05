@@ -79,6 +79,7 @@ public static class FirstTimeInitialization
 
     private static async Task ClientIdAsync(IOpenIddictApplicationManager manager, CancellationToken cancellationToken)
     {
+        // Keep postman client for password/refresh grant
         if (await manager.FindByClientIdAsync("postman", cancellationToken) == null)
         {
             await manager.CreateAsync(new OpenIddictApplicationDescriptor
@@ -88,9 +89,36 @@ public static class FirstTimeInitialization
                 Permissions =
                 {
                     OpenIddictConstants.Permissions.Endpoints.Token,
+                    OpenIddictConstants.Permissions.Endpoints.Introspection,
                     OpenIddictConstants.Permissions.GrantTypes.Password,
                     OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
                     OpenIddictConstants.Permissions.Scopes.Profile
+                }
+            }, cancellationToken);
+        }
+
+        // Add El-Tocardo-Assistant for Authorization Code flow with PKCE
+        if (await manager.FindByClientIdAsync("El-Tocardo-Assistant", cancellationToken) == null)
+        {
+            await manager.CreateAsync(new OpenIddictApplicationDescriptor
+            {
+                ClientId = "El-Tocardo-Assistant",
+                // For public clients (SPA), ClientSecret should not be set
+                RedirectUris = { new Uri("http://localhost:4200/auth-callback") },
+                Permissions =
+                {
+                    OpenIddictConstants.Permissions.Endpoints.Authorization,
+                    OpenIddictConstants.Permissions.Endpoints.Token,
+                    OpenIddictConstants.Permissions.Endpoints.Introspection,
+                    OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
+                    OpenIddictConstants.Permissions.ResponseTypes.Code,
+                    OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
+                    OpenIddictConstants.Permissions.Prefixes.Scope + "openid",
+                    OpenIddictConstants.Permissions.Scopes.Profile
+                },
+                Requirements =
+                {
+                    OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange
                 }
             }, cancellationToken);
         }

@@ -33,6 +33,7 @@ public static class DevelopmentTestsEndpoints
                     return $"Session value: {s}";
                 }
             })
+            .RequireAuthorization()
             .WithOpenApi();
         app.MapGet("/",() => WeatherForecasts(summaries))
             .WithName("GetWeatherForecast")

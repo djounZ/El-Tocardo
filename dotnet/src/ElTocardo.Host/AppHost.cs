@@ -36,7 +36,7 @@ _ = builder.AddProject<ElTocardo_API>(ElTocardoApiProjectResourceName)
     .WaitFor(postgres)
     .WaitFor(mongodb)
     .WaitFor(authorizationServer)
-    .WithEnvironment(OpenIddictIssuerEnvironmentVariableName, authorizationServer.GetEndpoint("http"))
+    .WithEnvironment(OpenIddictIssuerEnvironmentVariableName, authorizationServer.GetEndpoint("https"))
     // .WithEnvironment("OllamaOptions:Uri", ollama.GetEndpoint("ollama"))
     // .WaitFor(ollama)
     .WithExternalHttpEndpoints();
