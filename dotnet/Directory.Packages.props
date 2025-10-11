@@ -1,0 +1,47 @@
+<Project>
+    <PropertyGroup>
+        <!-- Microsoft packages -->
+        <MicrosoftExtensionsPackagesCommonVersion>9.0.8</MicrosoftExtensionsPackagesCommonVersion>
+        <MicrosoftNETTestSdkVersion>18.0.0</MicrosoftNETTestSdkVersion>
+        <MicrosoftCodeAnalysisAnalyzersVersion>3.11.0</MicrosoftCodeAnalysisAnalyzersVersion>
+        <MicrosoftExtensionsAIPackagesCommonVersion>9.8.0</MicrosoftExtensionsAIPackagesCommonVersion>
+        <MicrosoftAspNetCorePackagesCommonVersion>2.3.1</MicrosoftAspNetCorePackagesCommonVersion>
+        <MicrosoftExtensionsHttpResilienceVersion>9.9.0</MicrosoftExtensionsHttpResilienceVersion>
+
+        <FluentValidationCommonPackagesVersion>12.0.0</FluentValidationCommonPackagesVersion>
+        <NpgsqlEntityFrameworkCorePostgreSQLVersion>9.0.4</NpgsqlEntityFrameworkCorePostgreSQLVersion>
+        <MongoDBCommonPackagesVersion>3.5.0</MongoDBCommonPackagesVersion>
+
+        <!-- Logs and Telemetry packages -->
+        <SerilogAspNetCoreVersion>9.0.0</SerilogAspNetCoreVersion>
+        <SerilogSinksOpenTelemetryVersion>4.2.0</SerilogSinksOpenTelemetryVersion>
+        <!-- REMOVED: <SerilogTracingInstrumentationAspNetCoreVersion> (package not found) -->
+        <OpenTelemetryPackagesCommonVersion>1.12.0</OpenTelemetryPackagesCommonVersion>
+        <!-- Testing packages -->
+        <XunitVersion>2.9.3</XunitVersion>
+        <XunitRunnerVisualStudioVersion>3.1.5</XunitRunnerVisualStudioVersion>
+        <CoverletCollectorVersion>6.0.4</CoverletCollectorVersion>
+        <MoqVersion>4.20.72</MoqVersion>
+        <FluentAssertionsVersion>8.7.1</FluentAssertionsVersion>
+        <TestcontainersVersion>4.7.0</TestcontainersVersion>
+        <!-- JWT & Auth packages -->
+        <SystemIdentityModelTokensJwtVersion>8.14.0</SystemIdentityModelTokensJwtVersion>
+        <MicrosoftIdentityModelTokensVersion>8.14.0</MicrosoftIdentityModelTokensVersion>
+        <MicrosoftAspNetCoreIdentityVersion>2.3.1</MicrosoftAspNetCoreIdentityVersion>
+        <OpenIddictCommonPackagesVersion>7.1.0</OpenIddictCommonPackagesVersion>
+
+        <OllamaSharpVersion>5.4.7</OllamaSharpVersion>
+        <ModelContextProtocolPackagesCommonVersion>0.3.0-preview.3</ModelContextProtocolPackagesCommonVersion>
+
+        <!-- Aspire packages -->
+        <AspireHostingAppHostCommonVersion>9.4.2</AspireHostingAppHostCommonVersion>
+        <CommunityToolkitAspireHostingOllamaVersion>9.8.0</CommunityToolkitAspireHostingOllamaVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="$(MicrosoftCodeAnalysisAnalyzersVersion)">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+</Project>
