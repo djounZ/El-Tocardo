@@ -1,10 +1,16 @@
+using System.Data.Common;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using AI.GithubCopilot.Infrastructure.Services;
 using ElTocardo.API.Configuration.EntityFramework;
 using ElTocardo.API.Options;
 using ElTocardo.API.ToMigrate;
 using ElTocardo.Infrastructure.Configuration;
+using ElTocardo.Infrastructure.EntityFramework.Mediator;
+using ElTocardo.ServiceDefaults;
 using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -57,12 +63,9 @@ public static class ServiceCollectionExtensions
           .AddValidation(options =>
           {
               options.SetIssuer(configuration[OpenIddictIssuerEnvironmentVariableName]!);
-              options.UseIntrospection()
-                  .SetClientId("postman")
-                  .SetClientSecret("postman-secret");
-
               options.UseSystemNetHttp();
               options.UseAspNetCore();
+              options.HandleEncryptionCertificate(services);
           });
         services.AddAuthentication(options =>
             {
@@ -72,6 +75,24 @@ public static class ServiceCollectionExtensions
         services.AddAuthorization();
 
         return services;
+    }
+
+    private static void HandleEncryptionCertificate(this OpenIddictValidationBuilder options, IServiceCollection services)
+    {
+        // Encryption and signing of tokens
+        // Load persistent certificate from the database
+        using var scope = services.BuildServiceProvider().CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        dbContext.Database.OpenConnection();
+        using var command = dbContext.Database.GetDbConnection().CreateCommand();
+        var cert = command.LoadFromDataBaseX509Certificate2(OpenIddictServerCertificateName);
+
+        if (cert is not null)
+        {
+            options.AddEncryptionCertificate(cert);
+            options.AddSigningCertificate(cert);
+        }
     }
 
 

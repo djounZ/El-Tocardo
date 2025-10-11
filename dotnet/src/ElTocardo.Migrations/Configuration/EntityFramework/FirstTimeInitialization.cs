@@ -9,6 +9,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using ElTocardo.ServiceDefaults;
+using static ElTocardo.ServiceDefaults.Constants;
 
 namespace ElTocardo.Migrations.Configuration.EntityFramework;
 
@@ -32,6 +36,7 @@ public static class FirstTimeInitialization
             logger.LogInformation("Ensuring database is created and up to date");
             await context.Database.EnsureCreatedAsync(cancellationToken);
 
+            context.EnsureOpenIddictCertificate();
             // Check if we need to migrate data from JSON file
             await MigrateFromJsonFileIfNeededAsync(context, infrastructureOptions.Value, logger, cancellationToken);
             await ClientIdAsync(manager, cancellationToken);
@@ -89,7 +94,6 @@ public static class FirstTimeInitialization
                 Permissions =
                 {
                     OpenIddictConstants.Permissions.Endpoints.Token,
-                    OpenIddictConstants.Permissions.Endpoints.Introspection,
                     OpenIddictConstants.Permissions.GrantTypes.Password,
                     OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
                     OpenIddictConstants.Permissions.Scopes.Profile
@@ -109,7 +113,6 @@ public static class FirstTimeInitialization
                 {
                     OpenIddictConstants.Permissions.Endpoints.Authorization,
                     OpenIddictConstants.Permissions.Endpoints.Token,
-                    OpenIddictConstants.Permissions.Endpoints.Introspection,
                     OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
                     OpenIddictConstants.Permissions.ResponseTypes.Code,
                     OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
@@ -205,5 +208,28 @@ public static class FirstTimeInitialization
             McpServerTransportTypeDto.Http => McpServerTransportType.Http,
             _ => throw new ArgumentOutOfRangeException(nameof(dto), dto, "Unknown transport type")
         };
+    }
+
+    private static void EnsureOpenIddictCertificate(this MigrationDbContext context)
+    {
+        var cert = context.PersistentCertificates.FirstOrDefault(x => x.Name == OpenIddictServerCertificateName);
+        if (cert != null)
+        {
+            return;
+        }
+
+        using var algorithm = RSA.Create(2048);
+        var subject = new X500DistinguishedName("CN=ElTocardo Server Encryption/Signing Certificate");
+        var request = new CertificateRequest(subject, algorithm, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+        request.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.KeyEncipherment | X509KeyUsageFlags.DigitalSignature, true));
+        var certificate = request.CreateSelfSigned(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddYears(5));
+        var bytes = certificate.Export(X509ContentType.Pfx, OpenIddictServerCertificatePassword);
+        context.Set<PersistentCertificate>().Add(new PersistentCertificate
+        {
+            Name = OpenIddictServerCertificateName,
+            PfxBytes = bytes,
+            Password = OpenIddictServerCertificatePassword
+        });
+        context.SaveChanges();
     }
 }

@@ -1,13 +1,17 @@
+using System.Security.Cryptography.X509Certificates;
 using ElTocardo.Authorization.EntityFramework.Infrastructure;
 using ElTocardo.Authorization.Server.Configuration.EntityFramework;
 using ElTocardo.Authorization.Server.Options;
+using ElTocardo.ServiceDefaults;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
+using static ElTocardo.ServiceDefaults.Constants;
 
 namespace ElTocardo.Authorization.Server.Configuration;
 
@@ -25,7 +29,7 @@ public static class ServiceCollectionExtensions
 
         services.AddDataProtection()
             .PersistKeysToDbContext<AuthorizationDbContext>()
-            .SetApplicationName(ServiceDefaults.Constants.ElTocardoDataProtectionApplicationName);
+            .SetApplicationName(ElTocardoDataProtectionApplicationName);
 
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
@@ -80,31 +84,31 @@ public static class ServiceCollectionExtensions
                         .RequireProofKeyForCodeExchange()
                         .AllowRefreshTokenFlow();
 
-                    // Encryption and signing of tokens
-                    options
-                        .AddEphemeralEncryptionKey()
-                        .AddEphemeralSigningKey()
-                        .DisableAccessTokenEncryption();
+            // Encryption and signing of tokens
+            // Load persistent certificate from the database
+            using var scope = services.BuildServiceProvider().CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AuthorizationDbContext>();
 
-                    // Register scopes (permissions)
-                    options.RegisterScopes(OpenIddictConstants.Scopes.Email, OpenIddictConstants.Scopes.Profile, "roles", "popelar-api");
+            dbContext.Database.OpenConnection();
+            using var command = dbContext.Database.GetDbConnection().CreateCommand();
+            var cert = command.LoadFromDataBaseX509Certificate2(OpenIddictServerCertificateName);
 
-                    // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
-                    options
-                            .UseAspNetCore()
-                            .EnableTokenEndpointPassthrough()
-                            .EnableAuthorizationEndpointPassthrough()
-                            .EnableUserInfoEndpointPassthrough();
+            if (cert is not null)
+            {
+                options.AddEncryptionCertificate(cert);
+                options.AddSigningCertificate(cert);
+            }
 
-                    options.AddDevelopmentEncryptionCertificate()
-                            .AddDevelopmentSigningCertificate();
-                }).AddValidation(options =>
-                {
-                    // Import the configuration from the local OpenIddict server instance.
-                    options.UseLocalServer();
 
-                    // Register the ASP.NET Core host.
-                    options.UseAspNetCore();
+            // Register scopes (permissions)
+            options.RegisterScopes(OpenIddictConstants.Scopes.Email, OpenIddictConstants.Scopes.Profile, OpenIddictConstants.Scopes.Roles);
+
+            // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
+            options
+                .UseAspNetCore()
+                .EnableTokenEndpointPassthrough()
+                .EnableAuthorizationEndpointPassthrough()
+                .EnableUserInfoEndpointPassthrough();
                 });
 
         return services;

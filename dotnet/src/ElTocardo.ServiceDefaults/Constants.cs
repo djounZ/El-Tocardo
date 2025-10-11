@@ -11,4 +11,6 @@ public static class Constants
     public const string ElTocardoApiProjectResourceName = "ElTocardoAPI";
     public const string ElTocardoDataProtectionApplicationName = "ElTocardoDataProtection";
     public const string OpenIddictIssuerEnvironmentVariableName = "OpenIddictIssuer";
+    public const string OpenIddictServerCertificateName = "OpenIddictServer";
+    public const string OpenIddictServerCertificatePassword = "ElTocardoDevCertPassword";
 }
