@@ -18,7 +18,7 @@ public class ClientTransportFactoryService(ILogger<ClientTransportFactoryService
 
         if (configurationItem.Type is McpServerTransportTypeDto.Http)
         {
-            return new SseClientTransport(mapper.MapToSseClientTransportOptions(configurationItem), loggerFactory);
+            return new HttpClientTransport(mapper.MapToHttpClientTransportOptions(configurationItem), loggerFactory);
         }
 
         logger.LogError("Unsupported configuration type: {ConfigurationType}", configurationItem.GetType().Name);

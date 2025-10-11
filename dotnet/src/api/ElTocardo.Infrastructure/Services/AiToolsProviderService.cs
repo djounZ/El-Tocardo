@@ -35,7 +35,7 @@ public sealed class AiToolsProviderService(
         }
 
         var clientTransport = clientTransportFactoryService.Create(mcpServerConfigurationItemDto.ReadValue());
-        var client = await McpClientFactory.CreateAsync(clientTransport, cancellationToken: cancellationToken);
+        var client = await McpClient.CreateAsync(clientTransport, cancellationToken: cancellationToken);
         var mcpClientTools = await client.ListToolsAsync(cancellationToken: cancellationToken);
         return mcpClientTools.Where(tool => aiToolDtos.Any(aiToolDto => aiToolDto.Name == tool.Name));
     }

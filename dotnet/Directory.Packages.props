@@ -1,10 +1,10 @@
 <Project>
     <PropertyGroup>
         <!-- Microsoft packages -->
-        <MicrosoftExtensionsPackagesCommonVersion>9.0.8</MicrosoftExtensionsPackagesCommonVersion>
+        <MicrosoftExtensionsPackagesCommonVersion>9.0.9</MicrosoftExtensionsPackagesCommonVersion>
         <MicrosoftNETTestSdkVersion>18.0.0</MicrosoftNETTestSdkVersion>
         <MicrosoftCodeAnalysisAnalyzersVersion>3.11.0</MicrosoftCodeAnalysisAnalyzersVersion>
-        <MicrosoftExtensionsAIPackagesCommonVersion>9.8.0</MicrosoftExtensionsAIPackagesCommonVersion>
+        <MicrosoftExtensionsAIPackagesCommonVersion>9.9.1</MicrosoftExtensionsAIPackagesCommonVersion>
         <MicrosoftAspNetCorePackagesCommonVersion>2.3.1</MicrosoftAspNetCorePackagesCommonVersion>
         <MicrosoftExtensionsHttpResilienceVersion>9.9.0</MicrosoftExtensionsHttpResilienceVersion>
 
@@ -16,7 +16,8 @@
         <SerilogAspNetCoreVersion>9.0.0</SerilogAspNetCoreVersion>
         <SerilogSinksOpenTelemetryVersion>4.2.0</SerilogSinksOpenTelemetryVersion>
         <!-- REMOVED: <SerilogTracingInstrumentationAspNetCoreVersion> (package not found) -->
-        <OpenTelemetryPackagesCommonVersion>1.12.0</OpenTelemetryPackagesCommonVersion>
+        <OpenTelemetryPackagesCommonVersion>1.13.1</OpenTelemetryPackagesCommonVersion>
+        <OpenTelemetryInstrumentationPackagesCommonVersion>1.12.0</OpenTelemetryInstrumentationPackagesCommonVersion>
         <!-- Testing packages -->
         <XunitVersion>2.9.3</XunitVersion>
         <XunitRunnerVisualStudioVersion>3.1.5</XunitRunnerVisualStudioVersion>
@@ -31,10 +32,10 @@
         <OpenIddictCommonPackagesVersion>7.1.0</OpenIddictCommonPackagesVersion>
 
         <OllamaSharpVersion>5.4.7</OllamaSharpVersion>
-        <ModelContextProtocolPackagesCommonVersion>0.3.0-preview.3</ModelContextProtocolPackagesCommonVersion>
+        <ModelContextProtocolPackagesCommonVersion>0.4.0-preview.2</ModelContextProtocolPackagesCommonVersion>
 
         <!-- Aspire packages -->
-        <AspireHostingAppHostCommonVersion>9.4.2</AspireHostingAppHostCommonVersion>
+        <AspireHostingAppHostCommonVersion>9.5.1</AspireHostingAppHostCommonVersion>
         <CommunityToolkitAspireHostingOllamaVersion>9.8.0</CommunityToolkitAspireHostingOllamaVersion>
     </PropertyGroup>
 

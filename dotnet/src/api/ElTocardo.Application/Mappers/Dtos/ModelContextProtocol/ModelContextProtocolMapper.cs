@@ -188,9 +188,9 @@ public sealed class ModelContextProtocolMapper(ILogger<ModelContextProtocolMappe
     }
 
 
-    public SseClientTransportOptions MapToSseClientTransportOptions(McpServerConfigurationItemDto configurationItem)
+    public HttpClientTransportOptions MapToHttpClientTransportOptions(McpServerConfigurationItemDto configurationItem)
     {
-        return new SseClientTransportOptions
+        return new HttpClientTransportOptions
         {
             Endpoint = configurationItem.Endpoint!
         };

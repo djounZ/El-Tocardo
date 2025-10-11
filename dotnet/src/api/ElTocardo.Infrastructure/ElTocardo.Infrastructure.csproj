@@ -7,7 +7,7 @@
 
     <ItemGroup>
         <PackageReference Include="OllamaSharp" Version="$(OllamaSharpVersion)"/>
-        <PackageReference Include="MongoDB.Driver" Version="3.4.0" />
+        <PackageReference Include="MongoDB.Driver" Version="$(MongoDBCommonPackagesVersion)" />
 
     </ItemGroup>
 

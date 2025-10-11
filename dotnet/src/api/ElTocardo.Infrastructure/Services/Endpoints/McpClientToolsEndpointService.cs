@@ -96,11 +96,11 @@ public sealed class McpClientToolsEndpointService(
         return modelContextProtocolMapper.MapToCallToolResultDto(callToolResult);
     }
 
-    private async Task<IMcpClient> CreateMcpClientAsync(McpServerConfigurationItemDto mcpServerConfigurationItem,
+    private async Task<McpClient> CreateMcpClientAsync(McpServerConfigurationItemDto mcpServerConfigurationItem,
         CancellationToken cancellationToken)
     {
         var clientTransport = clientTransportFactoryService.Create(mcpServerConfigurationItem);
-        return await McpClientFactory.CreateAsync(clientTransport, cancellationToken: cancellationToken);
+        return await McpClient.CreateAsync(clientTransport, cancellationToken: cancellationToken);
     }
 
     private sealed class McpClientToolCallProgressIProgress(ILogger logger) : IProgress<ProgressNotificationValue>

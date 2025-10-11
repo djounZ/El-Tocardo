@@ -30,11 +30,11 @@ public class ModelContextProtocolMapperTests
             InputSchema = JsonDocument.Parse("{}").RootElement,
             OutputSchema = JsonDocument.Parse("{}").RootElement
         };
-        var client = new Mock<IMcpClient>().Object;
+        var client = new Mock<McpClient>().Object;
         return (McpClientTool)Activator.CreateInstance(typeof(McpClientTool), true)!
             .GetType()
             .GetConstructor([
-                typeof(IMcpClient), typeof(Tool), typeof(JsonSerializerOptions), typeof(string), typeof(string),
+                typeof(McpClient), typeof(Tool), typeof(JsonSerializerOptions), typeof(string), typeof(string),
                 typeof(IProgress<ProgressNotificationValue>)
             ])!
             .Invoke([client, tool, new JsonSerializerOptions(), name, desc, null]);
@@ -52,10 +52,10 @@ public class ModelContextProtocolMapperTests
             Arguments = args ?? new List<PromptArgument>(),
             Meta = meta
         };
-        var client = new Mock<IMcpClient>().Object;
+        var client = new Mock<McpClient>().Object;
         return (McpClientPrompt)Activator.CreateInstance(typeof(McpClientPrompt), true)!
             .GetType()
-            .GetConstructor([typeof(IMcpClient), typeof(Prompt)])!
+            .GetConstructor([typeof(McpClient), typeof(Prompt)])!
             .Invoke([client, prompt]);
     }
 
@@ -87,10 +87,10 @@ public class ModelContextProtocolMapperTests
             Meta = meta,
             Annotations = annotations
         };
-        var client = new Mock<IMcpClient>().Object;
+        var client = new Mock<McpClient>().Object;
         return (McpClientResourceTemplate)Activator.CreateInstance(typeof(McpClientResourceTemplate), true)!
             .GetType()
-            .GetConstructor([typeof(IMcpClient), typeof(ResourceTemplate)])!
+            .GetConstructor([typeof(McpClient), typeof(ResourceTemplate)])!
             .Invoke([client, proto]);
     }
 
@@ -109,10 +109,10 @@ public class ModelContextProtocolMapperTests
             Annotations = annotations,
             Size = size
         };
-        var client = new Mock<IMcpClient>().Object;
+        var client = new Mock<McpClient>().Object;
         return (McpClientResource)Activator.CreateInstance(typeof(McpClientResource), true)!
             .GetType()
-            .GetConstructor([typeof(IMcpClient), typeof(Resource)])!
+            .GetConstructor([typeof(McpClient), typeof(Resource)])!
             .Invoke([client, proto]);
     }
 
@@ -221,7 +221,7 @@ public class ModelContextProtocolMapperTests
             uri, // Endpoint
             McpServerTransportTypeDto.Http // Type (used for SSE/HTTP)
         );
-        var opt = _mapper.MapToSseClientTransportOptions(dto);
+        var opt = _mapper.MapToHttpClientTransportOptions(dto);
         Assert.Equal(uri, opt.Endpoint);
     }
 }
