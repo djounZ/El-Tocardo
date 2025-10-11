@@ -9,7 +9,7 @@ namespace ElTocardo.Infrastructure.Mediator.MongoDb.Repositories.Common;
 
 public abstract class MongoCollectionRepository<TEntity, TId, TKey>(ILogger<MongoCollectionRepository<TEntity, TId, TKey>> logger, IMongoDatabase mongoDatabase)  :IEntityRepository<TEntity,TId,TKey> where TEntity: AbstractEntity<TId,TKey>
 {
-    protected readonly IMongoCollection<TEntity> EntityCollection = mongoDatabase.GetCollection<TEntity>(nameof(TEntity));
+    protected readonly IMongoCollection<TEntity> EntityCollection = mongoDatabase.GetCollection<TEntity>(typeof(TEntity).Name);
 
     private static string EntityName => typeof(TEntity).Name;
     public async Task<Result<IEnumerable<TEntity>>> GetAllAsync(CancellationToken cancellationToken = default)
