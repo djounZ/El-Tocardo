@@ -1,0 +1,44 @@
+<Solution>
+  <Folder Name="/sdk/" />
+  <Folder Name="/sdk/src/">
+    <Project Path="sdk/src/AI.GithubCopilot/AI.GithubCopilot.csproj" />
+  </Folder>
+  <Folder Name="/sdk/tests/" />
+  <Folder Name="/sdk/tests/UnitTests/">
+    <Project Path="sdk/tests/UnitTests/AI.GithubCopilot.UnitTests/AI.GithubCopilot.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/ElTocardo.API/ElTocardo.API.csproj" />
+    <Project Path="src/ElTocardo.Authorization.Server/ElTocardo.Authorization.Server.csproj" />
+    <Project Path="src/ElTocardo.Host/ElTocardo.Host.csproj" />
+    <Project Path="src/ElTocardo.Migrations/ElTocardo.Migrations.csproj" />
+    <Project Path="src/ElTocardo.ServiceDefaults/ElTocardo.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/src/api/">
+    <Project Path="src/api/ElTocardo.Application/ElTocardo.Application.csproj" />
+    <Project Path="src/api/ElTocardo.Domain/ElTocardo.Domain.csproj" />
+    <Project Path="src/api/ElTocardo.Infrastructure.EntityFramework/ElTocardo.Infrastructure.EntityFramework.csproj" />
+    <Project Path="src/api/ElTocardo.Infrastructure/ElTocardo.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/authorization/">
+    <Project Path="src/authorization/ElTocardo.Authorization.EntityFramework/ElTocardo.Authorization.EntityFramework.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/IntegrationTests/">
+    <File Path="src/ElTocardo.API/appsettings.json" />
+    <Project Path="tests/IntegrationTests/ElTocardo.API.IntegrationTests/ElTocardo.API.IntegrationTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/UnitTests/">
+    <Project Path="tests/UnitTests/ElTocardo.API.UnitTests/ElTocardo.API.UnitTests.csproj" />
+    <Project Path="tests/UnitTests/ElTocardo.Host.UnitTests/ElTocardo.Host.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/UnitTests/api/">
+    <Project Path="tests/UnitTests/api/ElTocardo.Application.UnitTests/ElTocardo.Application.UnitTests.csproj" />
+    <Project Path="tests/UnitTests/api/ElTocardo.Domain.UnitTests/ElTocardo.Domain.UnitTests.csproj" />
+    <Project Path="tests/UnitTests/api/ElTocardo.Infrastructure.UnitTests/ElTocardo.Infrastructure.UnitTests.csproj" />
+  </Folder>
+</Solution>
