@@ -1,14 +1,15 @@
 
-using System.Security.Claims;
 using ElTocardo.Authorization.Server.Options;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
+using System.Security.Claims;
 
 namespace ElTocardo.Authorization.Server.Endpoints;
 
@@ -54,10 +55,17 @@ public static class AuthorizationEndpoints
 		})
 		.WithName("Authorize")
 		.WithTags(Tags)
-		.WithOpenApi();
+        .AddOpenApiOperationTransformer((operation, context, ct) =>
+        {
+            // Per-endpoint tweaks
+            operation.Summary = "Gets the current weather report.";
+            operation.Description = "Returns a short description and emoji.";
+            return Task.CompletedTask;
+        });
 
-		// /connect/token endpoint (all grant types)
-		app.MapPost(options.TokenEndpointUri, async (
+
+        // /connect/token endpoint (all grant types)
+        app.MapPost(options.TokenEndpointUri, async (
 			HttpContext context,
 			UserManager<IdentityUser> userManager
 		) =>
@@ -113,10 +121,16 @@ public static class AuthorizationEndpoints
 		})
 		.WithName("Token")
 		.WithTags(Tags)
-		.WithOpenApi();
+        .AddOpenApiOperationTransformer((operation, context, ct) =>
+        {
+            // Per-endpoint tweaks
+            operation.Summary = "Gets the current weather report.";
+            operation.Description = "Returns a short description and emoji.";
+            return Task.CompletedTask;
+        });
 
-		// /connect/userinfo endpoint
-		app.MapGet(options.UserInfoEndpointUri, async (
+        // /connect/userinfo endpoint
+        app.MapGet(options.UserInfoEndpointUri, async (
 			HttpContext context
 		) =>
 		{
@@ -130,8 +144,14 @@ public static class AuthorizationEndpoints
 		})
 		.WithName("Userinfo")
 		.WithTags(Tags)
-		.WithOpenApi();
+        .AddOpenApiOperationTransformer((operation, context, ct) =>
+        {
+            // Per-endpoint tweaks
+            operation.Summary = "Gets the current weather report.";
+            operation.Description = "Returns a short description and emoji.";
+            return Task.CompletedTask;
+        });
 
-		return app;
+        return app;
 	}
 }

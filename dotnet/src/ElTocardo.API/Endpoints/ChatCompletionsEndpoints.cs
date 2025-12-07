@@ -26,7 +26,13 @@ public static class ChatCompletionsEndpoints
             .WithTags(Tags)
             .Accepts<ChatRequestDto>("application/json")
             .Produces<ChatResponseDto>()
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         app.MapPost("/v1/chat/completions/stream", (
                 IChatCompletionsEndpointService completionsService,
@@ -42,7 +48,13 @@ public static class ChatCompletionsEndpoints
             .WithTags(Tags)
             .Accepts<ChatRequestDto>("application/json")
             .Produces<ChatResponseUpdateDto[]>()
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
         return app;
     }
 

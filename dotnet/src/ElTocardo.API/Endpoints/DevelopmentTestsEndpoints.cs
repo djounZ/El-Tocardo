@@ -34,23 +34,47 @@ public static class DevelopmentTestsEndpoints
                 }
             })
             .RequireAuthorization()
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
         app.MapGet("/",() => WeatherForecasts(summaries))
             .WithName("GetWeatherForecast")
             .WithSummary("Get weather forecast")
             .WithDescription("Returns a 5-day weather forecast")
-            .WithOpenApi()
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            })
             .CacheOutput(PredefinedOutputCachingPolicy.GlobalShortLiving);
 
         app.MapGet("/configuration",(IConfiguration configuration) => configuration.AsDictionary())
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
 
         app.MapGet("/github",async (
                 GithubCopilotChatClient completionsService,
                 CancellationToken cancellationToken) => await completionsService.GetResponseAsync(
                 new ChatMessage(ChatRole.User, "Hello, how are you?"), null, cancellationToken))
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
 
         app.MapGet("/ollama",async (
@@ -58,7 +82,13 @@ public static class DevelopmentTestsEndpoints
                 CancellationToken cancellationToken) => await completionsService.GetResponseAsync(
                 new ChatMessage(ChatRole.User, "Hello, how are you?")
             ,null, cancellationToken))
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
         return app;
     }
     public static string ToJson(this IConfiguration config)

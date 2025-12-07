@@ -24,7 +24,13 @@ public static class McpServerConfigurationEndpoints
             .WithDescription("Returns all MCP server configuration items")
             .WithTags(Tags)
             .Produces<IDictionary<string, McpServerConfigurationItemDto>>()
-            .WithOpenApi()
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            })
             .CacheOutput(PredefinedOutputCachingPolicy.PerUserVaryByHeaderAuthorizationShortLiving);
 
         app.MapGet("v1/mcp-servers/{serverName}",
@@ -40,7 +46,13 @@ public static class McpServerConfigurationEndpoints
             .WithTags(Tags)
             .Produces<McpServerConfigurationItemDto>()
             .Produces(StatusCodes.Status404NotFound)
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         app.MapPost("v1/mcp-servers/{serverName}", async ([FromServices] IMcpServerConfigurationEndpointService service,
                 string serverName, [FromBody] McpServerConfigurationItemDto item,
@@ -57,7 +69,13 @@ public static class McpServerConfigurationEndpoints
             .WithTags(Tags)
             .Produces<McpServerConfigurationItemDto>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status409Conflict)
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         app.MapPut("v1/mcp-servers/{serverName}", async ([FromServices] IMcpServerConfigurationEndpointService service,
                 string serverName, [FromBody] McpServerConfigurationItemDto item,
@@ -74,7 +92,13 @@ public static class McpServerConfigurationEndpoints
             .WithTags(Tags)
             .Produces<McpServerConfigurationItemDto>()
             .Produces(StatusCodes.Status404NotFound)
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         app.MapDelete("v1/mcp-servers/{serverName}",
                 async ([FromServices] IMcpServerConfigurationEndpointService service, string serverName,
@@ -89,7 +113,13 @@ public static class McpServerConfigurationEndpoints
             .WithTags(Tags)
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         return app;
     }

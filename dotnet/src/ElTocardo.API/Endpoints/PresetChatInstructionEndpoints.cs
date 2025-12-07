@@ -23,7 +23,13 @@ public static class PresetChatInstructionEndpoints
             .WithDescription("Returns all preset chat instructions")
             .WithTags(Tags)
             .Produces<IList<PresetChatInstructionDto>>()
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         app.MapGet("v1/preset-chat-instructions/{name}",
             async ([FromServices] IPresetChatInstructionEndpointService service, string name, CancellationToken cancellationToken) =>
@@ -39,7 +45,13 @@ public static class PresetChatInstructionEndpoints
             .WithTags(Tags)
             .Produces<PresetChatInstructionDto>()
             .Produces(StatusCodes.Status404NotFound)
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         app.MapPost("v1/preset-chat-instructions/{name}",
             async ([FromServices] IPresetChatInstructionEndpointService service, string name, [FromBody] PresetChatInstructionDto dto, CancellationToken cancellationToken) =>
@@ -55,7 +67,13 @@ public static class PresetChatInstructionEndpoints
             .WithTags(Tags)
             .Produces<PresetChatInstructionDto>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status409Conflict)
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         app.MapPut("v1/preset-chat-instructions/{name}",
             async ([FromServices] IPresetChatInstructionEndpointService service, string name, [FromBody] PresetChatInstructionDto dto, CancellationToken cancellationToken) =>
@@ -71,7 +89,13 @@ public static class PresetChatInstructionEndpoints
             .WithTags(Tags)
             .Produces<PresetChatInstructionDto>()
             .Produces(StatusCodes.Status404NotFound)
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         app.MapDelete("v1/preset-chat-instructions/{name}",
             async ([FromServices] IPresetChatInstructionEndpointService service, string name, CancellationToken cancellationToken) =>
@@ -87,7 +111,13 @@ public static class PresetChatInstructionEndpoints
             .WithTags(Tags)
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         return app;
     }

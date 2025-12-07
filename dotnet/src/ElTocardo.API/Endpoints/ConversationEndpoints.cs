@@ -24,7 +24,13 @@ public static class ConversationEndpoints
             .WithTags(Tags)
             .Accepts<StartConversationRequestDto>("application/json")
             .Produces<ConversationResponseDto>()
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         // Start Conversation (streaming)
         app.MapPost("/v1/conversation/start/stream", (
@@ -41,7 +47,13 @@ public static class ConversationEndpoints
             .WithTags(Tags)
             .Accepts<StartConversationRequestDto>("application/json")
             .Produces<ConversationUpdateResponseDto[]>()
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         // Continue Conversation (non-streaming)
         app.MapPost("/v1/conversation/continue", async (
@@ -58,7 +70,13 @@ public static class ConversationEndpoints
             .WithTags(Tags)
             .Accepts<ContinueConversationDto>("application/json")
             .Produces<ConversationResponseDto>()
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         // Continue Conversation (streaming)
         app.MapPost("/v1/conversation/continue/stream", (
@@ -75,7 +93,13 @@ public static class ConversationEndpoints
             .WithTags(Tags)
             .Accepts<ContinueConversationDto>("application/json")
             .Produces<ConversationUpdateResponseDto[]>()
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         // Get Conversation by ID
         app.MapGet("/v1/conversations/{conversationId}", async (
@@ -92,7 +116,13 @@ public static class ConversationEndpoints
             .WithTags(Tags)
             .Produces<ConversationDto>()
             .Produces(404)
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
 
         // Get All Conversations
@@ -108,7 +138,13 @@ public static class ConversationEndpoints
             .WithDescription("Retrieves All conversation")
             .WithTags(Tags)
             .Produces<ConversationSummaryDto[]>()
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
 
 
@@ -126,7 +162,13 @@ public static class ConversationEndpoints
             .WithTags(Tags)
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
         return app;
     }
 }

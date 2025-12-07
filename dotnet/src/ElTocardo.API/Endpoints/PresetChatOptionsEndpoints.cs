@@ -20,7 +20,13 @@ public static class PresetChatOptionsEndpoints
             .WithDescription("Returns all preset chat options items")
             .WithTags(Tags)
             .Produces<IEnumerable<PresetChatOptionsDto>>()
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         app.MapGet("v1/preset-chat-options/{name}",
                 async ([FromServices] IPresetChatOptionsEndpointService service, string name, CancellationToken cancellationToken) =>
@@ -34,7 +40,13 @@ public static class PresetChatOptionsEndpoints
             .WithTags(Tags)
             .Produces<PresetChatOptionsDto>()
             .Produces(StatusCodes.Status404NotFound)
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         app.MapPost("v1/preset-chat-options/{name}", async ([FromServices] IPresetChatOptionsEndpointService service,
                 string name, [FromBody] PresetChatOptionsDto item, CancellationToken cancellationToken) =>
@@ -50,7 +62,13 @@ public static class PresetChatOptionsEndpoints
             .WithTags(Tags)
             .Produces<PresetChatOptionsDto>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status409Conflict)
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         app.MapPut("v1/preset-chat-options/{name}", async ([FromServices] IPresetChatOptionsEndpointService service,
                 string name, [FromBody] PresetChatOptionsDto item, CancellationToken cancellationToken) =>
@@ -66,7 +84,13 @@ public static class PresetChatOptionsEndpoints
             .WithTags(Tags)
             .Produces<PresetChatOptionsDto>()
             .Produces(StatusCodes.Status404NotFound)
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         app.MapDelete("v1/preset-chat-options/{name}",
                 async ([FromServices] IPresetChatOptionsEndpointService service, string name, CancellationToken cancellationToken) =>
@@ -80,7 +104,13 @@ public static class PresetChatOptionsEndpoints
             .WithTags(Tags)
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
-            .WithOpenApi();
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            });
 
         return app;
     }

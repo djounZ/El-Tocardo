@@ -17,7 +17,13 @@ public static class AiProviderEndpoints
             .WithDescription("Returns all AI Provider items")
             .WithTags(Tags)
             .Produces<AiProviderDto[]>()
-            .WithOpenApi()
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            })
             .CacheOutput(PredefinedOutputCachingPolicy.PerUserVaryByHeaderAuthorizationLongLiving);
 
         app.MapGet("v1/ai-providers/{provider}",
@@ -32,7 +38,13 @@ public static class AiProviderEndpoints
             .WithTags(Tags)
             .Produces<AiProviderDto>()
             .Produces(StatusCodes.Status404NotFound)
-            .WithOpenApi()
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
+            {
+                // Per-endpoint tweaks
+                operation.Summary = "Gets the current weather report.";
+                operation.Description = "Returns a short description and emoji.";
+                return Task.CompletedTask;
+            })
             .CacheOutput(PredefinedOutputCachingPolicy.PerUserVaryByHeaderAuthorizationLongLiving);
 
         return app;
