@@ -2,12 +2,12 @@
 
 
     <ItemGroup>
-        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="$(OpenTelemetryPackagesCommonVersion)"/>
-        <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="$(OpenTelemetryPackagesCommonVersion)"/>
-        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="$(OpenTelemetryInstrumentationPackagesCommonVersion)"/>
-        <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="$(OpenTelemetryInstrumentationPackagesCommonVersion)"/>
-        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="$(OpenTelemetryInstrumentationPackagesCommonVersion)"/>
-        <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" Version="$(AspireHostingAppHostCommonVersion)"/>
-        <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="$(MicrosoftExtensionsHttpResilienceVersion)"/>
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
+        <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" />
+        <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
     </ItemGroup>
 </Project>

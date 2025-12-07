@@ -2,10 +2,10 @@
   </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(MicrosoftExtensionsPackagesCommonVersion)" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(NpgsqlEntityFrameworkCorePostgreSQLVersion)" />
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(MicrosoftExtensionsPackagesCommonVersion)" />
-        <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="$(OpenIddictCommonPackagesVersion)" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+        <PackageReference Include="OpenIddict.EntityFrameworkCore" />
     </ItemGroup>
 
     <ItemGroup>

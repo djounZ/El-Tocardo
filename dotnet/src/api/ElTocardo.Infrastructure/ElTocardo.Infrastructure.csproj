@@ -6,8 +6,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="OllamaSharp" Version="$(OllamaSharpVersion)"/>
-        <PackageReference Include="MongoDB.Driver" Version="$(MongoDBCommonPackagesVersion)" />
+        <PackageReference Include="OllamaSharp" />
+        <PackageReference Include="MongoDB.Driver" />
 
     </ItemGroup>
 
