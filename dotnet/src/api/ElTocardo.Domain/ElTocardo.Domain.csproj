@@ -6,8 +6,4 @@
         <PackageReference Include="Microsoft.Extensions.AI.Abstractions" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Mediator\McpServerConfigurationMediator\" />
-    </ItemGroup>
-
 </Project>
