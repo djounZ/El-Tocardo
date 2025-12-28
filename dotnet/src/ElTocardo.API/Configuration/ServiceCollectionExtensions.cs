@@ -1,6 +1,4 @@
-using System.Data.Common;
 using System.Net;
-using System.Security.Cryptography.X509Certificates;
 using AI.GithubCopilot.Infrastructure.Services;
 using ElTocardo.API.Configuration.EntityFramework;
 using ElTocardo.API.Options;
@@ -10,7 +8,6 @@ using ElTocardo.Infrastructure.EntityFramework.Mediator;
 using ElTocardo.ServiceDefaults;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -21,61 +18,63 @@ namespace ElTocardo.API.Configuration;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddElTocardoApi(this IServiceCollection services, IConfiguration configuration, string applicationName)
+    extension(IServiceCollection services)
     {
-        services.AddToMigrate();
-
-        services.Configure<ElTocardoApiOptions>(configuration.GetSection(nameof(ElTocardoApiOptions)));
-        services.AddHttpContextAccessor();
-        services.AddCaching();
-        var mongoClientSettings = MongoClientSettings.FromConnectionString(configuration.GetConnectionString(MongoDbDatabaseResourceName));
-
-
-        return services
-            .AddElTocardoInfrastructure<ApiDbContextOptionsConfiguration, GithubCopilotAccessTokenResponseDtoProvider, GithubAccessTokenStore>(
-                configuration,
-                mongoClientSettings,
-                MongoDbDatabaseResourceName,
-                ElTocardoDataProtectionApplicationName)
-            .AddOAuth2Oidc(configuration);
-    }
-
-    private static IServiceCollection AddCaching(this IServiceCollection services)
-    {
-        services.AddMemoryCache();
-        services.AddDistributedMemoryCache(); // For in-memory session storage
-        services.AddSession(options =>
+        public IServiceCollection AddElTocardoApi(IConfiguration configuration, string applicationName)
         {
-            options.IdleTimeout = TimeSpan.FromMinutes(20);
-            options.Cookie.HttpOnly = true;
-            options.Cookie.IsEssential = true;
-        });
-        services.AddOutputCache();
-        services.AddSingleton<IConfigureOptions<OutputCacheOptions>, OutputCacheOptionsSetup>();
-        return services;
-    }
+            services.AddToMigrate();
+
+            services.Configure<ElTocardoApiOptions>(configuration.GetSection(nameof(ElTocardoApiOptions)));
+            services.AddHttpContextAccessor();
+            services.AddCaching();
+            var mongoClientSettings = MongoClientSettings.FromConnectionString(configuration.GetConnectionString(MongoDbDatabaseResourceName));
 
 
+            return services
+                .AddElTocardoInfrastructure<ApiDbContextOptionsConfiguration, GithubCopilotAccessTokenResponseDtoProvider, GithubAccessTokenStore>(
+                    configuration,
+                    mongoClientSettings,
+                    MongoDbDatabaseResourceName,
+                    ElTocardoDataProtectionApplicationName)
+                .AddOAuth2Oidc(configuration);
+        }
 
-    private static IServiceCollection AddOAuth2Oidc(this IServiceCollection services, IConfiguration configuration)
-    {
-      services.AddOpenIddict()
-          .AddValidation(options =>
-          {
-              options.SetIssuer(configuration[OpenIddictIssuerEnvironmentVariableName]!);
-              options.UseSystemNetHttp();
-              options.UseAspNetCore();
-              options.HandleEncryptionCertificate(services);
-          });
-        services.AddAuthentication(options =>
+        private IServiceCollection AddCaching()
+        {
+            services.AddMemoryCache();
+            services.AddDistributedMemoryCache(); // For in-memory session storage
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(20);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+            services.AddOutputCache();
+            services.AddSingleton<IConfigureOptions<OutputCacheOptions>, OutputCacheOptionsSetup>();
+            return services;
+        }
+
+        private IServiceCollection AddOAuth2Oidc(IConfiguration configuration)
+        {
+            services.AddOpenIddict()
+                .AddValidation(options =>
+                {
+                    options.SetIssuer(configuration[OpenIddictIssuerEnvironmentVariableName]!);
+                    options.UseSystemNetHttp();
+                    options.UseAspNetCore();
+                    options.HandleEncryptionCertificate(services);
+                });
+            services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
             });
-        services.AddAuthorization();
+            services.AddAuthorization();
 
-        return services;
+            return services;
+        }
     }
+
 
     private static void HandleEncryptionCertificate(this OpenIddictValidationBuilder options, IServiceCollection services)
     {

@@ -21,84 +21,84 @@ namespace ElTocardo.Infrastructure.EntityFramework.Configuration;
 
 public static class ServiceCollectionExtensions
 {
-    /// <summary>
-    ///     Registers  ElTocardo Infrastructure services and options.
-    ///     Requires AiGithubCopilotUserProvider to be registered in the service collection.
-    ///     Requires IMemoryCache to be registered in the service collection.
-    /// </summary>
-    public static IServiceCollection AddElTocardoInfrastructureEntityFramework<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>(this IServiceCollection services, string applicationName) where TApplicationDbContextOptionsConfiguration : class,  IDbContextOptionsConfiguration<TApplicationDbContext> where TApplicationDbContext : DbContext, IApplicationDbContext
+    extension(IServiceCollection services)
     {
-        services.AddDataProtection()
-            .PersistKeysToDbContext<TApplicationDbContext>()
-            .SetApplicationName(applicationName);
-        return services
-            .AddMediator<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>();
-    }
+        /// <summary>
+        ///     Registers  ElTocardo Infrastructure services and options.
+        ///     Requires AiGithubCopilotUserProvider to be registered in the service collection.
+        ///     Requires IMemoryCache to be registered in the service collection.
+        /// </summary>
+        public IServiceCollection AddElTocardoInfrastructureEntityFramework<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>(string applicationName) where TApplicationDbContextOptionsConfiguration : class,  IDbContextOptionsConfiguration<TApplicationDbContext> where TApplicationDbContext : DbContext, IApplicationDbContext
+        {
+            services.AddDataProtection()
+                .PersistKeysToDbContext<TApplicationDbContext>()
+                .SetApplicationName(applicationName);
+            return services
+                .AddMediator<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>();
+        }
 
-    private static IServiceCollection AddMediator<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>(this IServiceCollection services) where TApplicationDbContextOptionsConfiguration : class,  IDbContextOptionsConfiguration<TApplicationDbContext> where TApplicationDbContext : DbContext, IApplicationDbContext
-    {
+        private IServiceCollection AddMediator<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>() where TApplicationDbContextOptionsConfiguration : class,  IDbContextOptionsConfiguration<TApplicationDbContext> where TApplicationDbContext : DbContext, IApplicationDbContext
+        {
 
-        return services
-            .AddEntityFramework<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>();
-    }
+            return services
+                .AddEntityFramework<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>();
+        }
 
+        private IServiceCollection AddEntityFramework<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>() where TApplicationDbContextOptionsConfiguration : class,  IDbContextOptionsConfiguration<TApplicationDbContext> where TApplicationDbContext : DbContext, IApplicationDbContext
+        {
 
-    private static IServiceCollection AddEntityFramework<TApplicationDbContextOptionsConfiguration, TApplicationDbContext>(this IServiceCollection services) where TApplicationDbContextOptionsConfiguration : class,  IDbContextOptionsConfiguration<TApplicationDbContext> where TApplicationDbContext : DbContext, IApplicationDbContext
-    {
-
-        services
-            .TryAddSingleton<IDbContextOptionsConfiguration<TApplicationDbContext>,
-                TApplicationDbContextOptionsConfiguration>();
-
-        services.TryAddSingleton<ElTocardoEntityFrameworkModelBuilder>();
-
-        services.AddDbContext<TApplicationDbContext>();
-        services.AddTransient<DbContext>( sc=> sc.GetRequiredService<TApplicationDbContext>());
-        services.AddTransient<IApplicationDbContext>( sc=> sc.GetRequiredService<TApplicationDbContext>());
-        return services
-            .AddServices();
-    }
-
-
-    private static IServiceCollection AddServices(this IServiceCollection services)
-    {
-        return
             services
-                .AddMcpServerConfigurationService()
-                .AddPresetChatInstructionService()
-                .AddPresetChatOptionsService()
-                .AddUserExternalTokenService()
-            ;
-    }
+                .TryAddSingleton<IDbContextOptionsConfiguration<TApplicationDbContext>,
+                    TApplicationDbContextOptionsConfiguration>();
 
-    private static IServiceCollection AddUserExternalTokenService(this IServiceCollection services)
-    {
-        services.AddSingleton<UserExternalTokenProtector>();
-        services.AddTransient<DbSet<UserExternalToken>>( sc=> sc.GetRequiredService<IApplicationDbContext>().UserExternalTokens);
-        services.AddScoped<IUserExternalTokenRepository, UserExternalTokenRepository>();
-        return services;
-    }
+            services.TryAddSingleton<ElTocardoEntityFrameworkModelBuilder>();
 
-    private static IServiceCollection AddPresetChatInstructionService(this IServiceCollection services)
-    {
+            services.AddDbContext<TApplicationDbContext>();
+            services.AddTransient<DbContext>( sc=> sc.GetRequiredService<TApplicationDbContext>());
+            services.AddTransient<IApplicationDbContext>( sc=> sc.GetRequiredService<TApplicationDbContext>());
+            return services
+                .AddServices();
+        }
 
-        services.AddTransient<DbSet<PresetChatInstruction>>( sc=> sc.GetRequiredService<IApplicationDbContext>().PresetChatInstructions);
-        services.AddScoped<IPresetChatInstructionRepository, PresetChatInstructionRepository>();
-        return services;
-    }
-    private static IServiceCollection AddPresetChatOptionsService(this IServiceCollection services)
-    {
-        services.AddTransient<DbSet<PresetChatOptions>>( sc=> sc.GetRequiredService<IApplicationDbContext>().PresetChatOptions);
-        services.AddScoped<IPresetChatOptionsRepository, PresetChatOptionsRepository>();
-        return services;
-    }
+        private IServiceCollection AddServices()
+        {
+            return
+                services
+                    .AddMcpServerConfigurationService()
+                    .AddPresetChatInstructionService()
+                    .AddPresetChatOptionsService()
+                    .AddUserExternalTokenService()
+                ;
+        }
 
+        private IServiceCollection AddUserExternalTokenService()
+        {
+            services.AddSingleton<UserExternalTokenProtector>();
+            services.AddTransient<DbSet<UserExternalToken>>( sc=> sc.GetRequiredService<IApplicationDbContext>().UserExternalTokens);
+            services.AddScoped<IUserExternalTokenRepository, UserExternalTokenRepository>();
+            return services;
+        }
 
+        private IServiceCollection AddPresetChatInstructionService()
+        {
 
-    private static IServiceCollection AddMcpServerConfigurationService(this IServiceCollection services)
-    {
-        services.AddTransient<DbSet<McpServerConfiguration>>( sc=> sc.GetRequiredService<IApplicationDbContext>().McpServerConfigurations);
-        services.AddScoped<IMcpServerConfigurationRepository, McpServerConfigurationRepository>();
-        return services;
+            services.AddTransient<DbSet<PresetChatInstruction>>( sc=> sc.GetRequiredService<IApplicationDbContext>().PresetChatInstructions);
+            services.AddScoped<IPresetChatInstructionRepository, PresetChatInstructionRepository>();
+            return services;
+        }
+
+        private IServiceCollection AddPresetChatOptionsService()
+        {
+            services.AddTransient<DbSet<PresetChatOptions>>( sc=> sc.GetRequiredService<IApplicationDbContext>().PresetChatOptions);
+            services.AddScoped<IPresetChatOptionsRepository, PresetChatOptionsRepository>();
+            return services;
+        }
+
+        private IServiceCollection AddMcpServerConfigurationService()
+        {
+            services.AddTransient<DbSet<McpServerConfiguration>>( sc=> sc.GetRequiredService<IApplicationDbContext>().McpServerConfigurations);
+            services.AddScoped<IMcpServerConfigurationRepository, McpServerConfigurationRepository>();
+            return services;
+        }
     }
 }

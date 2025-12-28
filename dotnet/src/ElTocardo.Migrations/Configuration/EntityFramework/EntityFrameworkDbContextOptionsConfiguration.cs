@@ -1,5 +1,3 @@
-using ElTocardo.Infrastructure.EntityFramework.Mediator;
-using ElTocardo.Infrastructure.EntityFramework.Mediator.Common.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using static ElTocardo.ServiceDefaults.Constants;

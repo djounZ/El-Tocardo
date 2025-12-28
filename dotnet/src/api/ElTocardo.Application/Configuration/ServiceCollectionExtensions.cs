@@ -46,197 +46,193 @@ namespace ElTocardo.Application.Configuration;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddElTocardoApplication(this IServiceCollection services,
-        IConfiguration configuration)
+    extension(IServiceCollection services)
     {
-        services.Configure<ElTocardoApplicationOptions>(configuration.GetSection(nameof(ElTocardoApplicationOptions)));
-        return services
-            .AddElTocardoDomain(configuration)
-            .AddMappers()
-            .AddValidation()
-            .AddMcpServerConfigurationService()
-            .AddPresetChatOptionsService()
-            .AddPresetChatInstructionService()
-            .AddConversationService()
-            .AddUserExternalToken()
-            ;
-    }
+        public IServiceCollection AddElTocardoApplication(IConfiguration configuration)
+        {
+            services.Configure<ElTocardoApplicationOptions>(configuration.GetSection(nameof(ElTocardoApplicationOptions)));
+            return services
+                    .AddElTocardoDomain(configuration)
+                    .AddMappers()
+                    .AddValidation()
+                    .AddMcpServerConfigurationService()
+                    .AddPresetChatOptionsService()
+                    .AddPresetChatInstructionService()
+                    .AddConversationService()
+                    .AddUserExternalToken()
+                ;
+        }
 
-    private static IServiceCollection AddPresetChatInstructionService(this IServiceCollection services)
-    {
-        // Add mappers if needed
-        services.AddSingleton<PresetChatInstructionDomainGetDtoMapper>();
-        services.AddSingleton<PresetChatInstructionDomainGetAllDtoMapper>();
-        services.AddSingleton<PresetChatInstructionDomainUpdateCommandMapper>();
-        services.AddSingleton<PresetChatInstructionDomainCreateCommandMapper>();
+        private IServiceCollection AddPresetChatInstructionService()
+        {
+            // Add mappers if needed
+            services.AddSingleton<PresetChatInstructionDomainGetDtoMapper>();
+            services.AddSingleton<PresetChatInstructionDomainGetAllDtoMapper>();
+            services.AddSingleton<PresetChatInstructionDomainUpdateCommandMapper>();
+            services.AddSingleton<PresetChatInstructionDomainCreateCommandMapper>();
 
-        // Command handlers (if you have them)
-        services.AddScoped<ICommandHandler<CreatePresetChatInstructionCommand, Guid>, CreatePresetChatInstructionCommandHandler>();
-        services.AddScoped<ICommandHandler<UpdatePresetChatInstructionCommand>, UpdatePresetChatInstructionCommandHandler>();
-        services.AddScoped<ICommandHandler<DeletePresetChatInstructionCommand>, DeletePresetChatInstructionCommandHandler>();
+            // Command handlers (if you have them)
+            services.AddScoped<ICommandHandler<CreatePresetChatInstructionCommand, Guid>, CreatePresetChatInstructionCommandHandler>();
+            services.AddScoped<ICommandHandler<UpdatePresetChatInstructionCommand>, UpdatePresetChatInstructionCommandHandler>();
+            services.AddScoped<ICommandHandler<DeletePresetChatInstructionCommand>, DeletePresetChatInstructionCommandHandler>();
 
-        // Query handlers (if you have them)
-        services.AddScoped<IQueryHandler<GetAllPresetChatInstructionsQuery, List<PresetChatInstructionDto>>, GetAllPresetChatInstructionsQueryHandler>();
-        services.AddScoped<IQueryHandler<GetPresetChatInstructionByNameQuery, PresetChatInstructionDto>, GetPresetChatInstructionByNameQueryHandler>();
+            // Query handlers (if you have them)
+            services.AddScoped<IQueryHandler<GetAllPresetChatInstructionsQuery, List<PresetChatInstructionDto>>, GetAllPresetChatInstructionsQueryHandler>();
+            services.AddScoped<IQueryHandler<GetPresetChatInstructionByNameQuery, PresetChatInstructionDto>, GetPresetChatInstructionByNameQueryHandler>();
 
-        // Service registration
-        services.AddScoped<IPresetChatInstructionEndpointService, PresetChatInstructionEndpointService>();
-        return services;
-    }
+            // Service registration
+            services.AddScoped<IPresetChatInstructionEndpointService, PresetChatInstructionEndpointService>();
+            return services;
+        }
 
+        private IServiceCollection AddMappers()
+        {
+            return services.AddDtos();
+        }
 
-    private static IServiceCollection AddMappers(this IServiceCollection services)
-    {
-        return services.AddDtos();
-    }
+        private IServiceCollection AddDtos()
+        {
+            services.AddAi();
 
-    private static IServiceCollection AddDtos(this IServiceCollection services)
-    {
-        services.AddAi();
+            services.TryAddSingleton<ConversationDtoChatDtoMapper>();
 
-        services.TryAddSingleton<ConversationDtoChatDtoMapper>();
+            services.TryAddSingleton<ModelContextProtocolMapper>();
+            return services;
+        }
 
-        services.TryAddSingleton<ModelContextProtocolMapper>();
-        return services;
-    }
+        private IServiceCollection AddAi()
+        {
+            services.TryAddSingleton<AiChatCompletionMapper>();
+            services.TryAddSingleton<AiContentMapper>();
+            return services;
+        }
 
-    private static IServiceCollection AddAi(this IServiceCollection services)
-    {
-        services.TryAddSingleton<AiChatCompletionMapper>();
-        services.TryAddSingleton<AiContentMapper>();
-        return services;
-    }
+        private IServiceCollection AddUserExternalToken()
+        {
 
-
-
-    private static IServiceCollection AddUserExternalToken(this IServiceCollection services)
-    {
-
-        // MCP Mappers
-        services.AddSingleton<UserExternalTokenDomainCreateCommandMapper>();
-        services.AddSingleton<UserExternalTokenDomainGetAllDtoMapper>();
-        services.AddSingleton<UserExternalTokenDomainGetDtoMapper>();
-        services.AddSingleton<UserExternalTokenDomainUpdateCommandMapper>();
-
-
-        // MCP Command handlers
-        services.AddScoped<ICommandHandler<CreateUserExternalTokenCommand, Guid>, CreateUserExternalTokenCommandHandler>();
-        services.AddScoped<ICommandHandler<UpdateUserExternalTokenCommand>, UpdateUserExternalTokenCommandHandler>();
-        services.AddScoped<ICommandHandler<DeleteUserExternalTokenCommand>, DeleteUserExternalTokenCommandHandler>();
-
-        // MCP Query handlers
-        services
-            .AddScoped<IQueryHandler<GetAllUserExternalTokensQuery, Dictionary<UserExternalTokenKey, UserExternalTokenItemDto>>,
-                GetAllUserExternalTokensQueryHandler>();
-        services
-            .AddScoped<IQueryHandler<GetUserExternalTokenByKeyQuery, UserExternalTokenItemDto>,
-                GetUserExternalTokenByKeyQueryHandler>();
-
-        services.AddScoped<IUserExternalTokenEndpointService, UserExternalTokenEndpointService>();
-
-        return services;
-    }
-
-    private static IServiceCollection AddMcpServerConfigurationService(this IServiceCollection services)
-    {
-
-        // MCP Mappers
-        services.AddSingleton<McpServerConfigurationDomainGetDtoMapper>();
-        services.AddSingleton<McpServerConfigurationDomainGetAllDtoMapper>();
-        services.AddSingleton<McpServerConfigurationDomainUpdateCommandMapper>();
-        services.AddSingleton<McpServerConfigurationDomainCreateCommandMapper>();
+            // MCP Mappers
+            services.AddSingleton<UserExternalTokenDomainCreateCommandMapper>();
+            services.AddSingleton<UserExternalTokenDomainGetAllDtoMapper>();
+            services.AddSingleton<UserExternalTokenDomainGetDtoMapper>();
+            services.AddSingleton<UserExternalTokenDomainUpdateCommandMapper>();
 
 
-        // MCP Command handlers
-        services.AddScoped<ICommandHandler<CreateMcpServerCommand, Guid>, CreateMcpServerCommandHandler>();
-        services.AddScoped<ICommandHandler<UpdateMcpServerCommand>, UpdateMcpServerCommandHandler>();
-        services.AddScoped<ICommandHandler<DeleteMcpServerCommand>, DeleteMcpServerCommandHandler>();
+            // MCP Command handlers
+            services.AddScoped<ICommandHandler<CreateUserExternalTokenCommand, Guid>, CreateUserExternalTokenCommandHandler>();
+            services.AddScoped<ICommandHandler<UpdateUserExternalTokenCommand>, UpdateUserExternalTokenCommandHandler>();
+            services.AddScoped<ICommandHandler<DeleteUserExternalTokenCommand>, DeleteUserExternalTokenCommandHandler>();
 
-        // MCP Query handlers
-        services
-            .AddScoped<IQueryHandler<GetAllMcpServersQuery, Dictionary<string, McpServerConfigurationItemDto>>,
-                GetAllMcpServersQueryHandler>();
-        services
-            .AddScoped<IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto>,
-                GetMcpServerByNameQueryHandler>();
+            // MCP Query handlers
+            services
+                .AddScoped<IQueryHandler<GetAllUserExternalTokensQuery, Dictionary<UserExternalTokenKey, UserExternalTokenItemDto>>,
+                    GetAllUserExternalTokensQueryHandler>();
+            services
+                .AddScoped<IQueryHandler<GetUserExternalTokenByKeyQuery, UserExternalTokenItemDto>,
+                    GetUserExternalTokenByKeyQueryHandler>();
 
-        services.AddScoped<IMcpServerConfigurationEndpointService, McpServerConfigurationEndpointService>();
+            services.AddScoped<IUserExternalTokenEndpointService, UserExternalTokenEndpointService>();
 
-        return services;
-    }
+            return services;
+        }
 
-    private static IServiceCollection AddPresetChatOptionsService(this IServiceCollection services)
-    {
+        private IServiceCollection AddMcpServerConfigurationService()
+        {
 
-        // PresetChatOptions Mappers
-        services.AddSingleton<PresetChatOptionsDomainGetDtoMapper>();
-        services.AddSingleton<PresetChatOptionsDomainGetAllDtoMapper>();
-        services.AddSingleton<PresetChatOptionsDomainUpdateCommandMapper>();
-        services.AddSingleton<PresetChatOptionsDomainCreateCommandMapper>();
-
-
-        // PresetChatOptions Command handlers
-        services
-            .AddScoped<ICommandHandler<CreatePresetChatOptionsCommand, Guid>, CreatePresetChatOptionsCommandHandler>();
-        services
-            .AddScoped<ICommandHandler<UpdatePresetChatOptionsCommand>, UpdatePresetChatOptionsCommandHandler>();
-        services
-            .AddScoped<ICommandHandler<DeletePresetChatOptionsCommand>, DeletePresetChatOptionsCommandHandler>();
-
-        // PresetChatOptions Query handlers
-        services
-            .AddScoped<IQueryHandler<GetAllPresetChatOptionsQuery, List<PresetChatOptionsDto>>,
-                GetAllPresetChatOptionsQueryHandler>();
-        services
-            .AddScoped<IQueryHandler<GetPresetChatOptionsByNameQuery, PresetChatOptionsDto>,
-                GetPresetChatOptionsByNameQueryHandler>();
-
-        services.AddScoped<IPresetChatOptionsEndpointService, PresetChatOptionsEndpointService>();
-
-        return services;
-    }
+            // MCP Mappers
+            services.AddSingleton<McpServerConfigurationDomainGetDtoMapper>();
+            services.AddSingleton<McpServerConfigurationDomainGetAllDtoMapper>();
+            services.AddSingleton<McpServerConfigurationDomainUpdateCommandMapper>();
+            services.AddSingleton<McpServerConfigurationDomainCreateCommandMapper>();
 
 
+            // MCP Command handlers
+            services.AddScoped<ICommandHandler<CreateMcpServerCommand, Guid>, CreateMcpServerCommandHandler>();
+            services.AddScoped<ICommandHandler<UpdateMcpServerCommand>, UpdateMcpServerCommandHandler>();
+            services.AddScoped<ICommandHandler<DeleteMcpServerCommand>, DeleteMcpServerCommandHandler>();
+
+            // MCP Query handlers
+            services
+                .AddScoped<IQueryHandler<GetAllMcpServersQuery, Dictionary<string, McpServerConfigurationItemDto>>,
+                    GetAllMcpServersQueryHandler>();
+            services
+                .AddScoped<IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto>,
+                    GetMcpServerByNameQueryHandler>();
+
+            services.AddScoped<IMcpServerConfigurationEndpointService, McpServerConfigurationEndpointService>();
+
+            return services;
+        }
+
+        private IServiceCollection AddPresetChatOptionsService()
+        {
+
+            // PresetChatOptions Mappers
+            services.AddSingleton<PresetChatOptionsDomainGetDtoMapper>();
+            services.AddSingleton<PresetChatOptionsDomainGetAllDtoMapper>();
+            services.AddSingleton<PresetChatOptionsDomainUpdateCommandMapper>();
+            services.AddSingleton<PresetChatOptionsDomainCreateCommandMapper>();
 
 
-    private static IServiceCollection AddConversationService(this IServiceCollection services)
-    {
+            // PresetChatOptions Command handlers
+            services
+                .AddScoped<ICommandHandler<CreatePresetChatOptionsCommand, Guid>, CreatePresetChatOptionsCommandHandler>();
+            services
+                .AddScoped<ICommandHandler<UpdatePresetChatOptionsCommand>, UpdatePresetChatOptionsCommandHandler>();
+            services
+                .AddScoped<ICommandHandler<DeletePresetChatOptionsCommand>, DeletePresetChatOptionsCommandHandler>();
+
+            // PresetChatOptions Query handlers
+            services
+                .AddScoped<IQueryHandler<GetAllPresetChatOptionsQuery, List<PresetChatOptionsDto>>,
+                    GetAllPresetChatOptionsQueryHandler>();
+            services
+                .AddScoped<IQueryHandler<GetPresetChatOptionsByNameQuery, PresetChatOptionsDto>,
+                    GetPresetChatOptionsByNameQueryHandler>();
+
+            services.AddScoped<IPresetChatOptionsEndpointService, PresetChatOptionsEndpointService>();
+
+            return services;
+        }
+
+        private IServiceCollection AddConversationService()
+        {
 
 
-        //  Mappers
-        services.AddSingleton<ConversationDomainCreateCommandMapper>();
-        services.AddSingleton<ConversationDomainGetAllDtoMapper>();
-        services.AddSingleton<ConversationDomainGetAllSummariesDtoMapper>();
-        services.AddSingleton<ConversationDomainGetDtoMapper>();
-        services.AddSingleton<ConversationDomainGetSummaryDtoMapper>();
-        services.AddSingleton<ConversationDomainUpdateChatResponseCommandMapper>();
-        services.AddSingleton<ConversationDomainUpdateUserMessageCommandMapper>();
+            //  Mappers
+            services.AddSingleton<ConversationDomainCreateCommandMapper>();
+            services.AddSingleton<ConversationDomainGetAllDtoMapper>();
+            services.AddSingleton<ConversationDomainGetAllSummariesDtoMapper>();
+            services.AddSingleton<ConversationDomainGetDtoMapper>();
+            services.AddSingleton<ConversationDomainGetSummaryDtoMapper>();
+            services.AddSingleton<ConversationDomainUpdateChatResponseCommandMapper>();
+            services.AddSingleton<ConversationDomainUpdateUserMessageCommandMapper>();
 
 
-        //  Command handlers
-        services.AddScoped<ICommandHandler<CreateConversationCommand, string>, CreateConversationCommandHandler>();
-        services.AddScoped<ICommandHandler<DeleteConversationCommand>, DeleteConversationCommandHandler>();
-        services.AddScoped<ICommandHandler<UpdateConversationUpdateRoundCommand,Conversation>, UpdateConversationUpdateRoundCommandHandler>();
-        services.AddScoped<ICommandHandler<UpdateConversationAddNewRoundCommand,Conversation>, UpdateConversationAddNewRoundCommandHandler>();
+            //  Command handlers
+            services.AddScoped<ICommandHandler<CreateConversationCommand, string>, CreateConversationCommandHandler>();
+            services.AddScoped<ICommandHandler<DeleteConversationCommand>, DeleteConversationCommandHandler>();
+            services.AddScoped<ICommandHandler<UpdateConversationUpdateRoundCommand,Conversation>, UpdateConversationUpdateRoundCommandHandler>();
+            services.AddScoped<ICommandHandler<UpdateConversationAddNewRoundCommand,Conversation>, UpdateConversationAddNewRoundCommandHandler>();
 
-        //  Query handlers
-        services
-            .AddScoped<IQueryHandler<GetAllConversationsQuery, ConversationDto[]>,
-                GetAllConversationsQueryHandler>();
-        services
-            .AddScoped<IQueryHandler<GetAllConversationsQuery, ConversationSummaryDto[]>,
-                GetAllConversationSummariesQueryHandler>();
-        services
-            .AddScoped<IQueryHandler<GetConversationByIdQuery, ConversationDto>,
-                GetConversationByIdQueryHandler>();
+            //  Query handlers
+            services
+                .AddScoped<IQueryHandler<GetAllConversationsQuery, ConversationDto[]>,
+                    GetAllConversationsQueryHandler>();
+            services
+                .AddScoped<IQueryHandler<GetAllConversationsQuery, ConversationSummaryDto[]>,
+                    GetAllConversationSummariesQueryHandler>();
+            services
+                .AddScoped<IQueryHandler<GetConversationByIdQuery, ConversationDto>,
+                    GetConversationByIdQueryHandler>();
 
 
-        return services;
-    }
+            return services;
+        }
 
-    private static IServiceCollection AddValidation(this IServiceCollection services)
-    {
-        services.AddValidatorsFromAssemblyContaining<CreateMcpServerCommand>();
-        return services;
+        private IServiceCollection AddValidation()
+        {
+            services.AddValidatorsFromAssemblyContaining<CreateMcpServerCommand>();
+            return services;
+        }
     }
 }

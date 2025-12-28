@@ -6,7 +6,6 @@ using ElTocardo.Application.Mediator.UserExternalTokenMediator.Queries;
 using ElTocardo.Domain.Mediator.Common.Interfaces;
 using ElTocardo.Domain.Mediator.UserExternalTokenMediator.Entities;
 using ElTocardo.Domain.Models;
-using ElTocardo.Infrastructure.EntityFramework.Mediator;
 using ElTocardo.Infrastructure.EntityFramework.Mediator.UserExternalTokenMediator;
 using Microsoft.EntityFrameworkCore;
 

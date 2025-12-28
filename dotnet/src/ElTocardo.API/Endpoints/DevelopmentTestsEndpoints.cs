@@ -91,29 +91,33 @@ public static class DevelopmentTestsEndpoints
             });
         return app;
     }
-    public static string ToJson(this IConfiguration config)
+    extension(IConfiguration config)
     {
-        var dict = config.AsDictionary();
-        // Using Newtonsoft.Json
-         return System.Text.Json.JsonSerializer.Serialize(dict, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+        public string ToJson()
+        {
+            var dict = config.AsDictionary();
+            // Using Newtonsoft.Json
+            return System.Text.Json.JsonSerializer.Serialize(dict, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+        }
+
+        private IDictionary<string, object?> AsDictionary()
+        {
+            var result = new Dictionary<string, object?>();
+            foreach (var child in config.GetChildren())
+            {
+                if (child.GetChildren().Any())
+                {
+                    result[child.Key] = AsDictionary(child);
+                }
+                else
+                {
+                    result[child.Key] = child.Value;
+                }
+            }
+            return result;
+        }
     }
 
-    private static IDictionary<string, object?> AsDictionary(this IConfiguration config)
-    {
-        var result = new Dictionary<string, object?>();
-        foreach (var child in config.GetChildren())
-        {
-            if (child.GetChildren().Any())
-            {
-                result[child.Key] = AsDictionary(child);
-            }
-            else
-            {
-                result[child.Key] = child.Value;
-            }
-        }
-        return result;
-    }
     private static WeatherForecast[] WeatherForecasts(string[] summaries)
     {
         var forecast = Enumerable.Range(1, 5).Select(index =>

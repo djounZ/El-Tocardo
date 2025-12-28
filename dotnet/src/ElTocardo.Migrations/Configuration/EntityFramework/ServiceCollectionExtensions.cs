@@ -7,30 +7,28 @@ namespace ElTocardo.Migrations.Configuration.EntityFramework;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddElTocardoMigrations(this IServiceCollection services, IConfiguration configuration)
+    extension(IServiceCollection services)
     {
-        services.Configure<ElTocardoMigrationsOptions>(configuration.GetSection(nameof(ElTocardoMigrationsOptions)));
-        services.AddIdentity<IdentityUser, IdentityRole>()
-            .AddEntityFrameworkStores<MigrationDbContext>()
-            .AddDefaultTokenProviders();
-        return services.AddElTocardoInfrastructureEntityFramework<EntityFrameworkDbContextOptionsConfiguration, MigrationDbContext>(ElTocardoDataProtectionApplicationName)
-            .AddOpenIddict();
+        public IServiceCollection AddElTocardoMigrations(IConfiguration configuration)
+        {
+            services.Configure<ElTocardoMigrationsOptions>(configuration.GetSection(nameof(ElTocardoMigrationsOptions)));
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<MigrationDbContext>()
+                .AddDefaultTokenProviders();
+            return services.AddElTocardoInfrastructureEntityFramework<EntityFrameworkDbContextOptionsConfiguration, MigrationDbContext>(ElTocardoDataProtectionApplicationName)
+                .AddOpenIddict();
 
+        }
+
+        private IServiceCollection AddOpenIddict()
+        {
+            OpenIddictExtensions.AddOpenIddict(services)
+                .AddCore(options =>
+                {
+                    options.UseEntityFrameworkCore()
+                        .UseDbContext<MigrationDbContext>();
+                });
+            return services;
+        }
     }
-
-
-
-    private static IServiceCollection AddOpenIddict(this IServiceCollection services)
-    {
-        OpenIddictExtensions.AddOpenIddict(services)
-            .AddCore(options =>
-            {
-                options.UseEntityFrameworkCore()
-                    .UseDbContext<MigrationDbContext>();
-            });
-        return services;
-    }
-
-
-
 }

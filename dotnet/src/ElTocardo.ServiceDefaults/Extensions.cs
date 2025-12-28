@@ -15,78 +15,81 @@ public static class Extensions
     private const string HealthEndpointPath = "/health";
     private const string AlivenessEndpointPath = "/alive";
 
-    public static IHostApplicationBuilder AddServiceDefaults(this IHostApplicationBuilder builder)
+    extension(IHostApplicationBuilder builder)
     {
-        builder.ConfigureOpenTelemetry();
-
-        builder.AddDefaultHealthChecks();
-
-        builder.Services.AddServiceDiscovery();
-
-        builder.Services.ConfigureHttpClientDefaults(http =>
+        public IHostApplicationBuilder AddServiceDefaults()
         {
-            // Turn on resilience by default
-            http.AddStandardResilienceHandler();
+            builder.ConfigureOpenTelemetry();
 
-            // Turn on service discovery by default
-            http.AddServiceDiscovery();
-        });
+            builder.AddDefaultHealthChecks();
 
-        return builder;
-    }
+            builder.Services.AddServiceDiscovery();
 
-    private static IHostApplicationBuilder ConfigureOpenTelemetry(this IHostApplicationBuilder builder)
-    {
-        builder.Logging.AddOpenTelemetry(logging =>
-        {
-            logging.IncludeFormattedMessage = true;
-            logging.IncludeScopes = true;
-        });
-
-        builder.Services.AddOpenTelemetry()
-            .WithMetrics(metrics =>
+            builder.Services.ConfigureHttpClientDefaults(http =>
             {
-                metrics.AddAspNetCoreInstrumentation()
-                       .AddHttpClientInstrumentation()
-                       .AddRuntimeInstrumentation();
-            })
-            .WithTracing(tracerProviderBuilder =>
-            {
-                tracerProviderBuilder
-                    .AddSource(builder.Environment.ApplicationName)
-                    .AddAspNetCoreInstrumentation(traceInstrumentationOptions =>
-                        // Don't trace requests to the health endpoint to avoid filling the dashboard with noise
-                        traceInstrumentationOptions.Filter = httpContext =>
-                            !(httpContext.Request.Path.StartsWithSegments(HealthEndpointPath)
-                              || httpContext.Request.Path.StartsWithSegments(AlivenessEndpointPath))
-                    )
-                    .AddHttpClientInstrumentation();
+                // Turn on resilience by default
+                http.AddStandardResilienceHandler();
+
+                // Turn on service discovery by default
+                http.AddServiceDiscovery();
             });
 
-        builder.AddOpenTelemetryExporters();
-
-        return builder;
-    }
-
-    private static IHostApplicationBuilder AddOpenTelemetryExporters(this IHostApplicationBuilder builder)
-    {
-        var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
-
-        if (useOtlpExporter)
-        {
-            builder.Services.AddOpenTelemetry().UseOtlpExporter();
+            return builder;
         }
 
-        return builder;
-    }
+        private IHostApplicationBuilder ConfigureOpenTelemetry()
+        {
+            builder.Logging.AddOpenTelemetry(logging =>
+            {
+                logging.IncludeFormattedMessage = true;
+                logging.IncludeScopes = true;
+            });
 
-    private static IHostApplicationBuilder AddDefaultHealthChecks(this IHostApplicationBuilder builder)
-    {
-        builder.Services.AddHealthChecks()
-            // Add a default liveness check to ensure app is responsive
-            .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"]);
+            builder.Services.AddOpenTelemetry()
+                .WithMetrics(metrics =>
+                {
+                    metrics.AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation()
+                        .AddRuntimeInstrumentation();
+                })
+                .WithTracing(tracerProviderBuilder =>
+                {
+                    tracerProviderBuilder
+                        .AddSource(builder.Environment.ApplicationName)
+                        .AddAspNetCoreInstrumentation(traceInstrumentationOptions =>
+                            // Don't trace requests to the health endpoint to avoid filling the dashboard with noise
+                            traceInstrumentationOptions.Filter = httpContext =>
+                                !(httpContext.Request.Path.StartsWithSegments(HealthEndpointPath)
+                                  || httpContext.Request.Path.StartsWithSegments(AlivenessEndpointPath))
+                        )
+                        .AddHttpClientInstrumentation();
+                });
 
-        return builder;
+            builder.AddOpenTelemetryExporters();
+
+            return builder;
+        }
+
+        private IHostApplicationBuilder AddOpenTelemetryExporters()
+        {
+            var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
+
+            if (useOtlpExporter)
+            {
+                builder.Services.AddOpenTelemetry().UseOtlpExporter();
+            }
+
+            return builder;
+        }
+
+        private IHostApplicationBuilder AddDefaultHealthChecks()
+        {
+            builder.Services.AddHealthChecks()
+                // Add a default liveness check to ensure app is responsive
+                .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"]);
+
+            return builder;
+        }
     }
 
     public static WebApplication MapDefaultEndpoints(this WebApplication app)
