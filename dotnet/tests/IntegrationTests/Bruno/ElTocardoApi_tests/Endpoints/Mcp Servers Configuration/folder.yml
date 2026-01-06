@@ -1,0 +1,7 @@
+info:
+  name: Mcp Servers Configuration
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit

@@ -1,0 +1,15 @@
+info:
+  name: Delete PresetChatInstruction
+  type: http
+  seq: 5
+
+http:
+  method: DELETE
+  url: "{{api_backend}}/v1/preset-chat-instructions/example-instruction"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

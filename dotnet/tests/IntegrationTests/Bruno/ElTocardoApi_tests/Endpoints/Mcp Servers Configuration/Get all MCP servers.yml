@@ -1,0 +1,15 @@
+info:
+  name: Get all MCP servers
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{api_backend}}/v1/mcp-servers"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,41 @@
+info:
+  name: Update preset chat options
+  type: http
+  seq: 3
+
+http:
+  method: PUT
+  url: "{{api_backend}}/v1/preset-chat-options/presetChatOptionsTest"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "presetChatOptionsTest",
+        "chat_options": {
+          "conversation_id": null,
+          "instructions": null,
+          "temperature": 0.9,
+          "max_output_tokens": 8002,
+          "top_p": null,
+          "top_k": null,
+          "frequency_penalty": null,
+          "presence_penalty": null,
+          "seed": null,
+          "response_format": null,
+          "model_id": null,
+          "stop_sequences": null,
+          "allow_multiple_tool_calls": null,
+          "tool_mode": {
+            "$type": "required",
+            "required_function_name": null
+          },
+          "tools": null
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

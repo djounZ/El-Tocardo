@@ -1,0 +1,32 @@
+info:
+  name: Update MCP server
+  type: http
+  seq: 4
+
+http:
+  method: PUT
+  url: "{{api_backend}}/v1/mcp-servers/desktop-commander"
+  body:
+    type: json
+    data: |-
+      {
+        "command": "docker",
+        "args": [
+          "run",
+          "-i",
+          "--rm",
+          "-v",
+          "/local-directory:/local-directory",
+          "mcp/desktop-commander",
+          "npm",
+          "run",
+          "start"
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
