@@ -1,0 +1,32 @@
+meta {
+  name: Create MCP server
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{api_backend}}/v1/mcp-servers/desktop-commander
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "command": "dockerMispelled",
+    "args": [
+      "run",
+      "-i",
+      "--rm",
+      "-v",
+      "/local-directory:/local-directory",
+      "mcp/desktop-commander",
+      "npm",
+      "run",
+      "start"
+    ]
+  }
+}
+
+settings {
+  encodeUrl: true
+}

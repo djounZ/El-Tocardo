@@ -1,0 +1,16 @@
+info:
+  name: Get All Conversations
+  type: http
+  seq: 5
+
+
+http:
+  method: GET
+  url: "{{api_backend}}/v1/conversations"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

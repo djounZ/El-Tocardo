@@ -1,0 +1,15 @@
+meta {
+  name: Get all MCP servers
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{api_backend}}/v1/mcp-servers
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

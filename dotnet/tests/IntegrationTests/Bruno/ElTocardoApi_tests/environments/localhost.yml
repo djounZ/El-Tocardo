@@ -1,0 +1,6 @@
+name: localhost
+variables:
+  - name: api_backend
+    value: https://localhost:40067
+  - name: authorization_server
+    value: https://localhost:7200

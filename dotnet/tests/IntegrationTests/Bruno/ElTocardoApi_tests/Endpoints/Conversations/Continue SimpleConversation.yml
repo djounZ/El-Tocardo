@@ -1,0 +1,31 @@
+info:
+  name: Continue SimpleConversation
+  type: http
+  seq: 2
+
+
+http:
+  method: POST
+  url: "{{api_backend}}/v1/conversation/continue"
+  body:
+    type: json
+    data: |-
+      {
+        "conversation_id": "{{simple_conversation_id}}",
+        "input_message": {
+          "role": "user",
+          "contents": [
+            {
+              "$type": "text",
+              "text": "What are your skills ? how can you help me ?"
+            }
+          ]
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

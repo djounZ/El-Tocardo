@@ -1,0 +1,32 @@
+info:
+  name: SimpleRequest
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{api_backend}}/v1/chat/completions"
+  body:
+    type: json
+    data: |-
+      {
+        "messages": [
+          {
+            "role": "user",
+            "contents": [
+              {
+                "$type": "text",
+                "text:": "hello"
+              }
+            ]
+          }
+        ],
+        "provider": "github_copilot"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

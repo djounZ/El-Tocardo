@@ -1,0 +1,42 @@
+info:
+  name: Start Simple Conversation
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{api_backend}}/v1/conversation/start"
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Simple Conversation Test",
+        "description": "This a demo conversation",
+        "provider": "github_copilot",
+        "options": {
+          "max_output_tokens": 8000
+        },
+        "input_message": {
+          "role": "user",
+          "contents": [
+            {
+              "$type": "text",
+              "text": "Hello"
+            }
+          ]
+        }
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        let conversation_id = res.body.conversation_id;
+        bru.setVar("simple_conversation_id",conversation_id)
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

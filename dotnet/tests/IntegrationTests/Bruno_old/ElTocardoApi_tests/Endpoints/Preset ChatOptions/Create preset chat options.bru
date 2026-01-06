@@ -1,0 +1,27 @@
+meta {
+  name: Create preset chat options
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{api_backend}}/v1/preset-chat-options/presetChatOptionsTest
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "presetChatOptionsTest",
+    "chat_options": {
+      "max_output_tokens": 8000,
+      "tool_mode": {
+        "$type": "required"
+      }
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+}
