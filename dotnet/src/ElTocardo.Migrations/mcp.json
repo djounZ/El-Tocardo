@@ -10,9 +10,11 @@
     },
     "fetch": {
       "command": "uvx",
-      "args": [
-        "mcp-server-fetch"
-      ],
+      "args": ["mcp-server-fetch", "--ignore-robots-txt"],
+      "env": {
+        "UV_NATIVE_TLS": "true",
+        "SSL_CERT_FILE": "/etc/ssl/certs/ca-certificates.crt"
+      },
       "type": "stdio"
     },
     "time": {

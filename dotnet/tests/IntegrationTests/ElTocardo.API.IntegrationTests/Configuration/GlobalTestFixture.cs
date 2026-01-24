@@ -8,12 +8,10 @@ namespace ElTocardo.API.IntegrationTests.Configuration;
 
 public class GlobalTestFixture : IAsyncLifetime
 {
-    private readonly MongoDbContainer _mongoContainer = new MongoDbBuilder()
-        .WithImage("mongo:8.0")
+    private readonly MongoDbContainer _mongoContainer = new MongoDbBuilder("mongo:8.0")
         .Build();
 
-    private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:17.5")
+    private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder("postgres:17.5")
         .Build();
 
     public IConfiguration Configuration { get; private set; } = null!;
