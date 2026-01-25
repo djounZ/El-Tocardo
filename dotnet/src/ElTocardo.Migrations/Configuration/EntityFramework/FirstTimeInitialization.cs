@@ -34,7 +34,7 @@ public static class FirstTimeInitialization
         try
         {
             logger.LogInformation("Ensuring database is created and up to date");
-            await context.Database.EnsureCreatedAsync(cancellationToken);
+            await context.Database.MigrateAsync(cancellationToken);
 
             context.EnsureOpenIddictCertificate();
             // Check if we need to migrate data from JSON file
@@ -96,6 +96,8 @@ public static class FirstTimeInitialization
                     OpenIddictConstants.Permissions.Endpoints.Token,
                     OpenIddictConstants.Permissions.GrantTypes.Password,
                     OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
+                    OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,
+                    OpenIddictConstants.Permissions.GrantTypes.Implicit,
                     OpenIddictConstants.Permissions.Scopes.Profile
                 }
             }, cancellationToken);

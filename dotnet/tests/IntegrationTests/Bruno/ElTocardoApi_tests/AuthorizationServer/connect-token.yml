@@ -1,0 +1,26 @@
+info:
+  name: connect/token
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{authorization_server}}/connect/token"
+  body:
+    type: form-urlencoded
+    data:
+      - name: grant_type
+        value: client_credentials
+      - name: client_id
+        value: postman
+      - name: client_secret
+        value: postman-secret
+      - name: scope
+        value: openid profile
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
