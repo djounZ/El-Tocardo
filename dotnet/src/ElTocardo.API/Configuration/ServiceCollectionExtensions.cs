@@ -12,8 +12,8 @@ using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi;
 using MongoDB.Driver;
-using OpenIddict.Abstractions;
 using OpenIddict.Validation.AspNetCore;
 using static ElTocardo.ServiceDefaults.Constants;
 
@@ -25,9 +25,9 @@ public static class ServiceCollectionExtensions
     {
         public IServiceCollection AddElTocardoApi(IConfiguration configuration, string applicationName)
         {
-            services.AddToMigrate();
+            services.AddToMigrate()
 
-            services.Configure<ElTocardoApiOptions>(configuration.GetSection(nameof(ElTocardoApiOptions)));
+                .Configure<ElTocardoApiOptions>(configuration.GetSection(nameof(ElTocardoApiOptions)));
             services.AddHttpContextAccessor();
             services.AddCaching();
             var mongoClientSettings = MongoClientSettings.FromConnectionString(configuration.GetConnectionString(MongoDbDatabaseResourceName));
@@ -84,6 +84,44 @@ public static class ServiceCollectionExtensions
 
                 // Explicit "allow all" policy for public endpoints
                 options.AddPolicy("AllowAnonymous", policy => policy.RequireAssertion(_ => true));
+            });
+            services.AddOpenApi(options =>
+            {
+                options.AddDocumentTransformer((document, context, ct) =>
+                {
+                    document.Components ??= new();
+                    document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+
+                    document.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme
+                    {
+                        Type = SecuritySchemeType.OAuth2,
+                        Flows = new OpenApiOAuthFlows
+                        {
+                            ClientCredentials = new OpenApiOAuthFlow
+                            {
+                                TokenUrl = new Uri(configuration[OpenIddictIssuerEnvironmentVariableName]!),
+                                Scopes = new Dictionary<string, string>
+                                {
+                                    [OpenIddictElTocardoApiUserScope] = "Access required"
+                                }
+                            }
+                        }
+                    };
+
+                    // ✅ CORRECT: Pass scheme reference as constructor parameter
+                    document.Security = new List<OpenApiSecurityRequirement>
+                    {
+                        new OpenApiSecurityRequirement
+                        {
+                            {
+                                new OpenApiSecuritySchemeReference("Bearer"),  // ✅ Just the string ID
+                                new List<string> { OpenIddictElTocardoApiUserScope }
+                            }
+                        }
+                    };
+
+                    return Task.CompletedTask;
+                });
             });
 
             return services;
