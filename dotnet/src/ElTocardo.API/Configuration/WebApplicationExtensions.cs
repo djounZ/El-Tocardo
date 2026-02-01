@@ -36,7 +36,8 @@ public static class WebApplicationExtensions
 
         private void MapEndpoints()
         {
-            app
+            var routes = app.MapGroup(string.Empty).RequireAuthorization();
+            routes
                 .MapDevelopmentTestEndpoints()
                 .MapMcpServerConfigurationEndpoints()
                 .MapAiProviderEndpoints()

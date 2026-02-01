@@ -95,14 +95,13 @@ public static class FirstTimeInitialization
                 {
                     OpenIddictConstants.Permissions.Endpoints.Token,
                     OpenIddictConstants.Permissions.Endpoints.Revocation,
-                    OpenIddictConstants.Permissions.GrantTypes.Password,
                     OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
                     OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,
-                    OpenIddictConstants.Permissions.GrantTypes.Implicit,
-                    OpenIddictConstants.Permissions.Scopes.Profile
+                    OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictElTocardoApiUserScope,
                 }
             }, cancellationToken);
         }
+
 
         // Add El-Tocardo-Assistant for Authorization Code flow with PKCE
         if (await manager.FindByClientIdAsync("El-Tocardo-Assistant", cancellationToken) == null)

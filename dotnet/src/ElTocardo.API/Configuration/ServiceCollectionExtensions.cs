@@ -1,16 +1,19 @@
 using System.Net;
 using AI.GithubCopilot.Infrastructure.Services;
+using ElTocardo.API.Configuration.Authorization;
 using ElTocardo.API.Configuration.EntityFramework;
 using ElTocardo.API.Options;
 using ElTocardo.API.ToMigrate;
 using ElTocardo.Infrastructure.Configuration;
 using ElTocardo.Infrastructure.EntityFramework.Mediator;
 using ElTocardo.ServiceDefaults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using OpenIddict.Abstractions;
 using OpenIddict.Validation.AspNetCore;
 using static ElTocardo.ServiceDefaults.Constants;
 
@@ -69,7 +72,19 @@ public static class ServiceCollectionExtensions
                 options.DefaultAuthenticateScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
             });
-            services.AddAuthorization();
+
+            services.AddScoped<IAuthorizationHandler, ScopeHandler>();
+            services.AddAuthorization(options =>
+            {
+                // Default policy: ALL endpoints require toto scope
+                options.DefaultPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .AddRequirements(new ScopeRequirement(OpenIddictElTocardoApiUserScope))
+                    .Build();
+
+                // Explicit "allow all" policy for public endpoints
+                options.AddPolicy("AllowAnonymous", policy => policy.RequireAssertion(_ => true));
+            });
 
             return services;
         }

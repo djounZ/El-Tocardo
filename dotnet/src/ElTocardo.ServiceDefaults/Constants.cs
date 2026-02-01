@@ -13,4 +13,5 @@ public static class Constants
     public const string OpenIddictIssuerEnvironmentVariableName = "OpenIddictIssuer";
     public const string OpenIddictServerCertificateName = "OpenIddictServer";
     public const string OpenIddictServerCertificatePassword = "ElTocardoDevCertPassword";
+    public const string OpenIddictElTocardoApiUserScope = "eltocardoapiuser";
 }

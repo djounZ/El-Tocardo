@@ -87,7 +87,7 @@ public static class ServiceCollectionExtensions
 
 
                     // Register scopes (permissions)
-                    options.RegisterScopes(OpenIddictConstants.Scopes.Email, OpenIddictConstants.Scopes.Profile, OpenIddictConstants.Scopes.Roles);
+                    options.RegisterScopes(OpenIddictConstants.Scopes.Email, OpenIddictConstants.Scopes.Profile, OpenIddictConstants.Scopes.Roles, OpenIddictElTocardoApiUserScope);
 
                     // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
                     options
