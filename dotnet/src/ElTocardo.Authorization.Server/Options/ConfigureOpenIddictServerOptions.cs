@@ -18,6 +18,7 @@ public sealed class ConfigureOpenIddictServerOptions(IOptions<ElTocardoAuthoriza
         var endSessionEndpointUri = new Uri(OpenIddictServerOptions.EndSessionEndpointUri, UriKind.RelativeOrAbsolute);
         var userInfoEndpointUri = new Uri(OpenIddictServerOptions.UserInfoEndpointUri, UriKind.RelativeOrAbsolute);
         var introspectionEndpointUri = new Uri(OpenIddictServerOptions.IntrospectionEndpointUri, UriKind.RelativeOrAbsolute);
+        var revocationEndpointUri = new Uri(OpenIddictServerOptions.RevocationEndpointUri, UriKind.RelativeOrAbsolute);
 
 
         options.TokenEndpointUris.Add(tokenEndpointUri);
@@ -25,6 +26,7 @@ public sealed class ConfigureOpenIddictServerOptions(IOptions<ElTocardoAuthoriza
         options.EndSessionEndpointUris.Add(endSessionEndpointUri);
         options.UserInfoEndpointUris.Add(userInfoEndpointUri);
         options.IntrospectionEndpointUris.Add(introspectionEndpointUri);
+        options.RevocationEndpointUris.Add(revocationEndpointUri);
         // options.Issuer = new Uri("http://localhost:5095/");
     }
 }

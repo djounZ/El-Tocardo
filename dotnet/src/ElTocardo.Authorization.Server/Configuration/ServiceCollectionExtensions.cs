@@ -1,8 +1,8 @@
 using ElTocardo.Authorization.EntityFramework.Infrastructure;
 using ElTocardo.Authorization.Server.Configuration.EntityFramework;
+using ElTocardo.Authorization.Server.Handlers;
 using ElTocardo.Authorization.Server.Options;
 using ElTocardo.ServiceDefaults;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Options;
@@ -24,24 +24,9 @@ public static class ServiceCollectionExtensions
             services.Configure<ElTocardoAuthorizationServerOptions>(
                 configuration.GetSection(nameof(ElTocardoAuthorizationServerOptions)));
             // Add services to the container.
-            services.AddControllersWithViews();
-            services.AddRazorPages();
-
             services.AddDataProtection()
                 .PersistKeysToDbContext<AuthorizationDbContext>()
                 .SetApplicationName(ElTocardoDataProtectionApplicationName);
-
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-                {
-                    options.LoginPath = "/account/login";  // Path to the login page
-                    options.LogoutPath = "/account/logout"; // Path to the logout page
-                    options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Duration of the authentication cookie
-                    options.SlidingExpiration = true;  // Renews the cookie's expiration time with each request
-                    options.Cookie.HttpOnly = true; // Ensures that the cookie is accessible only via HTTP, not JavaScript
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // Ensures the cookie is sent over HTTPS only if the request is HTTPS
-
-                });
 
             services
                 .AddSingleton<IDbContextOptionsConfiguration<AuthorizationDbContext>,
@@ -52,8 +37,12 @@ public static class ServiceCollectionExtensions
                 .AddEntityFrameworkStores<AuthorizationDbContext>()
                 .AddDefaultTokenProviders()
                 .AddDefaultUI();;
+            //
+            // services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            //     .AddEntityFrameworkStores<AuthorizationDbContext>();
 
             services.AddOAuth2Oidc();
+            services.AddRazorPages();
             return services;
         }
 
@@ -72,10 +61,11 @@ public static class ServiceCollectionExtensions
                 {
                     //  options.UseAspNetCore().DisableTransportSecurityRequirement();
 
+                    options.AddEventHandler(CustomTokenRequestHandler.Descriptor);
+                    options.AddEventHandler(CustomEndSessionHandler.Descriptor);
 
                     options
                         .AllowClientCredentialsFlow()
-                        .AllowPasswordFlow()
                         .AllowAuthorizationCodeFlow()
                         .RequireProofKeyForCodeExchange()
                         .AllowRefreshTokenFlow();
@@ -102,9 +92,7 @@ public static class ServiceCollectionExtensions
                     // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
                     options
                         .UseAspNetCore()
-                        .EnableTokenEndpointPassthrough()
-                        .EnableAuthorizationEndpointPassthrough()
-                        .EnableUserInfoEndpointPassthrough();
+                        .EnableAuthorizationEndpointPassthrough();
                 });
 
             return services;

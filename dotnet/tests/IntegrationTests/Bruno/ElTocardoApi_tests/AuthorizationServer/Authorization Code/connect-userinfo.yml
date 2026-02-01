@@ -1,7 +1,7 @@
 info:
   name: connect/userinfo
   type: http
-  seq: 4
+  seq: 2
 
 http:
   method: GET

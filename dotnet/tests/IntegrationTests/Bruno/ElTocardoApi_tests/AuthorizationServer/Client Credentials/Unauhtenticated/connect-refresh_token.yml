@@ -1,0 +1,33 @@
+info:
+  name: connect/refresh_token
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{authorization_server}}/connect/token"
+  body:
+    type: form-urlencoded
+    data:
+      - name: grant_type
+        value: refresh_token
+      - name: refresh_token
+        value: "{{refresh_token}}"
+      - name: client_id
+        value: postman
+      - name: client_secret
+        value: postman-secret
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        let access_token = res.body.access_token;
+        bru.setVar("access_token",access_token)
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

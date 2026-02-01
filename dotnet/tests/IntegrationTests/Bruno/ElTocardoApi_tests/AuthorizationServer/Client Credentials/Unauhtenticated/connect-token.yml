@@ -1,7 +1,7 @@
 info:
   name: connect/token
   type: http
-  seq: 2
+  seq: 1
 
 http:
   method: POST
@@ -16,8 +16,17 @@ http:
       - name: client_secret
         value: postman-secret
       - name: scope
-        value: openid profile
-  auth: inherit
+        value: openid profile offline_access
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        let refresh_token = res.body.refresh_token;
+        bru.setVar("refresh_token",refresh_token)
+
+        let access_token = res.body.access_token;
+        bru.setVar("access_token",access_token)
 
 settings:
   encodeUrl: true

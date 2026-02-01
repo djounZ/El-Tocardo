@@ -1,7 +1,7 @@
 info:
   name: test
   type: http
-  seq: 1
+  seq: 2
 
 http:
   method: GET
@@ -11,6 +11,7 @@ http:
     flow: authorization_code
     authorizationUrl: "{{authorization_server}}/connect/authorize"
     accessTokenUrl: "{{authorization_server}}/connect/token"
+    refreshTokenUrl: "{{authorization_server}}/connect/token"
     callbackUrl: http://localhost:4200/auth-callback
     credentials:
       clientId: El-Tocardo-Assistant
@@ -23,7 +24,7 @@ http:
         header: Bearer
     settings:
       autoFetchToken: true
-      autoRefreshToken: false
+      autoRefreshToken: true
 
 settings:
   encodeUrl: true

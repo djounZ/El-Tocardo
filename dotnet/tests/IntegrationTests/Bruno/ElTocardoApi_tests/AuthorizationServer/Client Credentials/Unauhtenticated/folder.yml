@@ -1,0 +1,15 @@
+info:
+  name: Unauhtenticated
+  type: folder
+  seq: 1
+
+request:
+  headers:
+    - name: ""
+      value: ""
+  auth: inherit
+  variables:
+    - name: access_token
+      value: ""
+    - name: refresh_token
+      value: ""

@@ -1,6 +1,10 @@
 @page
 @model ElTocardo.Authorization.Server.Areas.Identity.Pages.Account.LoginModel
 
+@{
+    Layout = null;
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,26 +12,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="~/css/login.css"> 
+    <style>
+        body {
+            background-color: #2c2c2c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: #3c3c3c;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 380px;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 20px;
+        }
+        .btn {
+            width: 100%;
+        }
+        h1 {
+            color: #ffffff;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
 
     <div class="login-container">
+        <h1>ElTocardo Authorization Server</h1>
         <!-- OpenIddict Logo -->
         <img src="https://avatars.githubusercontent.com/u/13908567?s=200&v=4" alt="OpenIddict Logo" class="logo" width="80" height="80">
 
         <!-- Login Form -->
         <form method="post" autocomplete="off">
             <input type="hidden" asp-for="ReturnUrl" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
             <div class="mb-3">
-                <input type="text" class="form-control form-control-lg" placeholder="Username" asp-for="Username" autofocus>
-                <span asp-validation-for="Username" class="text-danger"></span>
+                <input type="text" class="form-control form-control-lg" placeholder="Email" asp-for="Input.Email" autofocus>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <input type="password" class="form-control form-control-lg" placeholder="Password" asp-for="Password">
-                <span asp-validation-for="Password" class="text-danger"></span>
+                <input type="password" class="form-control form-control-lg" placeholder="Password" asp-for="Input.Password">
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-dark btn-lg">Login</button>
+            <a href="/Identity/Account/ForgotPassword" class="btn btn-link mt-2 w-100" target="_blank" rel="noopener noreferrer">Forgot your password?</a>
+            <a href="/Identity/Account/Register" class="btn btn-link mt-2 w-100" target="_blank" rel="noopener noreferrer">Register as a new user</a>
+            <a href="/Identity/Account/ResendEmailConfirmation" class="btn btn-link mt-2 w-100" target="_blank" rel="noopener noreferrer">Resend email confirmation</a>
         </form>
     </div>
 

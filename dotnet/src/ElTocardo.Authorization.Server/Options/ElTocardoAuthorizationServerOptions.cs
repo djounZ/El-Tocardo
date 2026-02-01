@@ -15,4 +15,5 @@ public class OpenIddictServerOptions
     public string EndSessionEndpointUri    { get; set; } = string.Empty;
     public string UserInfoEndpointUri    { get; set; } = string.Empty;
     public string IntrospectionEndpointUri    { get; set; } = string.Empty;
+    public string RevocationEndpointUri    { get; set; } = string.Empty;
 }
