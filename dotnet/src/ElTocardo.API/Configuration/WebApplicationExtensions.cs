@@ -1,4 +1,5 @@
 using ElTocardo.API.Endpoints;
+using Scalar.AspNetCore;
 
 namespace ElTocardo.API.Configuration;
 
@@ -14,6 +15,7 @@ public static class WebApplicationExtensions
             {
                 // GET {{MCP.WebApi_HostAddress}}/openapi/v1.json
                 app.MapOpenApi();
+                app.MapScalarApiReference();
                 app.UseDeveloperExceptionPage();
             }
 
