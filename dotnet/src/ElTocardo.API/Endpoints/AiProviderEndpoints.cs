@@ -20,8 +20,8 @@ public static class AiProviderEndpoints
             .AddOpenApiOperationTransformer((operation, context, ct) =>
             {
                 // Per-endpoint tweaks
-                operation.Summary = "Gets the current weather report.";
-                operation.Description = "Returns a short description and emoji.";
+
+
                 return Task.CompletedTask;
             })
             .CacheOutput(PredefinedOutputCachingPolicy.PerUserVaryByHeaderAuthorizationLongLiving);
@@ -41,8 +41,8 @@ public static class AiProviderEndpoints
             .AddOpenApiOperationTransformer((operation, context, ct) =>
             {
                 // Per-endpoint tweaks
-                operation.Summary = "Gets the current weather report.";
-                operation.Description = "Returns a short description and emoji.";
+
+
                 return Task.CompletedTask;
             })
             .CacheOutput(PredefinedOutputCachingPolicy.PerUserVaryByHeaderAuthorizationLongLiving);

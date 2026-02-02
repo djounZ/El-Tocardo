@@ -21,6 +21,7 @@ public static class WebApplicationExtensions
 
         app.UseRouting();
 
+        app.UseCors("AllowAll");
         app.UseAuthentication();
         app.UseAuthorization();
 

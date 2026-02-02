@@ -16,7 +16,7 @@ http:
       - name: client_secret
         value: postman-secret
       - name: scope
-        value: openid profile offline_access
+        value: openid offline_access
 
 runtime:
   scripts:

@@ -2,6 +2,7 @@ using System.Net;
 using AI.GithubCopilot.Infrastructure.Services;
 using ElTocardo.API.Configuration.Authorization;
 using ElTocardo.API.Configuration.EntityFramework;
+using ElTocardo.API.Configuration.OpenApiDocument;
 using ElTocardo.API.Options;
 using ElTocardo.API.ToMigrate;
 using ElTocardo.Infrastructure.Configuration;
@@ -85,44 +86,12 @@ public static class ServiceCollectionExtensions
                 // Explicit "allow all" policy for public endpoints
                 options.AddPolicy("AllowAnonymous", policy => policy.RequireAssertion(_ => true));
             });
+
             services.AddOpenApi(options =>
             {
-                options.AddDocumentTransformer((document, context, ct) =>
-                {
-                    document.Components ??= new();
-                    document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
-
-                    document.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme
-                    {
-                        Type = SecuritySchemeType.OAuth2,
-                        Flows = new OpenApiOAuthFlows
-                        {
-                            ClientCredentials = new OpenApiOAuthFlow
-                            {
-                                TokenUrl = new Uri(configuration[OpenIddictIssuerEnvironmentVariableName]!),
-                                Scopes = new Dictionary<string, string>
-                                {
-                                    [OpenIddictElTocardoApiUserScope] = "Access required"
-                                }
-                            }
-                        }
-                    };
-
-                    // ✅ CORRECT: Pass scheme reference as constructor parameter
-                    document.Security = new List<OpenApiSecurityRequirement>
-                    {
-                        new OpenApiSecurityRequirement
-                        {
-                            {
-                                new OpenApiSecuritySchemeReference("Bearer"),  // ✅ Just the string ID
-                                new List<string> { OpenIddictElTocardoApiUserScope }
-                            }
-                        }
-                    };
-
-                    return Task.CompletedTask;
-                });
+                options.AddDocumentTransformer<DiscoverySecurityTransformer>();
             });
+
 
             return services;
         }

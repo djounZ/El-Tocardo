@@ -1,6 +1,7 @@
 using ElTocardo.API.Endpoints;
 using Scalar.AspNetCore;
 
+using static ElTocardo.ServiceDefaults.Constants;
 namespace ElTocardo.API.Configuration;
 
 public static class WebApplicationExtensions
@@ -15,7 +16,20 @@ public static class WebApplicationExtensions
             {
                 // GET {{MCP.WebApi_HostAddress}}/openapi/v1.json
                 app.MapOpenApi();
-                app.MapScalarApiReference();
+                app.MapScalarApiReference("/scalar", options =>
+                {
+                    options
+                        .AddPreferredSecuritySchemes(OpenIddictElTocardoApiSchemaKey) // This is the schemaKey from above
+                        .AddClientCredentialsFlow(
+                            OpenIddictElTocardoApiSchemaKey, // Again: schemaKey
+                            flow =>
+                            {
+                                flow.ClientId = "postman";
+                                flow.SelectedScopes =
+                                    [OpenIddictElTocardoApiUserScope]; // Same scopes as defined in the OpenApi transformer!
+                            }
+                        );
+                });
                 app.UseDeveloperExceptionPage();
             }
 

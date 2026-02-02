@@ -43,6 +43,16 @@ public static class ServiceCollectionExtensions
 
             services.AddOAuth2Oidc();
             services.AddRazorPages();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.SetIsOriginAllowed(_ => true)  // Allows any origin
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();  // Required for auth cookies/tokens
+                });
+            });
             return services;
         }
 

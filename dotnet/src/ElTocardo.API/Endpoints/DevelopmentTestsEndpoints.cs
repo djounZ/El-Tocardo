@@ -37,8 +37,8 @@ public static class DevelopmentTestsEndpoints
             .AddOpenApiOperationTransformer((operation, context, ct) =>
             {
                 // Per-endpoint tweaks
-                operation.Summary = "Gets the current weather report.";
-                operation.Description = "Returns a short description and emoji.";
+
+
                 return Task.CompletedTask;
             });
         app.MapGet("/",() => WeatherForecasts(summaries))
@@ -48,8 +48,8 @@ public static class DevelopmentTestsEndpoints
             .AddOpenApiOperationTransformer((operation, context, ct) =>
             {
                 // Per-endpoint tweaks
-                operation.Summary = "Gets the current weather report.";
-                operation.Description = "Returns a short description and emoji.";
+
+
                 return Task.CompletedTask;
             })
             .CacheOutput(PredefinedOutputCachingPolicy.GlobalShortLiving);
@@ -58,8 +58,8 @@ public static class DevelopmentTestsEndpoints
             .AddOpenApiOperationTransformer((operation, context, ct) =>
             {
                 // Per-endpoint tweaks
-                operation.Summary = "Gets the current weather report.";
-                operation.Description = "Returns a short description and emoji.";
+
+
                 return Task.CompletedTask;
             });
 
@@ -71,8 +71,8 @@ public static class DevelopmentTestsEndpoints
             .AddOpenApiOperationTransformer((operation, context, ct) =>
             {
                 // Per-endpoint tweaks
-                operation.Summary = "Gets the current weather report.";
-                operation.Description = "Returns a short description and emoji.";
+
+
                 return Task.CompletedTask;
             });
 
@@ -85,8 +85,8 @@ public static class DevelopmentTestsEndpoints
             .AddOpenApiOperationTransformer((operation, context, ct) =>
             {
                 // Per-endpoint tweaks
-                operation.Summary = "Gets the current weather report.";
-                operation.Description = "Returns a short description and emoji.";
+
+
                 return Task.CompletedTask;
             });
         return app;
