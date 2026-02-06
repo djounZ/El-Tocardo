@@ -29,7 +29,7 @@ var authorizationServer = builder.AddProject<ElTocardo_Authorization_Server>(ElT
         .WaitForCompletion(migrationService)
     ;
 
-_ = builder.AddProject<ElTocardo_API>(ElTocardoApiProjectResourceName)
+var elTocardoApi = builder.AddProject<ElTocardo_API>(ElTocardoApiProjectResourceName)
     .WithReference(sqlDb)
     .WithReference(mongodb)
     .WithReference(authorizationServer)
@@ -40,5 +40,14 @@ _ = builder.AddProject<ElTocardo_API>(ElTocardoApiProjectResourceName)
     // .WithEnvironment("OllamaOptions:Uri", ollama.GetEndpoint("ollama"))
     // .WaitFor(ollama)
     .WithExternalHttpEndpoints();
+
+
+builder.AddJavaScriptApp("ElTocardoAssistant", "../../../ElTocardo.Assistant/", runScriptName: "start")
+    .WithReference(elTocardoApi)
+    .WithReference(authorizationServer)
+    .WaitFor(elTocardoApi)
+    .WithHttpEndpoint(env: "PORT")
+    .WithExternalHttpEndpoints()
+    .PublishAsDockerFile();
 
 builder.Build().Run();

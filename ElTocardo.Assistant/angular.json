@@ -1,9 +1,12 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
+  "cli": {
+    "packageManager": "npm"
+  },
   "newProjectRoot": "projects",
   "projects": {
-    "El-Tocardo.Assistant": {
+    "ElTocardo.Assistant": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -58,32 +61,16 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "El-Tocardo.Assistant:build:production"
+              "buildTarget": "ElTocardo.Assistant:build:production"
             },
             "development": {
-              "buildTarget": "El-Tocardo.Assistant:build:development"
+              "buildTarget": "ElTocardo.Assistant:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
-        "extract-i18n": {
-          "builder": "@angular/build:extract-i18n"
-        },
         "test": {
-          "builder": "@angular/build:karma",
-          "options": {
-            "tsConfig": "tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
-            "styles": [
-              "src/styles.scss"
-            ]
-          }
+          "builder": "@angular/build:unit-test"
         }
       }
     }

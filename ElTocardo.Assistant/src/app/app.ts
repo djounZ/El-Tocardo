@@ -8,5 +8,5 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('El-Tocardo.Assistant');
+  protected readonly title = signal('ElTocardo.Assistant');
 }
