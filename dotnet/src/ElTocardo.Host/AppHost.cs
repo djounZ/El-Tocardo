@@ -24,7 +24,7 @@ var authorizationServer =
     builder.AddProject<ElTocardo_Authorization_Server>(ElTocardoAuthorizationServerProjectResourceName);
 var elTocardoApi = builder.AddProject<ElTocardo_API>(ElTocardoApiProjectResourceName);
 var elTocardoAssistant =
-    builder.AddJavaScriptApp(ElTocardoAssistantResourceName, "../../../ElTocardo.Assistant/", runScriptName: "start");
+    builder.AddJavaScriptApp(ElTocardoAssistantResourceName, "../../../angular/ElTocardo.Assistant/", runScriptName: "start");
 
 
 migrationService
