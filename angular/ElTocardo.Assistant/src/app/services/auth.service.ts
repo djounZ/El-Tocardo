@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { OAuthService, AuthConfig } from 'angular-oauth2-oidc';
 import { filter } from 'rxjs/operators';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,10 +9,9 @@ import { filter } from 'rxjs/operators';
 export class AuthService {
   private authConfig: AuthConfig = {
     // Your OIDC provider URL
-    issuer: 'http://localhost:5095/',
-    
+    issuer: '',  // Will be set from config at runtime
     // The SPA's id. Register SPA with this id at the auth-server
-    clientId: 'ElTocardoAssistant',
+    clientId: '',
     
     // URL of the SPA to redirect the user to after login
     redirectUri: window.location.origin,
@@ -20,7 +20,7 @@ export class AuthService {
     responseType: 'code',
     
     // Set the scope for the permissions the client should request
-    scope: 'openid profile email eltocardoapiuser',
+    scope: '',  // Will be set from config at runtime
     
     // Use PKCE
     useSilentRefresh: true,
@@ -33,11 +33,19 @@ export class AuthService {
     requireHttps: false,
   };
 
-  constructor(private oauthService: OAuthService) {
+  constructor(
+    private oauthService: OAuthService,
+    private configService: ConfigService
+  ) {
     this.configure();
   }
 
   private configure(): void {
+    // Set issuer and scope from runtime config
+    this.authConfig.issuer = this.configService.authIssuer;
+    this.authConfig.scope = this.configService.authScope;
+    this.authConfig.clientId = this.configService.authClientId;
+    
     this.oauthService.configure(this.authConfig);
     this.oauthService.setupAutomaticSilentRefresh();
     

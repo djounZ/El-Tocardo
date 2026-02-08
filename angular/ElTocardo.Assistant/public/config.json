@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "issuer": "http://localhost:5095/",
+    "scope": "openid profile email eltocardoapiuser",
+    "clientId": "ElTocardoAssistant"
+  },
+  "api": {
+    "basePath": "http://localhost:40068"
+  }
+}

@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "config": "./generate-config.sh",
+    "prestart": "npm run config",
     "start": "ng serve --port $PORT",
+    "prebuild": "npm run config",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -27,6 +30,7 @@
     "@angular/compiler": "^21.1.0",
     "@angular/core": "^21.1.0",
     "@angular/forms": "^21.1.0",
+    "@angular/material": "^21.1.3",
     "@angular/platform-browser": "^21.1.0",
     "@angular/router": "^21.1.0",
     "angular-oauth2-oidc": "^20.0.2",
