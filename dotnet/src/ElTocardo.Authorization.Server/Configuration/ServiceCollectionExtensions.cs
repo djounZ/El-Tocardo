@@ -69,8 +69,6 @@ public static class ServiceCollectionExtensions
                 // Register the OpenIddict server components.
                 .AddServer(options =>
                 {
-                    //  options.UseAspNetCore().DisableTransportSecurityRequirement();
-
                     options.AddEventHandler(CustomTokenRequestHandler.Descriptor);
                     options.AddEventHandler(CustomEndSessionHandler.Descriptor);
 
@@ -100,9 +98,14 @@ public static class ServiceCollectionExtensions
                     options.RegisterScopes(OpenIddictConstants.Scopes.Email, OpenIddictConstants.Scopes.Profile, OpenIddictConstants.Scopes.Roles, OpenIddictElTocardoApiUserScope);
 
                     // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
-                    options
+                    var openIddictServerAspNetCoreBuilder = options
                         .UseAspNetCore()
                         .EnableAuthorizationEndpointPassthrough();
+
+
+                    openIddictServerAspNetCoreBuilder
+                        .DisableTransportSecurityRequirement();
+
                 });
 
             return services;

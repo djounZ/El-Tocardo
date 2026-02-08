@@ -13,7 +13,11 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve"
+    "module": "preserve",
+    "paths": {
+      "eltocardo-api-sdk": ["../EltocardoAPI.Sdk/src/index.ts"],
+      "eltocardo-api-sdk/*": ["../EltocardoAPI.Sdk/src/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

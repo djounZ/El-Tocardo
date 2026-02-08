@@ -28,12 +28,19 @@ public static class WebApplicationExtensions
                                 flow.SelectedScopes =
                                     [OpenIddictElTocardoApiUserScope]; // Same scopes as defined in the OpenApi transformer!
                             }
-                        );
+                        ).AddAuthorizationCodeFlow(OpenIddictElTocardoApiSchemaKey, flow =>
+                        {
+                            flow.ClientId = "El-Tocardo-Assistant";
+                            flow.SelectedScopes =
+                                [OpenIddictElTocardoApiUserScope];
+                            flow.RedirectUri = "http://localhost:4200/auth-callback";
+                            flow.Pkce = Pkce.Sha256;
+                        });
                 });
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseCors("DefaultCorsPolicy");
             app.UseCaching();
             await app.Services.UseElTocardoApiAsync(cancellationToken);
@@ -54,9 +61,12 @@ public static class WebApplicationExtensions
         {
             var routes = app.MapGroup(string.Empty).RequireAuthorization();
             routes
+                .MapAiProviderEndpoints();
+
+            var routesExluded = app.MapGroup(string.Empty).RequireAuthorization().ExcludeFromDescription();
+            routesExluded
                 .MapDevelopmentTestEndpoints()
                 .MapMcpServerConfigurationEndpoints()
-                .MapAiProviderEndpoints()
                 .MapMcpClientToolsEndpoints()
                 .MapChatCompletionsEndpoints()
                 .MapConversationEndpoints()

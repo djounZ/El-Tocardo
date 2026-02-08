@@ -5,45 +5,55 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 // Configure PostgreSQL database with persistent storage
 var postgres = builder.AddPostgres(PostgresServerResourceName)
-   // .WithDataVolume("el-tocardo-postgres-data") // Persistent volume for database data
+    // .WithDataVolume("el-tocardo-postgres-data") // Persistent volume for database data
     .WithPgAdmin(); // Optional: Add pgAdmin for database management
 var sqlDb = postgres.AddDatabase(PostgresDatabaseResourceName);
 
 
-var migrationService = builder.AddProject<ElTocardo_Migrations>(ElTocardoMigrationsProjectResourceName)
-        .WithReference(sqlDb)
-        .WaitFor(postgres)
-    ;
 // Add MongoDB server resource (containerized via Docker)
-var mongo = builder.AddMongoDB(MongoDbServerResourceName)
-  //  .WithDataVolume() // persists DB data across container restarts
-    .WithMongoExpress(); // optional: adds web UI for MongoDB
+var mongo = builder.AddMongoDB(MongoDbServerResourceName);
+//  .WithDataVolume() // persists DB data across container restarts
+mongo.WithMongoExpress(); // optional: adds web UI for MongoDB
 
 // Add a database resource within the MongoDB server
 var mongodb = mongo.AddDatabase(MongoDbDatabaseResourceName);
 
-var authorizationServer = builder.AddProject<ElTocardo_Authorization_Server>(ElTocardoAuthorizationServerProjectResourceName)
 
-        .WithReference(sqlDb)
-        .WaitFor(postgres)
-        .WaitForCompletion(migrationService)
+var migrationService = builder.AddProject<ElTocardo_Migrations>(ElTocardoMigrationsProjectResourceName);
+var authorizationServer =
+    builder.AddProject<ElTocardo_Authorization_Server>(ElTocardoAuthorizationServerProjectResourceName);
+var elTocardoApi = builder.AddProject<ElTocardo_API>(ElTocardoApiProjectResourceName);
+var elTocardoAssistant =
+    builder.AddJavaScriptApp(ElTocardoAssistantResourceName, "../../../ElTocardo.Assistant/", runScriptName: "start");
+
+
+migrationService
+    .WithReference(sqlDb)
+    .WithReference(elTocardoAssistant)
+    .WaitFor(postgres)
     ;
 
-var elTocardoApi = builder.AddProject<ElTocardo_API>(ElTocardoApiProjectResourceName)
+
+authorizationServer
     .WithReference(sqlDb)
+    .WaitFor(postgres)
+    .WaitForCompletion(migrationService)
+    ;
+
+elTocardoApi.WithReference(sqlDb)
     .WithReference(mongodb)
     .WithReference(authorizationServer)
+    .WithReference(elTocardoAssistant)
     .WaitFor(postgres)
     .WaitFor(mongodb)
     .WaitFor(authorizationServer)
-    .WithEnvironment(OpenIddictIssuerEnvironmentVariableName, authorizationServer.GetEndpoint("https"))
+    .WithEnvironment(OpenIddictIssuerEnvironmentVariableName, authorizationServer.GetEndpoint("http"))
     // .WithEnvironment("OllamaOptions:Uri", ollama.GetEndpoint("ollama"))
     // .WaitFor(ollama)
     .WithExternalHttpEndpoints();
 
 
-builder.AddJavaScriptApp("ElTocardoAssistant", "../../../ElTocardo.Assistant/", runScriptName: "start")
-    .WithReference(elTocardoApi)
+elTocardoAssistant.WithReference(elTocardoApi)
     .WithReference(authorizationServer)
     .WaitFor(elTocardoApi)
     .WithHttpEndpoint(env: "PORT")

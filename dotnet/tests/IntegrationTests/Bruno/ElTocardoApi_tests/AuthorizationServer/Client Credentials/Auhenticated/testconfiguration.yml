@@ -1,11 +1,11 @@
 info:
-  name: connect/userinfo
+  name: testconfiguration
   type: http
   seq: 2
 
 http:
   method: GET
-  url: "{{authorization_server}}/connect/userinfo"
+  url: "{{api_backend}}/configuration"
   auth: inherit
 
 settings:

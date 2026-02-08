@@ -1,0 +1,30 @@
+{
+  "name": "eltocardo-api-sdk",
+  "version": "1.0.0",
+  "description": "ElTocardo API SDK - Auto-generated API client",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "eltocardo",
+    "api",
+    "sdk"
+  ],
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+    "@angular/common": "^21.0.0",
+    "@angular/core": "^21.0.0",
+    "rxjs": "~7.8.0"
+  },
+  "devDependencies": {
+    "@angular/common": "^21.1.0",
+    "@angular/core": "^21.1.0",
+    "rxjs": "~7.8.0",
+    "typescript": "~5.9.2"
+  }
+}

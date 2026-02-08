@@ -9,6 +9,8 @@ public static class Constants
     public const string MongoDbDatabaseResourceName = "el-tocardo-db-mongodb";
     public const string ElTocardoAuthorizationServerProjectResourceName = "authorization-server";
     public const string ElTocardoApiProjectResourceName = "ElTocardoAPI";
+    public const string ElTocardoAssistantResourceName = "ElTocardoAssistant";
+    public const string ElTocardoAssistantClientId = "ElTocardoAssistant";
     public const string ElTocardoDataProtectionApplicationName = "ElTocardoDataProtection";
     public const string OpenIddictIssuerEnvironmentVariableName = "OpenIddictIssuer";
     public const string OpenIddictServerCertificateName = "OpenIddictServer";

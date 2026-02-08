@@ -40,7 +40,7 @@ public static class ConnectEndpoints
 					{
 						RedirectUri = context.Request.PathBase + context.Request.Path + QueryString.Create(
 							context.Request.HasFormContentType ? context.Request.Form.ToList() : context.Request.Query.ToList()),
-                Items = { 
+                Items = {
                     ["openiddict_request"] = JsonSerializer.Serialize(request) // Store full request
                 }
 					});
@@ -50,8 +50,7 @@ public static class ConnectEndpoints
 			{
 				new (OpenIddictConstants.Claims.Subject, result?.Principal?.Identity?.Name ?? string.Empty)
 			};
-			var claimsIdentity = new ClaimsIdentity(claims, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
-			var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+			var claimsIdentity = new ClaimsIdentity(claims, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme); var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 			claimsPrincipal.SetScopes(request.GetScopes());
 			return Results.SignIn(claimsPrincipal, properties: null, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 		})

@@ -39,7 +39,7 @@ public static class FirstTimeInitialization
             context.EnsureOpenIddictCertificate();
             // Check if we need to migrate data from JSON file
             await MigrateFromJsonFileIfNeededAsync(context, infrastructureOptions.Value, logger, cancellationToken);
-            await ClientIdAsync(manager, cancellationToken);
+            await ClientIdAsync(manager, configuration, cancellationToken);
 
             var roleManager =  scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             string[] roles = new[] { "ADMIN", "USER", "MANAGER" };
@@ -82,8 +82,10 @@ public static class FirstTimeInitialization
         }
     }
 
-    private static async Task ClientIdAsync(IOpenIddictApplicationManager manager, CancellationToken cancellationToken)
+    private static async Task ClientIdAsync(IOpenIddictApplicationManager manager, IConfiguration configuration,
+        CancellationToken cancellationToken)
     {
+        var servicesConfiguration = configuration.GetSection("services");
         // Keep postman client for password/refresh grant
         if (await manager.FindByClientIdAsync("postman", cancellationToken) == null)
         {
@@ -104,22 +106,30 @@ public static class FirstTimeInitialization
 
 
         // Add El-Tocardo-Assistant for Authorization Code flow with PKCE
-        if (await manager.FindByClientIdAsync("El-Tocardo-Assistant", cancellationToken) == null)
+        var elTocardoAssistantResourceConfiguration = servicesConfiguration.GetSection(ElTocardoAssistantResourceName);
+        var redirectPath = elTocardoAssistantResourceConfiguration.GetSection("http").GetSection("0").Get<string>()!;
+        var redirectUri = new Uri(redirectPath);
+        if (await manager.FindByClientIdAsync(ElTocardoAssistantClientId, cancellationToken) == null)
         {
             await manager.CreateAsync(new OpenIddictApplicationDescriptor
             {
-                ClientId = "El-Tocardo-Assistant",
+                ClientId = ElTocardoAssistantClientId,
                 // For public clients (SPA), ClientSecret should not be set
-                RedirectUris = { new Uri("http://localhost:4200/auth-callback") },
+                RedirectUris = { redirectUri },
+                PostLogoutRedirectUris = { redirectUri },
                 Permissions =
                 {
                     OpenIddictConstants.Permissions.Endpoints.Authorization,
                     OpenIddictConstants.Permissions.Endpoints.Token,
+                    OpenIddictConstants.Permissions.Endpoints.EndSession,
                     OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
                     OpenIddictConstants.Permissions.ResponseTypes.Code,
                     OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
-                    OpenIddictConstants.Permissions.Prefixes.Scope + "openid",
-                    OpenIddictConstants.Permissions.Scopes.Profile
+                    OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictConstants.Scopes.OpenId,
+                    OpenIddictConstants.Permissions.Scopes.Profile,
+                    OpenIddictConstants.Permissions.Scopes.Email,
+                    OpenIddictConstants.Permissions.Scopes.Roles,
+                    OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictElTocardoApiUserScope,
                 },
                 Requirements =
                 {

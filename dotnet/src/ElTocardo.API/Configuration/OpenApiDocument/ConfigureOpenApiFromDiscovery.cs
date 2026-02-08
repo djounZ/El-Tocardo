@@ -16,6 +16,7 @@ public class DiscoverySecurityTransformer(HttpClient httpClient,IConfiguration c
 
 
         var schemaKey = OpenIddictElTocardoApiSchemaKey;
+        var oidc = "oidc";
         var scopes = new Dictionary<string, string>
         {
             {
@@ -23,21 +24,36 @@ public class DiscoverySecurityTransformer(HttpClient httpClient,IConfiguration c
                 "All scopes" // Human readable description
             },
         };
+
+        var authorizationEndpoint = jsonElement.GetProperty("authorization_endpoint").GetString()!;
+        var authorizationEndpointUri = new Uri(authorizationEndpoint);
+        var tokenEndpoint = jsonElement.GetProperty("token_endpoint").GetString()!;
+        var tokenEndpointUri = new Uri(tokenEndpoint);
+        var openApiOAuthFlow = CreateOpenApiOAuthFlow(authorizationEndpointUri, tokenEndpointUri, scopes);
         var securitySchemes = new Dictionary<string, IOpenApiSecurityScheme>
         {
+            [oidc] = new OpenApiSecurityScheme
+            {
+                Type = SecuritySchemeType.OpenIdConnect,
+                OpenIdConnectUrl = authServerUrl,
+                Description = "OpenID Connect authentication",
+                Scheme = oidc,
+                Flows = new OpenApiOAuthFlows
+                {
+                    AuthorizationCode = openApiOAuthFlow,
+                    ClientCredentials = openApiOAuthFlow
+                },
+            },
             [schemaKey] = new OpenApiSecurityScheme
             {
                 Type = SecuritySchemeType.OAuth2,
+                OpenIdConnectUrl = authServerUrl,
+                Description = "OAuth2 authentication",
                 Scheme = schemaKey,
                 Flows = new OpenApiOAuthFlows
                 {
-                    ClientCredentials = new OpenApiOAuthFlow
-                    {
-                        AuthorizationUrl = new Uri(jsonElement.GetProperty("authorization_endpoint").GetString()!),
-                        TokenUrl = new Uri(jsonElement.GetProperty("token_endpoint").GetString()!),
-                        RefreshUrl = new Uri(jsonElement.GetProperty("token_endpoint").GetString()!),
-                        Scopes = scopes,
-                    },
+                    AuthorizationCode = openApiOAuthFlow,
+                    ClientCredentials = openApiOAuthFlow
                 },
             },
         };
@@ -45,9 +61,21 @@ public class DiscoverySecurityTransformer(HttpClient httpClient,IConfiguration c
         document.Components.SecuritySchemes = securitySchemes;
         var securityRequirement = new OpenApiSecurityRequirement
         {
+            [new OpenApiSecuritySchemeReference(oidc, document)] = [..scopes.Keys],
             [new OpenApiSecuritySchemeReference(schemaKey, document)] = [..scopes.Keys],
         };
 
         document.Security = [securityRequirement];
+    }
+
+    private static OpenApiOAuthFlow CreateOpenApiOAuthFlow(Uri authorizationEndpointUri, Uri tokenEndpointUri, Dictionary<string, string> scopes)
+    {
+        return new OpenApiOAuthFlow
+        {
+            AuthorizationUrl = authorizationEndpointUri,
+            TokenUrl = tokenEndpointUri,
+            RefreshUrl = tokenEndpointUri,
+            Scopes = scopes,
+        };
     }
 }

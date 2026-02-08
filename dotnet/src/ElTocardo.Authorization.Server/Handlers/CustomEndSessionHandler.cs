@@ -21,7 +21,7 @@ public class CustomEndSessionHandler : IOpenIddictServerHandler<OpenIddictServer
     public static OpenIddictServerHandlerDescriptor Descriptor { get; }
         = OpenIddictServerHandlerDescriptor.CreateBuilder<OpenIddictServerEvents.HandleEndSessionRequestContext>()
             .UseScopedHandler<CustomEndSessionHandler>()
-            .SetOrder(1000_000)
+            .SetOrder(1000)
             .SetType(OpenIddictServerHandlerType.Custom)
             .Build();
 
@@ -29,6 +29,7 @@ public class CustomEndSessionHandler : IOpenIddictServerHandler<OpenIddictServer
     {
         var httpContext = context.Transaction.GetHttpRequest()?.HttpContext
                         ?? throw new InvalidOperationException("HttpContext not available");
+
         var postLogoutRedirectUri = context.Request.PostLogoutRedirectUri;
 
         if (string.IsNullOrEmpty(postLogoutRedirectUri))
@@ -46,7 +47,7 @@ public class CustomEndSessionHandler : IOpenIddictServerHandler<OpenIddictServer
             return;
         }
 
-        var principal = result.Principal;
+        var principal =  context.IdentityTokenHintPrincipal!;
         var subject = principal.GetClaim(Claims.Subject)!;
 
         await _tokenManager.RevokeBySubjectAsync(subject);
@@ -54,6 +55,6 @@ public class CustomEndSessionHandler : IOpenIddictServerHandler<OpenIddictServer
         // 3. Sign out cookies
         await httpContext.SignOutAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         await httpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
-
+        context.HandleRequest();
     }
 }
