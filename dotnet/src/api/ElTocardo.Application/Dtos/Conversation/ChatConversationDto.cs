@@ -1,8 +1,7 @@
 using System.Text.Json.Serialization;
-using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
-using ElTocardo.Application.Dtos.AI.ChatCompletion.Response;
-using ElTocardo.Application.Dtos.AI.Contents;
 using ElTocardo.Application.Dtos.Configuration;
+using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.ChatCompletion;
+using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.Contents;
 
 namespace ElTocardo.Application.Dtos.Conversation;
 

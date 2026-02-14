@@ -1,5 +1,5 @@
 using ElTocardo.Application.Dtos.Conversation;
-using ElTocardo.Application.Mappers.Dtos.AI;
+using ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI;
 using Microsoft.Extensions.AI;
 
 namespace ElTocardo.Application.Mappers.Dtos.Conversation;

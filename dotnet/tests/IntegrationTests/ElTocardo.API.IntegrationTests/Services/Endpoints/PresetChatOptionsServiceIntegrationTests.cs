@@ -1,6 +1,6 @@
 using ElTocardo.API.IntegrationTests.Configuration;
-using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.Configuration;
+using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.ChatCompletion;
 using ElTocardo.Application.Services;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Entities;
 using ElTocardo.Infrastructure.EntityFramework.Mediator;
@@ -36,6 +36,7 @@ public class PresetChatOptionsServiceIntegrationTests : AbstractDbSetServiceInte
             0.1f,
             0.2f,
             42,
+            null, // todo
             null,
             "gpt-4",
             new List<string> { "stop" },
@@ -53,10 +54,10 @@ public class PresetChatOptionsServiceIntegrationTests : AbstractDbSetServiceInte
     public async Task GetAllPresets_AfterCreating_ShouldReturnAll()
     {
         await _presetChatOptionsEndpointService.CreateAsync(new PresetChatOptionsDto("p1",
-            new ChatOptionsDto(null, "A", null, null, null, null, null, null, null, null, null, null, null, null,
+            new ChatOptionsDto(null, "A", null, null, null, null, null, null, null, null,null, null, null, null, null,
                 null)));
         await _presetChatOptionsEndpointService.CreateAsync(new PresetChatOptionsDto("p2",
-            new ChatOptionsDto(null, "B", null, null, null, null, null, null, null, null, null, null, null, null,
+            new ChatOptionsDto(null, "B", null, null, null, null, null, null, null, null,null, null, null, null, null,
                 null)));
 
         var result = await _presetChatOptionsEndpointService.GetAllAsync();
@@ -72,11 +73,11 @@ public class PresetChatOptionsServiceIntegrationTests : AbstractDbSetServiceInte
     public async Task UpdatePreset_ShouldChangeData()
     {
         var preset = new PresetChatOptionsDto("to-update",
-            new ChatOptionsDto(null, null, 0.2f, null, null, null, null, null, null, null, null, null, null, null,
+            new ChatOptionsDto(null, null, 0.2f, null, null, null, null, null, null, null,null, null, null, null, null,
                 null));
         await _presetChatOptionsEndpointService.CreateAsync(preset);
         var updated = new PresetChatOptionsDto("to-update",
-            new ChatOptionsDto(null, null, 0.7f, null, null, null, null, null, null, null, null, null, null, null,
+            new ChatOptionsDto(null, null, 0.7f, null, null, null, null, null, null, null,null, null, null, null, null,
                 null));
 
         var updateResult = await _presetChatOptionsEndpointService.UpdateAsync("to-update", updated);
@@ -91,7 +92,7 @@ public class PresetChatOptionsServiceIntegrationTests : AbstractDbSetServiceInte
     public async Task DeletePreset_ShouldRemove()
     {
         var preset = new PresetChatOptionsDto("to-delete",
-            new ChatOptionsDto(null, "Del", null, null, null, null, null, null, null, null, null, null, null, null,
+            new ChatOptionsDto(null, "Del", null, null, null, null, null, null, null, null,null, null, null, null, null,
                 null));
         await _presetChatOptionsEndpointService.CreateAsync(preset);
 
@@ -114,7 +115,7 @@ public class PresetChatOptionsServiceIntegrationTests : AbstractDbSetServiceInte
     public async Task Update_NonExistent_ShouldReturnFailure()
     {
         var updated = new PresetChatOptionsDto("not-exist",
-            new ChatOptionsDto(null, "X", null, null, null, null, null, null, null, null, null, null, null, null,
+            new ChatOptionsDto(null, "X", null, null, null, null, null, null, null, null, null,null, null, null, null,
                 null));
 
         var result = await _presetChatOptionsEndpointService.UpdateAsync("not-exist", updated);
@@ -134,7 +135,7 @@ public class PresetChatOptionsServiceIntegrationTests : AbstractDbSetServiceInte
     public async Task CreatePreset_WithInvalidName_ShouldReturnFailure()
     {
         var preset = new PresetChatOptionsDto("",
-            new ChatOptionsDto(null, "Test", null, null, null, null, null, null, null, null, null, null, null, null,
+            new ChatOptionsDto(null, "Test", null, null, null, null, null, null, null, null, null,null, null, null, null,
                 null));
 
         var result = await _presetChatOptionsEndpointService.CreateAsync(preset);

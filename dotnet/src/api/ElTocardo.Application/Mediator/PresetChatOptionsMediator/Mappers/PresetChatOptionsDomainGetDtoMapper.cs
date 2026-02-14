@@ -1,6 +1,7 @@
 using System.Text.Json;
-using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
 using ElTocardo.Application.Dtos.Configuration;
+using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.ChatCompletion;
+using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.Tools;
 using ElTocardo.Domain.Mediator.Common.Mappers;
 using ElTocardo.Domain.Mediator.PresetChatOptionsMediator.Entities;
 
@@ -20,6 +21,7 @@ public class PresetChatOptionsDomainGetDtoMapper : AbstractDomainGetDtoMapper<Pr
             entity.FrequencyPenalty,
             entity.PresencePenalty,
             entity.Seed,
+            null,// todo entity.Reasoning?.ToString(),
             entity.ResponseFormat is not null
                 ? JsonSerializer.Deserialize<ChatResponseFormatDto>(entity.ResponseFormat)
                 : null,

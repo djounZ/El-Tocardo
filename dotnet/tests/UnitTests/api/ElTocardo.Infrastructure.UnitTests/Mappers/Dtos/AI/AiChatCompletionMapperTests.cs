@@ -1,6 +1,8 @@
-using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
+using ElTocardo.Application.Dtos.ChatCompletion;
 using ElTocardo.Application.Dtos.Configuration;
-using ElTocardo.Application.Mappers.Dtos.AI;
+using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.ChatCompletion;
+using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.Contents;
+using ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -10,7 +12,7 @@ namespace ElTocardo.Infrastructure.UnitTests.Mappers.Dtos.AI;
 public class AiChatCompletionMapperTests
 {
 	private readonly Mock<ILogger<AiChatCompletionMapper>> _loggerMock = new();
-	private readonly AiContentMapper _contentMapper = new(new Mock<ILogger<AiContentMapper>>().Object);
+	private readonly AiContentMapperOld _contentMapper = new(new Mock<ILogger<AiContentMapperOld>>().Object);
 	private readonly AiChatCompletionMapper _mapper;
 
 	public AiChatCompletionMapperTests()
@@ -22,7 +24,7 @@ public class AiChatCompletionMapperTests
 	public void MapToAiChatClientRequest_MapsCorrectly()
 	{
 		// Arrange
-		var messageDto = new ChatMessageDto(ChatRoleEnumDto.User, new List<ElTocardo.Application.Dtos.AI.Contents.AiContentDto>());
+		var messageDto = new ChatMessageDto(ChatRoleEnumDto.User, new List<AiContentDto>());
 		var optionsDto = new ChatOptionsDto(
 			ConversationId: "conv1",
 			Instructions: "instr",
@@ -33,6 +35,7 @@ public class AiChatCompletionMapperTests
 			FrequencyPenalty: 0.1f,
 			PresencePenalty: 0.2f,
 			Seed: 42,
+            Reasoning: null, //todo
 			ResponseFormat: null,
 			ModelId: "model",
 			StopSequences: new List<string> { "stop" },
@@ -111,7 +114,7 @@ public class AiChatCompletionMapperTests
 	[Fact]
 	public void MapToAiChatClientRequest_NullOptions_MapsCorrectly()
 	{
-		var messageDto = new ChatMessageDto(ChatRoleEnumDto.User, new List<ElTocardo.Application.Dtos.AI.Contents.AiContentDto>());
+		var messageDto = new ChatMessageDto(ChatRoleEnumDto.User, new List<AiContentDto>());
 		var dto = new ChatRequestDto([messageDto]);
 		var result = _mapper.MapToAiChatClientRequest(dto);
 		result.Options.Should().BeNull();
@@ -155,7 +158,7 @@ public class AiChatCompletionMapperTests
 		dto.ResponseId.Should().Be("resp1");
 		dto.ConversationId.Should().Be("conv1");
 		dto.ModelId.Should().Be("model");
-		dto.FinishReason.Should().Be(Application.Dtos.AI.ChatCompletion.Response.ChatFinishReasonDto.Stop);
+		dto.FinishReason.Should().Be(ChatFinishReasonDto.Stop);
 		roundTrip.ResponseId.Should().Be("resp1");
 		roundTrip.ConversationId.Should().Be("conv1");
 		roundTrip.ModelId.Should().Be("model");
@@ -209,7 +212,7 @@ public class AiChatCompletionMapperTests
 	{
 		var method = typeof(AiChatCompletionMapper).GetMethod("MapToFinishReasonDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 		var result = method!.Invoke(_mapper, [Microsoft.Extensions.AI.ChatFinishReason.Stop]);
-		result.Should().Be(Application.Dtos.AI.ChatCompletion.Response.ChatFinishReasonDto.Stop);
+		result.Should().Be(ChatFinishReasonDto.Stop);
 	}
 
 	[Fact]
@@ -217,7 +220,7 @@ public class AiChatCompletionMapperTests
 	{
 		var method = typeof(AiChatCompletionMapper).GetMethod("MapToFinishReasonDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 		var result = method!.Invoke(_mapper, [Microsoft.Extensions.AI.ChatFinishReason.Length]);
-		result.Should().Be(Application.Dtos.AI.ChatCompletion.Response.ChatFinishReasonDto.Length);
+		result.Should().Be(ChatFinishReasonDto.Length);
 	}
 
 	[Fact]
@@ -225,7 +228,7 @@ public class AiChatCompletionMapperTests
 	{
 		var method = typeof(AiChatCompletionMapper).GetMethod("MapToFinishReasonDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 		var result = method!.Invoke(_mapper, [Microsoft.Extensions.AI.ChatFinishReason.ToolCalls]);
-		result.Should().Be(Application.Dtos.AI.ChatCompletion.Response.ChatFinishReasonDto.ToolCalls);
+		result.Should().Be(ChatFinishReasonDto.ToolCalls);
 	}
 
 	[Fact]
@@ -233,7 +236,7 @@ public class AiChatCompletionMapperTests
 	{
 		var method = typeof(AiChatCompletionMapper).GetMethod("MapToFinishReasonDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 		var result = method!.Invoke(_mapper, [Microsoft.Extensions.AI.ChatFinishReason.ContentFilter]);
-		result.Should().Be(Application.Dtos.AI.ChatCompletion.Response.ChatFinishReasonDto.ContentFilter);
+		result.Should().Be(ChatFinishReasonDto.ContentFilter);
 	}	[Fact]
 	public void MapToChatResponseFormatDto_ReturnsNull_WhenInputIsNull()
 	{

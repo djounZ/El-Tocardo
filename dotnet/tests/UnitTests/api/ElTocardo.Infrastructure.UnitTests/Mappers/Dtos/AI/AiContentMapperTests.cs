@@ -1,6 +1,7 @@
 using System.Diagnostics;
-using ElTocardo.Application.Dtos.AI.Contents;
-using ElTocardo.Application.Mappers.Dtos.AI;
+using ElTocardo.Application.Dtos.Microsoft.Extensions.AI;
+using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.Contents;
+using ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI;
 using FluentAssertions;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
@@ -10,12 +11,12 @@ namespace ElTocardo.Infrastructure.UnitTests.Mappers.Dtos.AI;
 
 public class AiContentMapperTests
 {
-    private readonly Mock<ILogger<AiContentMapper>> _loggerMock = new();
-    private readonly AiContentMapper _mapper;
+    private readonly Mock<ILogger<AiContentMapperOld>> _loggerMock = new();
+    private readonly AiContentMapperOld _mapper;
 
     public AiContentMapperTests()
     {
-        _mapper = new AiContentMapper(_loggerMock.Object);
+        _mapper = new AiContentMapperOld(_loggerMock.Object);
     }
 
     [Fact]

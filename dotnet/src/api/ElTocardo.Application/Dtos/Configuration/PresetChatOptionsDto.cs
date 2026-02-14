@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
+using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.ChatCompletion;
 
 namespace ElTocardo.Application.Dtos.Configuration;
 

@@ -17,6 +17,7 @@ public class PresetChatOptionsDomainCreateCommandMapper : AbstractDomainCreateCo
             command.FrequencyPenalty,
             command.PresencePenalty,
             command.Seed,
+            null, // todo
             command.ResponseFormat,
             command.StopSequences,
             command.AllowMultipleToolCalls,

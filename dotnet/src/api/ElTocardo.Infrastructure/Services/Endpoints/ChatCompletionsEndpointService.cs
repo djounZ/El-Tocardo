@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
-using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
-using ElTocardo.Application.Dtos.AI.ChatCompletion.Response;
-using ElTocardo.Application.Mappers.Dtos.AI;
+using ElTocardo.Application.Dtos.ChatCompletion;
+using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.ChatCompletion;
+using ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI;
 using ElTocardo.Application.Services;
 using Microsoft.Extensions.Logging;
 

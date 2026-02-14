@@ -1,5 +1,5 @@
-using ElTocardo.Application.Dtos.AI.ChatCompletion.Request;
-using ElTocardo.Application.Dtos.AI.ChatCompletion.Response;
+using ElTocardo.Application.Dtos.ChatCompletion;
+using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.ChatCompletion;
 using ElTocardo.Application.Services;
 
 namespace ElTocardo.API.Endpoints;

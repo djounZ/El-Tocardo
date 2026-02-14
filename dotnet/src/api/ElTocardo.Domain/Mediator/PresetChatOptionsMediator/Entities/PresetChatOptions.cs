@@ -15,6 +15,7 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
         float? frequencyPenalty,
         float? presencePenalty,
         long? seed,
+        string? reasoning,
         string? responseFormat,
         string? stopSequences,
         bool? allowMultipleToolCalls,
@@ -30,6 +31,7 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
         FrequencyPenalty = frequencyPenalty;
         PresencePenalty = presencePenalty;
         Seed = seed;
+        Reasoning = reasoning;
         ResponseFormat = responseFormat;
         StopSequences = stopSequences;
         AllowMultipleToolCalls = allowMultipleToolCalls;
@@ -49,6 +51,7 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
     public float? FrequencyPenalty { get; private set; }
     public float? PresencePenalty { get; private set; }
     public long? Seed { get; private set; }
+    public string? Reasoning { get; private set; }
     public string? ResponseFormat { get; private set; }
     public string? StopSequences { get; private set; }
     public bool? AllowMultipleToolCalls { get; private set; }
@@ -63,6 +66,7 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
         float? frequencyPenalty,
         float? presencePenalty,
         long? seed,
+        string? reasoning,
         string? responseFormat,
         string? stopSequences,
         bool? allowMultipleToolCalls,
@@ -76,6 +80,7 @@ public class PresetChatOptions : AbstractEntity<Guid,string>
         FrequencyPenalty = frequencyPenalty;
         PresencePenalty = presencePenalty;
         Seed = seed;
+        Reasoning = reasoning;
         ResponseFormat = responseFormat;
         StopSequences = stopSequences;
         AllowMultipleToolCalls = allowMultipleToolCalls;

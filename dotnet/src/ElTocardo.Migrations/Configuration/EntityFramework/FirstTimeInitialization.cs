@@ -34,7 +34,9 @@ public static class FirstTimeInitialization
         try
         {
             logger.LogInformation("Ensuring database is created and up to date");
-            await context.Database.MigrateAsync(cancellationToken);
+            // await context.Database.MigrateAsync(cancellationToken);
+            await context.Database.EnsureCreatedAsync(cancellationToken);
+
 
             context.EnsureOpenIddictCertificate();
             // Check if we need to migrate data from JSON file

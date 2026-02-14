@@ -1,10 +1,18 @@
 using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Dtos.Conversation;
+using ElTocardo.Application.Dtos.Microsoft.Extensions.AI;
+using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.ChatCompletion;
+using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.Contents;
+using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.Tools;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
 using ElTocardo.Application.Dtos.PresetChatInstruction;
 using ElTocardo.Application.Dtos.UserExternalToken;
-using ElTocardo.Application.Mappers.Dtos.AI;
+using ElTocardo.Application.Mappers.Dtos;
 using ElTocardo.Application.Mappers.Dtos.Conversation;
+using ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI;
+using ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI.ChatCompletion;
+using ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI.Contents;
+using ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI.Tools;
 using ElTocardo.Application.Mappers.Dtos.ModelContextProtocol;
 using ElTocardo.Application.Mediator.ConversationMediator.Commands;
 using ElTocardo.Application.Mediator.ConversationMediator.Handlers.Commands;
@@ -38,6 +46,7 @@ using ElTocardo.Domain.Mediator.Common.Interfaces;
 using ElTocardo.Domain.Mediator.ConversationMediator.Entities;
 using ElTocardo.Domain.Mediator.UserExternalTokenMediator.Entities;
 using FluentValidation;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -92,6 +101,7 @@ public static class ServiceCollectionExtensions
 
         private IServiceCollection AddDtos()
         {
+            services.AddMicrosoftExtensionAi();
             services.AddAi();
 
             services.TryAddSingleton<ConversationDtoChatDtoMapper>();
@@ -100,10 +110,50 @@ public static class ServiceCollectionExtensions
             return services;
         }
 
+
+        private IServiceCollection AddMicrosoftExtensionAi()
+        {
+            // ChatCompletion
+            services
+                .AddDomainEntityMapper<ChatFinishReason, ChatFinishReasonDto, ChatFinishReasonMapper>()
+                .AddDomainEntityMapper<ChatMessage, ChatMessageDto, ChatMessageMapper>()
+                .AddDomainEntityMapper<ChatOptions, ChatOptionsDto, ChatOptionsMapper>()
+                .AddDomainEntityMapper<ChatResponseFormat, ChatResponseFormatDto, ChatResponseFormatMapper>()
+                .AddDomainEntityMapper<ChatResponse, ChatResponseDto, ChatResponseMapper>()
+                .AddDomainEntityMapper<ChatResponseUpdate, ChatResponseUpdateDto, ChatResponseUpdateMapper>()
+                .AddDomainEntityMapper<ChatRole, ChatRoleEnumDto, ChatRoleMapper>()
+                .AddDomainEntityMapper<ChatToolMode, ChatToolModeDto, ChatToolModeMapper>()
+                .AddDomainEntityMapper<ReasoningEffort, ReasoningEffortEnumDto, ReasoningEffortMapper>()
+                .AddDomainEntityMapper<ReasoningOptions, ReasoningOptionsDto, ReasoningOptionsMapper>()
+                .AddDomainEntityMapper<ReasoningOutput, ReasoningOutputEnumDto, ReasoningOutputMapper>()
+
+             // Contents
+                .AddDomainEntityMapper<AIContent, AiContentDto, AIContentMapper>()
+
+             // Tools
+                .AddDomainEntityMapper<AITool, AiToolDto, AIToolMapper>()
+
+
+
+
+                .AddDomainEntityMapper<UsageDetails, UsageDetailsDto, UsageDetailsMapper>()
+                ;
+
+            return services;
+        }
+
+        private IServiceCollection AddDomainEntityMapper<TDomainEntity, TApplicationEntity, TInstance>()
+        where TInstance : class, IDomainEntityMapper<TDomainEntity, TApplicationEntity>
+        {
+            services.TryAddSingleton<IDomainEntityMapper<TDomainEntity, TApplicationEntity>, TInstance>();
+            return services;
+        }
+
+
         private IServiceCollection AddAi()
         {
             services.TryAddSingleton<AiChatCompletionMapper>();
-            services.TryAddSingleton<AiContentMapper>();
+            services.TryAddSingleton<AiContentMapperOld>();
             return services;
         }
 

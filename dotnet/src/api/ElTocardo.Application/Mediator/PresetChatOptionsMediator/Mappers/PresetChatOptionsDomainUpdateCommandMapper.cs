@@ -16,6 +16,7 @@ public class PresetChatOptionsDomainUpdateCommandMapper : AbstractDomainUpdateCo
             command.FrequencyPenalty,
             command.PresencePenalty,
             command.Seed,
+            null, // todo
             command.ResponseFormat,
             command.StopSequences,
             command.AllowMultipleToolCalls,

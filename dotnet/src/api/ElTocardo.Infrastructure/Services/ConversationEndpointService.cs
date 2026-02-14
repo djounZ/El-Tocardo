@@ -1,8 +1,8 @@
 using System.Runtime.CompilerServices;
 using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Dtos.Conversation;
-using ElTocardo.Application.Mappers.Dtos.AI;
 using ElTocardo.Application.Mappers.Dtos.Conversation;
+using ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI;
 using ElTocardo.Application.Mediator.ConversationMediator.Commands;
 using ElTocardo.Application.Mediator.ConversationMediator.Queries;
 using ElTocardo.Application.Services;
