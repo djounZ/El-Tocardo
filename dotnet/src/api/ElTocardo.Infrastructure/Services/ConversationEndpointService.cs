@@ -132,7 +132,7 @@ public sealed class ConversationEndpointService(ILogger<ConversationEndpointServ
 
         var conversation = newRoundResult.ReadValue();
 
-        var request = new AiChatCompletionMapper.AiChatClientRequest(conversation.Rounds.SelectMany(m=> m.GetAllMessages()), conversation.CurrentOptions);
+        var request = new AiChatClientRequest(conversation.Rounds.SelectMany(m=> m.GetAllMessages()), conversation.CurrentOptions);
 
         var chatClient = await ClientProvider.GetChatClientAsync(Enum.Parse<AiProviderEnumDto>(conversation.CurrentProvider), cancellationToken);
 

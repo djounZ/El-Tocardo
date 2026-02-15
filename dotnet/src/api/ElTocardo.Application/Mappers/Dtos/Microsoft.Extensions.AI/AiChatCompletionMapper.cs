@@ -310,8 +310,4 @@ public sealed class AiChatCompletionMapper(ILogger<AiChatCompletionMapper> logge
             [.. chatMessage.Contents.Select(aiContentMapper.MapToAiContentDto)]
         );
     }
-
-    public record AiChatClientRequest(
-        IEnumerable<ChatMessage> Messages,
-        ChatOptions? Options = null);
 }

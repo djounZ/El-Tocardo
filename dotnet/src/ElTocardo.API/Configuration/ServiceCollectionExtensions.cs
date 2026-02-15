@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi;
 using MongoDB.Driver;
 using OpenIddict.Validation.AspNetCore;
 using static ElTocardo.ServiceDefaults.Constants;

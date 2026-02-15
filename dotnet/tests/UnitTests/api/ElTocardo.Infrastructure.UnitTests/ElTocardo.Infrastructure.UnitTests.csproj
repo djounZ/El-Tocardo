@@ -21,4 +21,8 @@
       <ProjectReference Include="..\..\..\..\src\api\ElTocardo.Infrastructure\ElTocardo.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Mappers\Dtos\AI\Tools\" />
+    </ItemGroup>
+
 </Project>

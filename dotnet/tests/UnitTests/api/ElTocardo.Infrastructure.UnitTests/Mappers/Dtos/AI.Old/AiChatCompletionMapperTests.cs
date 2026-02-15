@@ -7,7 +7,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace ElTocardo.Infrastructure.UnitTests.Mappers.Dtos.AI;
+namespace ElTocardo.Infrastructure.UnitTests.Mappers.Dtos.AI.Old;
 
 public class AiChatCompletionMapperTests
 {
@@ -87,7 +87,7 @@ public class AiChatCompletionMapperTests
 			StopSequences = new List<string> { "stop" },
 			AllowMultipleToolCalls = true
 		};
-		var aiRequest = new AiChatCompletionMapper.AiChatClientRequest(aiMessages, options);
+		var aiRequest = new AiChatClientRequest(aiMessages, options);
 		var provider = AiProviderEnumDto.GithubCopilot;
 
 		// Act
@@ -128,7 +128,7 @@ public class AiChatCompletionMapperTests
 			new Microsoft.Extensions.AI.ChatMessage(Microsoft.Extensions.AI.ChatRole.User, [new Microsoft.Extensions.AI.TextContent("hi")
             ])
 		};
-		var aiRequest = new AiChatCompletionMapper.AiChatClientRequest(aiMessages);
+		var aiRequest = new AiChatClientRequest(aiMessages);
 		var provider = AiProviderEnumDto.GithubCopilot;
 		var dto = _mapper.MapToChatClientRequestDto(aiRequest, provider);
 		dto.Options.Should().BeNull();

@@ -40,7 +40,7 @@ public sealed class ChatCompletionsEndpointService(
         Logger.LogInformation("Computing chat completions streaming ended");
     }
 
-    private async Task<AiChatCompletionMapper.AiChatClientRequest> MapToAiChatClientRequest(ChatRequestDto chatRequestDto, CancellationToken cancellationToken)
+    private async Task<AiChatClientRequest> MapToAiChatClientRequest(ChatRequestDto chatRequestDto, CancellationToken cancellationToken)
     {
         var request = aiChatCompletionMapper.MapToAiChatClientRequest(chatRequestDto);
         await MapTools(chatRequestDto.Options, request.Options, cancellationToken);

@@ -1,6 +1,5 @@
 using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.Functions;
 using Microsoft.Extensions.AI;
-using System.Text.Json;
 using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI.Functions;
