@@ -10,15 +10,15 @@ using Moq;
 
 namespace ElTocardo.Infrastructure.UnitTests.Mappers.Dtos.AI.Old;
 
-public class AiChatCompletionMapperTests
+public class AiChatCompletionMapperOldTests
 {
-	private readonly Mock<ILogger<AiChatCompletionMapper>> _loggerMock = new();
+	private readonly Mock<ILogger<AiChatCompletionMapperOld>> _loggerMock = new();
 	private readonly AiContentMapperOld _contentMapper = new(new Mock<ILogger<AiContentMapperOld>>().Object);
-	private readonly AiChatCompletionMapper _mapper;
+	private readonly AiChatCompletionMapperOld _mapper;
 
-	public AiChatCompletionMapperTests()
+	public AiChatCompletionMapperOldTests()
 	{
-		_mapper = new AiChatCompletionMapper(_loggerMock.Object, _contentMapper);
+		_mapper = new AiChatCompletionMapperOld(_loggerMock.Object, _contentMapper);
 	}
 
 
@@ -90,7 +90,7 @@ public class AiChatCompletionMapperTests
 	}	[Fact]
 	public void MapToFinishReasonDto_ReturnsNull_WhenInputIsNull()
 	{
-		var method = typeof(AiChatCompletionMapper).GetMethod("MapToFinishReasonDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+		var method = typeof(AiChatCompletionMapperOld).GetMethod("MapToFinishReasonDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 		var result = method!.Invoke(_mapper, [null]);
 		result.Should().BeNull();
 	}
@@ -98,7 +98,7 @@ public class AiChatCompletionMapperTests
 	[Fact]
 	public void MapToFinishReasonDto_ReturnsStop_WhenInputIsStop()
 	{
-		var method = typeof(AiChatCompletionMapper).GetMethod("MapToFinishReasonDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+		var method = typeof(AiChatCompletionMapperOld).GetMethod("MapToFinishReasonDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 		var result = method!.Invoke(_mapper, [Microsoft.Extensions.AI.ChatFinishReason.Stop]);
 		result.Should().Be(ChatFinishReasonDto.Stop);
 	}
@@ -106,7 +106,7 @@ public class AiChatCompletionMapperTests
 	[Fact]
 	public void MapToFinishReasonDto_ReturnsLength_WhenInputIsLength()
 	{
-		var method = typeof(AiChatCompletionMapper).GetMethod("MapToFinishReasonDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+		var method = typeof(AiChatCompletionMapperOld).GetMethod("MapToFinishReasonDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 		var result = method!.Invoke(_mapper, [Microsoft.Extensions.AI.ChatFinishReason.Length]);
 		result.Should().Be(ChatFinishReasonDto.Length);
 	}
@@ -114,7 +114,7 @@ public class AiChatCompletionMapperTests
 	[Fact]
 	public void MapToFinishReasonDto_ReturnsToolCalls_WhenInputIsToolCalls()
 	{
-		var method = typeof(AiChatCompletionMapper).GetMethod("MapToFinishReasonDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+		var method = typeof(AiChatCompletionMapperOld).GetMethod("MapToFinishReasonDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 		var result = method!.Invoke(_mapper, [Microsoft.Extensions.AI.ChatFinishReason.ToolCalls]);
 		result.Should().Be(ChatFinishReasonDto.ToolCalls);
 	}
@@ -122,13 +122,13 @@ public class AiChatCompletionMapperTests
 	[Fact]
 	public void MapToFinishReasonDto_ReturnsContentFilter_WhenInputIsContentFilter()
 	{
-		var method = typeof(AiChatCompletionMapper).GetMethod("MapToFinishReasonDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+		var method = typeof(AiChatCompletionMapperOld).GetMethod("MapToFinishReasonDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 		var result = method!.Invoke(_mapper, [Microsoft.Extensions.AI.ChatFinishReason.ContentFilter]);
 		result.Should().Be(ChatFinishReasonDto.ContentFilter);
 	}	[Fact]
 	public void MapToChatResponseFormatDto_ReturnsNull_WhenInputIsNull()
 	{
-		var method = typeof(AiChatCompletionMapper).GetMethod("MapToChatResponseFormatDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+		var method = typeof(AiChatCompletionMapperOld).GetMethod("MapToChatResponseFormatDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 		var result = method!.Invoke(_mapper, [null]);
 		result.Should().BeNull();
 	}
@@ -136,7 +136,7 @@ public class AiChatCompletionMapperTests
 	[Fact]
 	public void MapToChatResponseFormatDto_ReturnsTextDto_WhenInputIsText()
 	{
-		var method = typeof(AiChatCompletionMapper).GetMethod("MapToChatResponseFormatDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+		var method = typeof(AiChatCompletionMapperOld).GetMethod("MapToChatResponseFormatDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 		var textFormat = new Microsoft.Extensions.AI.ChatResponseFormatText();
 		var result = method!.Invoke(_mapper, [textFormat]);
 		result.Should().BeOfType<ChatResponseFormatTextDto>();
@@ -145,7 +145,7 @@ public class AiChatCompletionMapperTests
 	[Fact]
 	public void MapToChatResponseFormatDto_ReturnsJsonDto_WhenInputIsJson()
 	{
-		var method = typeof(AiChatCompletionMapper).GetMethod("MapToChatResponseFormatDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+		var method = typeof(AiChatCompletionMapperOld).GetMethod("MapToChatResponseFormatDto", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 		var jsonFormat = new Microsoft.Extensions.AI.ChatResponseFormatJson(System.Text.Json.JsonDocument.Parse("{}").RootElement, "schemaName", "desc");
 		var result = method!.Invoke(_mapper, [jsonFormat]);
 		result.Should().BeOfType<ChatResponseFormatJsonDto>();

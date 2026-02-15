@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI;
 
-public sealed class AiChatCompletionMapper(ILogger<AiChatCompletionMapper> logger, AiContentMapperOld aiContentMapper)
+public sealed class AiChatCompletionMapperOld(ILogger<AiChatCompletionMapperOld> logger, AiContentMapperOld aiContentMapper)
 {
     public ChatResponse MapToAiChatClientRequest(ChatResponseDto chatResponseDto)
     {

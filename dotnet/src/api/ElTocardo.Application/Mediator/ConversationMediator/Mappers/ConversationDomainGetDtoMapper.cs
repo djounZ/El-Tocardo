@@ -1,12 +1,17 @@
 using ElTocardo.Application.Dtos.Conversation;
 using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.ChatCompletion;
-using ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI;
+using ElTocardo.Application.Mappers.Dtos;
 using ElTocardo.Domain.Mediator.Common.Mappers;
 using ElTocardo.Domain.Mediator.ConversationMediator.Entities;
+using Microsoft.Extensions.AI;
 
 namespace ElTocardo.Application.Mediator.ConversationMediator.Mappers;
 
-public class ConversationDomainGetDtoMapper(AiChatCompletionMapper aiChatCompletionMapper) : AbstractDomainGetDtoMapper<Conversation, string, string, ConversationDto>
+public class ConversationDomainGetDtoMapper(
+    IDomainEntityMapper<ChatOptions, ChatOptionsDto> chatOptionsMapper,
+    IDomainEntityMapper<ChatFinishReason, ChatFinishReasonDto> chatFinishReasonMapper,
+    IDomainEntityMapper<ChatMessage, ChatMessageDto> chatMessageMapper
+    ) : AbstractDomainGetDtoMapper<Conversation, string, string, ConversationDto>
 {
     public override ConversationDto MapDomainToDto(Conversation conversation)
     {
@@ -15,7 +20,7 @@ public class ConversationDomainGetDtoMapper(AiChatCompletionMapper aiChatComplet
         // Get the latest response messages from the last round
         var messagesDto = GetMessagesDto(rounds);
         var latestResponse = rounds.LastOrDefault()?.Response;
-        var chatOptionsDto = aiChatCompletionMapper.MapToChatOptionsDto(conversation.CurrentOptions);
+        var chatOptionsDto = chatOptionsMapper.ToApplicationNullable(conversation.CurrentOptions);
 
         return new ConversationDto(
             conversation.Id,
@@ -23,7 +28,7 @@ public class ConversationDomainGetDtoMapper(AiChatCompletionMapper aiChatComplet
             conversation.Description,
             messagesDto,
             conversation.CreatedAt,
-            aiChatCompletionMapper.MapToFinishReasonDto(latestResponse?.FinishReason),
+            chatFinishReasonMapper.ToApplication(latestResponse?.FinishReason),
             chatOptionsDto,
             conversation.CurrentProvider);
     }
@@ -34,10 +39,10 @@ public class ConversationDomainGetDtoMapper(AiChatCompletionMapper aiChatComplet
 
         foreach (var round in rounds)
         {
-            chatMessages.Add(aiChatCompletionMapper.MapToChatMessageDto(round.InputMessage));
+            chatMessages.Add(chatMessageMapper.ToApplication(round.InputMessage));
             if (round.Response != null)
             {
-                chatMessages.AddRange(round.Response.Messages.Select(aiChatCompletionMapper.MapToChatMessageDto));
+                chatMessages.AddRange(round.Response.Messages.Select(chatMessageMapper.ToApplication));
             }
         }
         return chatMessages;

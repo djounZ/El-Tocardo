@@ -4,7 +4,7 @@ using Microsoft.Extensions.AI;
 
 namespace ElTocardo.Application.Mappers.Dtos.Conversation;
 
-public sealed class ConversationDtoChatDtoMapper(AiChatCompletionMapper aiChatCompletionMapper)
+public sealed class ConversationDtoChatDtoMapper(AiChatCompletionMapperOld aiChatCompletionMapper)
 {
     public ConversationResponseDto MapToConversationResponseDto(string conversationId, ChatResponse chatResponse)
     {
