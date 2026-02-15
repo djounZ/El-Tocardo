@@ -127,15 +127,23 @@ public static class ServiceCollectionExtensions
                 .AddDomainEntityMapper<ReasoningOptions, ReasoningOptionsDto, ReasoningOptionsMapper>()
                 .AddDomainEntityMapper<ReasoningOutput, ReasoningOutputEnumDto, ReasoningOutputMapper>()
 
-             // Contents
+                // Contents
+                .AddDomainEntityMapper<AIAnnotation, AiAnnotationDto, AIAnnotationMapper>()
                 .AddDomainEntityMapper<AIContent, AiContentDto, AIContentMapper>()
+                .AddDomainEntityMapper<DataContent, DataContentDto, DataContentMapper>()
+                .AddDomainEntityMapper<ErrorContent, ErrorContentDto, ErrorContentMapper>()
+                .AddDomainEntityMapper<FunctionCallContent, FunctionCallContentDto, FunctionCallContentMapper>()
+                .AddDomainEntityMapper<FunctionResultContent, FunctionResultContentDto, FunctionResultContentMapper>()
+                .AddDomainEntityMapper<HostedFileContent, HostedFileContentDto, HostedFileContentMapper>()
+                .AddDomainEntityMapper<HostedVectorStoreContent, HostedVectorStoreContentDto,
+                    HostedVectorStoreContentMapper>()
+                .AddDomainEntityMapper<TextContent, TextContentDto, TextContentMapper>()
+                .AddDomainEntityMapper<TextReasoningContent, TextReasoningContentDto, TextReasoningContentMapper>()
+                .AddDomainEntityMapper<UriContent, UriContentDto, UriContentMapper>()
+                .AddDomainEntityMapper<UsageContent, UsageContentDto, UsageContentMapper>()
 
-             // Tools
+                // Tools
                 .AddDomainEntityMapper<AITool, AiToolDto, AIToolMapper>()
-
-
-
-
                 .AddDomainEntityMapper<UsageDetails, UsageDetailsDto, UsageDetailsMapper>()
                 ;
 
