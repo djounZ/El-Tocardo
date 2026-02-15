@@ -104,7 +104,6 @@ public static class ServiceCollectionExtensions
         private IServiceCollection AddDtos()
         {
             services.AddMicrosoftExtensionAi();
-            services.AddAi();
 
             services.TryAddSingleton<ConversationDtoChatDtoMapper>();
 
@@ -166,13 +165,6 @@ public static class ServiceCollectionExtensions
         where TInstance : class, IDomainEntityMapper<TDomainEntity, TApplicationEntity>
         {
             services.TryAddSingleton<IDomainEntityMapper<TDomainEntity, TApplicationEntity>, TInstance>();
-            return services;
-        }
-
-
-        private IServiceCollection AddAi()
-        {
-            services.TryAddSingleton<AiContentMapperOld>();
             return services;
         }
 
