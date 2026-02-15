@@ -127,8 +127,13 @@ public static class ServiceCollectionExtensions
                 .AddDomainEntityMapper<ReasoningOptions, ReasoningOptionsDto, ReasoningOptionsMapper>()
                 .AddDomainEntityMapper<ReasoningOutput, ReasoningOutputEnumDto, ReasoningOutputMapper>()
 
-                // Contents
+                // Contents - Annotations
+                .AddDomainEntityMapper<TextSpanAnnotatedRegion, TextSpanAnnotatedRegionDto, TextSpanAnnotatedRegionMapper>()
+                .AddDomainEntityMapper<AnnotatedRegion, AnnotatedRegionDto, AnnotatedRegionMapper>()
+                .AddDomainEntityMapper<CitationAnnotation, CitationAnnotationDto, CitationAnnotationMapper>()
                 .AddDomainEntityMapper<AIAnnotation, AiAnnotationDto, AIAnnotationMapper>()
+
+                // Contents
                 .AddDomainEntityMapper<AIContent, AiContentDto, AIContentMapper>()
                 .AddDomainEntityMapper<DataContent, DataContentDto, DataContentMapper>()
                 .AddDomainEntityMapper<ErrorContent, ErrorContentDto, ErrorContentMapper>()
