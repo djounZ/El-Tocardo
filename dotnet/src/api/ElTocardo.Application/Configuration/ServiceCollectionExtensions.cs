@@ -172,7 +172,6 @@ public static class ServiceCollectionExtensions
 
         private IServiceCollection AddAi()
         {
-            services.TryAddSingleton<AiChatCompletionMapperOld>();
             services.TryAddSingleton<AiContentMapperOld>();
             return services;
         }
