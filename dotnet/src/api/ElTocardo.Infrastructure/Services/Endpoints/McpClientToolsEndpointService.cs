@@ -55,7 +55,7 @@ public sealed class McpClientToolsEndpointService(
             await using var client = await CreateMcpClientAsync(serverConfiguration, cancellationToken);
             var mcpClientTools = await client.ListToolsAsync(cancellationToken: cancellationToken);
 
-            var toolDescriptions = modelContextProtocolMapper.MapToMcpClientToolDtos(mcpClientTools);
+            var toolDescriptions = modelContextProtocolMapper.ToApplication(mcpClientTools);
             return toolDescriptions;
         }
         catch (Exception ex)
@@ -93,7 +93,7 @@ public sealed class McpClientToolsEndpointService(
 
         var callToolResult =
             await client.CallToolAsync(request.ToolName, request.Arguments, _progress, null, cancellationToken);
-        return modelContextProtocolMapper.MapToCallToolResultDto(callToolResult);
+        return modelContextProtocolMapper.ToApplication(callToolResult);
     }
 
     private async Task<McpClient> CreateMcpClientAsync(McpServerConfigurationItemDto mcpServerConfigurationItem,

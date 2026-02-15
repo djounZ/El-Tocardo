@@ -62,14 +62,14 @@ public class ModelContextProtocolMapperTests
     [Fact]
     public void MapToMcpClientToolDtos_Empty_ReturnsEmptyArray()
     {
-        var dtos = _mapper.MapToMcpClientToolDtos([]);
+        var dtos = _mapper.ToApplication((IEnumerable<McpClientTool>)[]);
         Assert.Empty(dtos);
     }
 
     [Fact]
     public void MapToMcpClientPromptDtos_Empty_ReturnsEmptyArray()
     {
-        var dtos = _mapper.MapToMcpClientPromptDtos([]);
+        var dtos = _mapper.ToApplication((IEnumerable<McpClientPrompt>)[]);
         Assert.Empty(dtos);
     }
 
@@ -119,14 +119,14 @@ public class ModelContextProtocolMapperTests
     [Fact]
     public void MapToMcpClientResourceTemplateDtos_Empty_ReturnsEmptyArray()
     {
-        var dtos = _mapper.MapToMcpClientResourceTemplateDtos([]);
+        var dtos = _mapper.ToApplication((IEnumerable<McpClientResourceTemplate>)[]);
         Assert.Empty(dtos);
     }
 
     [Fact]
     public void MapToMcpClientResourceDtos_Empty_ReturnsEmptyArray()
     {
-        var dtos = _mapper.MapToMcpClientResourceDtos([]);
+        var dtos = _mapper.ToApplication((IEnumerable<McpClientResource>)[]);
         Assert.Empty(dtos);
     }
 
@@ -184,7 +184,7 @@ public class ModelContextProtocolMapperTests
             CreateResourceLinkBlock()
         };
         var result = new CallToolResult { Content = blocks, StructuredContent = null, IsError = false };
-        var dto = _mapper.MapToCallToolResultDto(result);
+        var dto = _mapper.ToApplication(result);
         Assert.Equal(5, dto.Content.Count);
         Assert.Contains(dto.Content, b => b is TextContentBlockDto);
         Assert.Contains(dto.Content, b => b is ImageContentBlockDto);

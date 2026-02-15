@@ -7,42 +7,42 @@ namespace ElTocardo.Application.Mappers.Dtos.ModelContextProtocol;
 
 public sealed class ModelContextProtocolMapper(ILogger<ModelContextProtocolMapper> logger)
 {
-    public McpClientToolDto[] MapToMcpClientToolDtos(IEnumerable<McpClientTool> clients)
+    public McpClientToolDto[] ToApplication(IEnumerable<McpClientTool> clients)
     {
         logger.LogTrace("MapToMcpClientToolDtos called");
-        return [.. clients.Select(MapToMcpClientToolDto)];
+        return [.. clients.Select(ToApplication)];
     }
 
 
 
-    public McpClientPromptDto[] MapToMcpClientPromptDtos(IEnumerable<McpClientPrompt> prompts)
+    public McpClientPromptDto[] ToApplication(IEnumerable<McpClientPrompt> prompts)
     {
         logger.LogTrace("MapToMcpClientPromptDtos called");
-        return [.. prompts.Select(MapToMcpClientPromptDto)];
+        return [.. prompts.Select(ToApplication)];
     }
 
 
 
-    public McpClientResourceTemplateDto[] MapToMcpClientResourceTemplateDtos(IEnumerable<McpClientResourceTemplate> resourceTemplates)
+    public McpClientResourceTemplateDto[] ToApplication(IEnumerable<McpClientResourceTemplate> resourceTemplates)
     {
         logger.LogTrace("MapToMcpClientResourceTemplateDtos called");
-        return [.. resourceTemplates.Select(MapToMcpClientResourceTemplateDto)];
+        return [.. resourceTemplates.Select(ToApplication)];
     }
 
 
-    public McpClientResourceDto[] MapToMcpClientResourceDtos(IEnumerable<McpClientResource> resources)
+    public McpClientResourceDto[] ToApplication(IEnumerable<McpClientResource> resources)
     {
         logger.LogTrace("MapToMcpClientResourceDtos called");
-        return [.. resources.Select(MapToMcpClientResourceDto)];
+        return [.. resources.Select(ToApplication)];
     }
 
-    public CallToolResultDto MapToCallToolResultDto(CallToolResult callToolResult)
+    public CallToolResultDto ToApplication(CallToolResult callToolResult)
     {
         logger.LogTrace("MapToCallToolResult called");
         IList<ContentBlockDto> contentBlocks = [];
         foreach (var block in callToolResult.Content)
         {
-            var contentBlock = MapToContentBlockDto(block);
+            var contentBlock = ToApplication(block);
             if (contentBlock != null)
             {
                 contentBlocks.Add(contentBlock);
@@ -56,7 +56,7 @@ public sealed class ModelContextProtocolMapper(ILogger<ModelContextProtocolMappe
         );
     }
 
-    private McpClientToolDto MapToMcpClientToolDto(McpClientTool tools)
+    private McpClientToolDto ToApplication(McpClientTool tools)
     {
         return new McpClientToolDto(
             tools.Name,
@@ -66,10 +66,10 @@ public sealed class ModelContextProtocolMapper(ILogger<ModelContextProtocolMappe
         );
     }
 
-    private McpClientPromptDto MapToMcpClientPromptDto(McpClientPrompt prompt)
+    private McpClientPromptDto ToApplication(McpClientPrompt prompt)
     {
         var proto = prompt.ProtocolPrompt;
-        var args = MapToPromptArgumentDtos(proto.Arguments);
+        var args = ToApplication(proto.Arguments);
         return new McpClientPromptDto(
             proto.Name,
             proto.Title,
@@ -79,18 +79,18 @@ public sealed class ModelContextProtocolMapper(ILogger<ModelContextProtocolMappe
         );
     }
 
-    private static IList<PromptArgumentDto>? MapToPromptArgumentDtos(IList<PromptArgument>? arguments)
+    private static IList<PromptArgumentDto>? ToApplication(IList<PromptArgument>? arguments)
     {
         IList<PromptArgumentDto>? args = null;
         if (arguments != null)
         {
-            args = [.. arguments.Select(MapToPromptArgumentDto)];
+            args = [.. arguments.Select(ToApplication)];
         }
 
         return args;
     }
 
-    private static PromptArgumentDto MapToPromptArgumentDto(PromptArgument a)
+    private static PromptArgumentDto ToApplication(PromptArgument a)
     {
         return new PromptArgumentDto(
             a.Name,
@@ -100,10 +100,10 @@ public sealed class ModelContextProtocolMapper(ILogger<ModelContextProtocolMappe
         );
     }
 
-    private McpClientResourceTemplateDto MapToMcpClientResourceTemplateDto(McpClientResourceTemplate resourceTemplate)
+    private McpClientResourceTemplateDto ToApplication(McpClientResourceTemplate resourceTemplate)
     {
         var proto = resourceTemplate.ProtocolResourceTemplate;
-        var annotations = MapToAnnotationsDto(proto.Annotations);
+        var annotations = ToApplication(proto.Annotations);
         return new McpClientResourceTemplateDto(
             proto.Name,
             proto.Title,
@@ -115,7 +115,7 @@ public sealed class ModelContextProtocolMapper(ILogger<ModelContextProtocolMappe
         );
     }
 
-    private static AnnotationsDto? MapToAnnotationsDto(Annotations? protoAnnotations)
+    private static AnnotationsDto? ToApplication(Annotations? protoAnnotations)
     {
         if (protoAnnotations == null)
         {
@@ -129,10 +129,10 @@ public sealed class ModelContextProtocolMapper(ILogger<ModelContextProtocolMappe
         );
     }
 
-    private McpClientResourceDto MapToMcpClientResourceDto(McpClientResource resource)
+    private McpClientResourceDto ToApplication(McpClientResource resource)
     {
         var proto = resource.ProtocolResource;
-        var annotations = MapToAnnotationsDto(proto.Annotations);
+        var annotations = ToApplication(proto.Annotations);
         return new McpClientResourceDto(
             proto.Name,
             proto.Title,
@@ -145,26 +145,26 @@ public sealed class ModelContextProtocolMapper(ILogger<ModelContextProtocolMappe
         );
     }
 
-    private  ContentBlockDto? MapToContentBlockDto(ContentBlock block)
+    private  ContentBlockDto? ToApplication(ContentBlock block)
     {
         ContentBlockDto? contentBlock = block switch
         {
-            TextContentBlock text => new TextContentBlockDto(MapToAnnotationsDto(text.Annotations), text.Text,
+            TextContentBlock text => new TextContentBlockDto(ToApplication(text.Annotations), text.Text,
                 text.Meta),
-            ImageContentBlock image => new ImageContentBlockDto(MapToAnnotationsDto(image.Annotations),
+            ImageContentBlock image => new ImageContentBlockDto(ToApplication(image.Annotations),
                 image.Data, image.MimeType, image.Meta),
-            AudioContentBlock audio => new AudioContentBlockDto(MapToAnnotationsDto(audio.Annotations),
+            AudioContentBlock audio => new AudioContentBlockDto(ToApplication(audio.Annotations),
                 audio.Data, audio.MimeType, audio.Meta),
             EmbeddedResourceBlock resource => new EmbeddedResourceBlockDto(
-                MapToAnnotationsDto(resource.Annotations), MapToResourceContentsDto(resource.Resource), resource.Meta),
-            ResourceLinkBlock link => new ResourceLinkBlockDto(MapToAnnotationsDto(link.Annotations), link.Uri,
+                ToApplication(resource.Annotations), ToApplication(resource.Resource), resource.Meta),
+            ResourceLinkBlock link => new ResourceLinkBlockDto(ToApplication(link.Annotations), link.Uri,
                 link.Name, link.Description, link.MimeType, link.Size),
             _ => null
         };
         return contentBlock;
     }
 
-    private static ResourceContentsDto MapToResourceContentsDto(ResourceContents resource)
+    private static ResourceContentsDto ToApplication(ResourceContents resource)
     {
         return resource switch
         {

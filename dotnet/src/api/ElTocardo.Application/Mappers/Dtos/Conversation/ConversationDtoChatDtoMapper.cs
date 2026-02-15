@@ -10,19 +10,19 @@ public sealed class ConversationDtoChatDtoMapper(
     IDomainEntityMapper<ChatResponse, ChatResponseDto> chatResponseMapper,
     IDomainEntityMapper<ChatResponseUpdate, ChatResponseUpdateDto> chatResponseUpdateMapper)
 {
-    public ConversationResponseDto MapToConversationResponseDto(string conversationId, ChatResponse chatResponse)
+    public ConversationResponseDto ToApplication(string conversationId, ChatResponse chatResponse)
     {
         var chatResponseDto = chatResponseMapper.ToApplication(chatResponse);
         return new ConversationResponseDto(conversationId, chatResponseDto.Messages, chatResponseDto.ModelId, chatResponseDto.CreatedAt, chatResponseDto.FinishReason);
     }
 
-    public ConversationUpdateResponseDto MapToConversationUpdateResponseDto(string conversationId, ChatResponseUpdate update)
+    public ConversationUpdateResponseDto ToApplication(string conversationId, ChatResponseUpdate update)
     {
         var chatResponseUpdateDto = chatResponseUpdateMapper.ToApplication(update);
         return new ConversationUpdateResponseDto(conversationId, chatResponseUpdateDto.Role, chatResponseUpdateDto.Contents, chatResponseUpdateDto.CreatedAt, chatResponseUpdateDto.FinishReason, chatResponseUpdateDto.ModelId);
     }
 
-    public (ChatMessage ChatMessage, ChatOptions? ChatOptions) MapToChatMessageAndOptions(StartConversationRequestDto startConversationRequestDto)
+    public (ChatMessage ChatMessage, ChatOptions? ChatOptions) ToDomain(StartConversationRequestDto startConversationRequestDto)
     {
         var chatMessage = chatMessageMapper.ToDomain(startConversationRequestDto.InputMessage);
         var chatOptions = chatOptionsMapper.ToDomainNullable(startConversationRequestDto.Options);
@@ -30,7 +30,7 @@ public sealed class ConversationDtoChatDtoMapper(
     }
 
 
-    public (ChatMessage ChatMessage, ChatOptions? ChatOptions) MapToChatMessageAndOptions(ContinueConversationDto continueConversationDto)
+    public (ChatMessage ChatMessage, ChatOptions? ChatOptions) ToDomain(ContinueConversationDto continueConversationDto)
     {
         var chatMessage = chatMessageMapper.ToDomain(continueConversationDto.InputMessage);
         var chatOptions = chatOptionsMapper.ToDomainNullable(continueConversationDto.Options);

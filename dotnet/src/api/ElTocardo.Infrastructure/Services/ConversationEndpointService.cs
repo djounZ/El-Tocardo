@@ -107,7 +107,7 @@ public sealed class ConversationEndpointService(ILogger<ConversationEndpointServ
     {
 
 
-        var (chatMessage, options) = conversationDtoChatDtoMapper.MapToChatMessageAndOptions(startConversationRequestDto);
+        var (chatMessage, options) = conversationDtoChatDtoMapper.ToDomain(startConversationRequestDto);
         await MapTools(startConversationRequestDto.Options, options, cancellationToken);
 
         var createConversationCommand = new CreateConversationCommand(startConversationRequestDto.Title, startConversationRequestDto.Description, chatMessage, options, startConversationRequestDto.Provider?.ToString());
@@ -124,7 +124,7 @@ public sealed class ConversationEndpointService(ILogger<ConversationEndpointServ
         CancellationToken cancellationToken)
     {
 
-        var (chatMessage, options) = conversationDtoChatDtoMapper.MapToChatMessageAndOptions(continueConversationDto);
+        var (chatMessage, options) = conversationDtoChatDtoMapper.ToDomain(continueConversationDto);
         await MapTools(continueConversationDto.Options, options, cancellationToken);
         var newRoundCommand = new UpdateConversationAddNewRoundCommand(continueConversationDto.ConversationId, chatMessage, options, continueConversationDto.Provider?.ToString());
         var newRoundResult = await addNewRoundCommandHandler.HandleAsync(newRoundCommand, cancellationToken);
@@ -144,7 +144,7 @@ public sealed class ConversationEndpointService(ILogger<ConversationEndpointServ
         var updateConversationWithChatResponseCommand = new UpdateConversationUpdateRoundCommand(conversationId, response);
         var insertTask = updateRoundCommandHandler.HandleAsync(updateConversationWithChatResponseCommand, cancellationToken);
 
-        var conversationResponseDto = conversationDtoChatDtoMapper.MapToConversationResponseDto(conversationId, response);
+        var conversationResponseDto = conversationDtoChatDtoMapper.ToApplication(conversationId, response);
         await insertTask;
         return conversationResponseDto;
     }
@@ -157,7 +157,7 @@ public sealed class ConversationEndpointService(ILogger<ConversationEndpointServ
         {
             Logger.LogTrace("Computing chat completions streaming Update Received: {@Update}", update);
             chatResponseUpdates.Add(update);
-            yield return   conversationDtoChatDtoMapper.MapToConversationUpdateResponseDto(conversationId, update);
+            yield return   conversationDtoChatDtoMapper.ToApplication(conversationId, update);
         }
         var updateConversationWithChatResponseCommand = new UpdateConversationUpdateRoundCommand(conversationId, chatResponseUpdates.ToChatResponse());
 
