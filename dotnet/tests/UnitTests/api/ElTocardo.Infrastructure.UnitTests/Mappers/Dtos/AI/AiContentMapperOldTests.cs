@@ -9,12 +9,12 @@ using Moq;
 
 namespace ElTocardo.Infrastructure.UnitTests.Mappers.Dtos.AI;
 
-public class AiContentMapperTests
+public class AiContentMapperOldTests
 {
     private readonly Mock<ILogger<AiContentMapperOld>> _loggerMock = new();
     private readonly AiContentMapperOld _mapper;
 
-    public AiContentMapperTests()
+    public AiContentMapperOldTests()
     {
         _mapper = new AiContentMapperOld(_loggerMock.Object);
     }
@@ -124,7 +124,7 @@ public class AiContentMapperTests
     [Fact]
     public void MapToAiContent_UsageContentDto_MapsCorrectly()
     {
-        var detailsDto = new UsageDetailsDto(1, 2, 3, new Dictionary<string, long> { { "foo", 42 } });
+        var detailsDto = new UsageDetailsDto(1, 2, 3, 4,5,new Dictionary<string, long> { { "foo", 42 } });
         var dto = new UsageContentDto(
             null,
             detailsDto);

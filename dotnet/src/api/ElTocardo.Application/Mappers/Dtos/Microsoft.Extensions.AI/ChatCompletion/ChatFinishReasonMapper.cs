@@ -33,6 +33,7 @@ public class ChatFinishReasonMapper(ILogger<ChatFinishReasonMapper> logger) : ID
         logger.LogError(notSupportedException, "Failed {@Item}", domainItem);
         throw notSupportedException;
     }
+    
     public ChatFinishReason ToDomain(ChatFinishReasonDto applicationItem)
     {
         switch (applicationItem)

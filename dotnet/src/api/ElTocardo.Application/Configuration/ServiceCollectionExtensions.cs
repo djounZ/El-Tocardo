@@ -3,6 +3,7 @@ using ElTocardo.Application.Dtos.Conversation;
 using ElTocardo.Application.Dtos.Microsoft.Extensions.AI;
 using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.ChatCompletion;
 using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.Contents;
+using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.Functions;
 using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.Tools;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
 using ElTocardo.Application.Dtos.PresetChatInstruction;
@@ -12,6 +13,7 @@ using ElTocardo.Application.Mappers.Dtos.Conversation;
 using ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI;
 using ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI.ChatCompletion;
 using ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI.Contents;
+using ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI.Functions;
 using ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI.Tools;
 using ElTocardo.Application.Mappers.Dtos.ModelContextProtocol;
 using ElTocardo.Application.Mediator.ConversationMediator.Commands;
@@ -150,6 +152,8 @@ public static class ServiceCollectionExtensions
                 // Tools
                 .AddDomainEntityMapper<HostedFileSearchTool, HostedFileSearchToolDto, HostedFileSearchToolMapper>()
                 .AddDomainEntityMapper<HostedWebSearchTool, HostedWebSearchToolDto, HostedWebSearchToolMapper>()
+                .AddDomainEntityMapper<AIFunctionDeclaration, DelegatingAiFunctionDeclarationDto, DelegatingAiFunctionDeclarationMapper>()
+                .AddDomainEntityMapper<DelegatingAIFunction, DelegatingAiFunctionDto, DelegatingAiFunctionMapper>()
                 .AddDomainEntityMapper<AITool, AbstractAiToolDto, AIToolMapper>()
 
                 .AddDomainEntityMapper<UsageDetails, UsageDetailsDto, UsageDetailsMapper>()

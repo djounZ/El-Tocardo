@@ -9,6 +9,10 @@ public sealed record UsageDetailsDto(
     long? OutputTokenCount,
     [property: JsonPropertyName("total_token_count")]
     long? TotalTokenCount,
+    [property: JsonPropertyName("cached_token_count")]
+    long? CachedInputTokenCount,
+    [property: JsonPropertyName("reasoning_token_count")]
+    long? ReasoningTokenCount,
     [property: JsonPropertyName("additional_counts")]
     IDictionary<string, long>? AdditionalCounts
 );

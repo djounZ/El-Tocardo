@@ -140,6 +140,8 @@ public sealed class AiContentMapperOld(ILogger<AiContentMapperOld> logger)
                 usageContent.Details.InputTokenCount,
                 usageContent.Details.OutputTokenCount,
                 usageContent.Details.TotalTokenCount,
+                usageContent.Details.CachedInputTokenCount,
+                usageContent.Details.ReasoningTokenCount,
                 usageContent.Details.AdditionalCounts != null
                     ? new Dictionary<string, long>(usageContent.Details.AdditionalCounts)
                     : null
