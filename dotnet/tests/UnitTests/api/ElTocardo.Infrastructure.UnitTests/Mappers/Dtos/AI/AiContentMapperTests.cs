@@ -59,7 +59,8 @@ public class AiContentMapperTests
             null,
             "call-1",
             "func",
-            new Dictionary<string, object?> { { "arg1", 42 } });
+            new Dictionary<string, object?> { { "arg1", 42 } },
+            false);
         var result = _mapper.MapToAiContent(dto);
         result.Should().BeOfType<FunctionCallContent>();
         var callContent = (FunctionCallContent)result;

@@ -8,5 +8,6 @@ public sealed record FunctionCallContentDto(
     string CallId,
     [property: JsonPropertyName("name")] string Name,
     [property: JsonPropertyName("arguments")]
-    IDictionary<string, object?>? Arguments)
+    IDictionary<string, object?>? Arguments,
+    [property: JsonPropertyName("informational_only")] bool InformationalOnly)
     : AiContentDto(Annotations);

@@ -189,7 +189,8 @@ public sealed class AiContentMapperOld(ILogger<AiContentMapperOld> logger)
             functionCallContent.Name,
             functionCallContent.Arguments != null
                 ? new Dictionary<string, object?>(functionCallContent.Arguments)
-                : null
+                : null,
+            functionCallContent.InformationalOnly
         );
     }
 

@@ -241,12 +241,12 @@ public sealed class HttpClientRunner
         await using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
         using var reader = new StreamReader(responseStream);
 
-        while (!reader.EndOfStream && !cancellationToken.IsCancellationRequested)
+        while (!cancellationToken.IsCancellationRequested)
         {
             var line = await reader.ReadLineAsync(cancellationToken);
             if (line == null)
             {
-                continue;
+                break;
             }
 
             logger.LogInformation("Stream line content: {Content}", line);

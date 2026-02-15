@@ -7,6 +7,8 @@ namespace ElTocardo.Application.Dtos.Microsoft.Extensions.AI.Contents;
 [JsonDerivedType(typeof(ErrorContentDto), "error")]
 [JsonDerivedType(typeof(FunctionCallContentDto), "function_call")]
 [JsonDerivedType(typeof(FunctionResultContentDto), "function_result")]
+[JsonDerivedType(typeof(HostedFileContentDto), "hosted_file")]
+[JsonDerivedType(typeof(HostedVectorStoreContentDto), "hosted_vector_store")]
 [JsonDerivedType(typeof(TextContentDto), "text")]
 [JsonDerivedType(typeof(TextReasoningContentDto), "reasoning")]
 [JsonDerivedType(typeof(UriContentDto), "uri")]
