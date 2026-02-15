@@ -4,6 +4,7 @@ using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.ChatCompletion;
 using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.Contents;
 using ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI;
 using FluentAssertions;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -20,119 +21,6 @@ public class AiChatCompletionMapperTests
 		_mapper = new AiChatCompletionMapper(_loggerMock.Object, _contentMapper);
 	}
 
-	[Fact]
-	public void MapToAiChatClientRequest_MapsCorrectly()
-	{
-		// Arrange
-		var messageDto = new ChatMessageDto(ChatRoleEnumDto.User, new List<AiContentDto>());
-		var optionsDto = new ChatOptionsDto(
-			ConversationId: "conv1",
-			Instructions: "instr",
-			Temperature: 0.5f,
-			MaxOutputTokens: 100,
-			TopP: 0.9f,
-			TopK: 10,
-			FrequencyPenalty: 0.1f,
-			PresencePenalty: 0.2f,
-			Seed: 42,
-            Reasoning: null, //todo
-			ResponseFormat: null,
-			ModelId: "model",
-			StopSequences: new List<string> { "stop" },
-			AllowMultipleToolCalls: true,
-			ToolMode: null,
-			Tools: null
-		);
-		var dto = new ChatRequestDto([messageDto], null, optionsDto);
-
-		// Act
-		var result = _mapper.MapToAiChatClientRequest(dto);
-
-		// Assert
-		result.Messages.Should().HaveCount(1);
-		result.Options.Should().NotBeNull();
-		result.Options!.ConversationId.Should().Be("conv1");
-		result.Options.Instructions.Should().Be("instr");
-		result.Options.Temperature.Should().Be(0.5f);
-		result.Options.MaxOutputTokens.Should().Be(100);
-		result.Options.TopP.Should().Be(0.9f);
-		result.Options.TopK.Should().Be(10);
-		result.Options.FrequencyPenalty.Should().Be(0.1f);
-		result.Options.PresencePenalty.Should().Be(0.2f);
-		result.Options.Seed.Should().Be(42);
-		result.Options.ModelId.Should().Be("model");
-		result.Options.StopSequences.Should().ContainSingle(s => s == "stop");
-		result.Options.AllowMultipleToolCalls.Should().BeTrue();
-	}	[Fact]
-	public void MapToChatClientRequestDto_MapsCorrectly()
-	{
-		// Arrange
-		var aiMessages = new[]
-		{
-			new Microsoft.Extensions.AI.ChatMessage(Microsoft.Extensions.AI.ChatRole.User, [new Microsoft.Extensions.AI.TextContent("hi")
-            ])
-		};
-		var options = new Microsoft.Extensions.AI.ChatOptions
-		{
-			ConversationId = "conv1",
-			Instructions = "instr",
-			Temperature = 0.5f,
-			MaxOutputTokens = 100,
-			TopP = 0.9f,
-			TopK = 10,
-			FrequencyPenalty = 0.1f,
-			PresencePenalty = 0.2f,
-			Seed = 42,
-			ModelId = "model",
-			StopSequences = new List<string> { "stop" },
-			AllowMultipleToolCalls = true
-		};
-		var aiRequest = new AiChatClientRequest(aiMessages, options);
-		var provider = AiProviderEnumDto.GithubCopilot;
-
-		// Act
-		var dto = _mapper.MapToChatClientRequestDto(aiRequest, provider);
-
-		// Assert
-		dto.Messages.Should().HaveCount(1);
-		dto.Provider.Should().Be(provider);
-		dto.Options.Should().NotBeNull();
-		dto.Options!.ConversationId.Should().Be("conv1");
-		dto.Options.Instructions.Should().Be("instr");
-		dto.Options.Temperature.Should().Be(0.5f);
-		dto.Options.MaxOutputTokens.Should().Be(100);
-		dto.Options.TopP.Should().Be(0.9f);
-		dto.Options.TopK.Should().Be(10);
-		dto.Options.FrequencyPenalty.Should().Be(0.1f);
-		dto.Options.PresencePenalty.Should().Be(0.2f);
-		dto.Options.Seed.Should().Be(42);
-		dto.Options.ModelId.Should().Be("model");
-		dto.Options.StopSequences.Should().ContainSingle(s => s == "stop");
-		dto.Options.AllowMultipleToolCalls.Should().BeTrue();
-	}
-
-	[Fact]
-	public void MapToAiChatClientRequest_NullOptions_MapsCorrectly()
-	{
-		var messageDto = new ChatMessageDto(ChatRoleEnumDto.User, new List<AiContentDto>());
-		var dto = new ChatRequestDto([messageDto]);
-		var result = _mapper.MapToAiChatClientRequest(dto);
-		result.Options.Should().BeNull();
-	}
-
-	[Fact]
-	public void MapToChatClientRequestDto_NullOptions_MapsCorrectly()
-	{
-		var aiMessages = new[]
-		{
-			new Microsoft.Extensions.AI.ChatMessage(Microsoft.Extensions.AI.ChatRole.User, [new Microsoft.Extensions.AI.TextContent("hi")
-            ])
-		};
-		var aiRequest = new AiChatClientRequest(aiMessages);
-		var provider = AiProviderEnumDto.GithubCopilot;
-		var dto = _mapper.MapToChatClientRequestDto(aiRequest, provider);
-		dto.Options.Should().BeNull();
-	}
 
 	[Fact]
 	public void MapToChatResponseDto_AndBack_MapsCorrectly()

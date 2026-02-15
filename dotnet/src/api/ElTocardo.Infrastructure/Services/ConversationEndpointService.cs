@@ -2,7 +2,6 @@ using System.Runtime.CompilerServices;
 using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Dtos.Conversation;
 using ElTocardo.Application.Mappers.Dtos.Conversation;
-using ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI;
 using ElTocardo.Application.Mediator.ConversationMediator.Commands;
 using ElTocardo.Application.Mediator.ConversationMediator.Queries;
 using ElTocardo.Application.Services;
@@ -132,11 +131,11 @@ public sealed class ConversationEndpointService(ILogger<ConversationEndpointServ
 
         var conversation = newRoundResult.ReadValue();
 
-        var request = new AiChatClientRequest(conversation.Rounds.SelectMany(m=> m.GetAllMessages()), conversation.CurrentOptions);
+        var chatMessages = conversation.Rounds.SelectMany(m => m.GetAllMessages());
 
         var chatClient = await ClientProvider.GetChatClientAsync(Enum.Parse<AiProviderEnumDto>(conversation.CurrentProvider), cancellationToken);
 
-        return new ChatRequestContext(request.Messages, request.Options, continueConversationDto.ConversationId, chatClient);
+        return new ChatRequestContext(chatMessages, conversation.CurrentOptions, continueConversationDto.ConversationId, chatClient);
     }
 
     private async Task<ConversationResponseDto> UpdateConversationRound(string conversationId,

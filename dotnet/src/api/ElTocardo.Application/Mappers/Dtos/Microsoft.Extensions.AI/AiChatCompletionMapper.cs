@@ -1,6 +1,4 @@
 using System.Text.Json;
-using ElTocardo.Application.Dtos.ChatCompletion;
-using ElTocardo.Application.Dtos.Configuration;
 using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.ChatCompletion;
 using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.Tools;
 using Microsoft.Extensions.AI;
@@ -10,24 +8,6 @@ namespace ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI;
 
 public sealed class AiChatCompletionMapper(ILogger<AiChatCompletionMapper> logger, AiContentMapperOld aiContentMapper)
 {
-    public AiChatClientRequest MapToAiChatClientRequest(ChatRequestDto chatRequestDto)
-    {
-        logger.LogTrace("Mapping To AiChatClientRequest from ChatRequestDto {@ChatRequestDto}", chatRequestDto);
-        return new AiChatClientRequest(
-            [.. chatRequestDto.Messages.Select(MapToChatMessage)],
-            MapToChatOptions(chatRequestDto.Options));
-    }
-
-    public ChatRequestDto MapToChatClientRequestDto(AiChatClientRequest aiChatClientRequest, AiProviderEnumDto provider)
-    {
-        logger.LogTrace("Mapping To ChatRequestDto from AiChatClientRequest {@AiChatClientRequest}",
-            aiChatClientRequest);
-        return new ChatRequestDto(
-            [.. aiChatClientRequest.Messages.Select(MapToChatMessageDto)],
-            provider,
-            MapToChatOptionsDto(aiChatClientRequest.Options));
-    }
-
     public ChatResponse MapToAiChatClientRequest(ChatResponseDto chatResponseDto)
     {
         logger.LogTrace("Mapping To ChatResponse from ChatResponseDto {@ChatRequestDto}", chatResponseDto);
