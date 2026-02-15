@@ -8,7 +8,7 @@ public class ChatOptionsMapper(
     IDomainEntityMapper<ReasoningOptions, ReasoningOptionsDto> reasoningOptionsMapper,
     IDomainEntityMapper<ChatResponseFormat, ChatResponseFormatDto> chatResponseFormatMapper,
     IDomainEntityMapper<ChatToolMode, ChatToolModeDto> chatToolModeMapper,
-    IDomainEntityMapper<AITool, AiToolDto> aiToolMapper) : IDomainEntityMapper<ChatOptions, ChatOptionsDto>
+    IDomainEntityMapper<AITool, AbstractAiToolDto> aiToolMapper) : IDomainEntityMapper<ChatOptions, ChatOptionsDto>
 {
 
     public ChatOptionsDto ToApplication(ChatOptions domainItem)
@@ -19,7 +19,7 @@ public class ChatOptionsMapper(
         var toolMode = chatToolModeMapper.ToApplicationNullable(domainItem.ToolMode);
         var tools = domainItem.Tools?.Select(aiToolMapper.ToApplication).ToList();
 
-        var toolsDic = tools == null ? null : new Dictionary<string, IList<AiToolDto>>(){{string.Empty, tools}};
+        var toolsDic = tools == null ? null : new Dictionary<string, IList<AbstractAiToolDto>>(){{string.Empty, tools}};
 
 
 

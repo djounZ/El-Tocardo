@@ -254,7 +254,7 @@ public sealed class AiChatCompletionMapper(ILogger<AiChatCompletionMapper> logge
             MapToAiToolDto(chatOptions.Tools));
     }
 
-    private IDictionary<string, IList<AiToolDto>>? MapToAiToolDto(IList<AITool>? chatOptionsTools)
+    private IDictionary<string, IList<AbstractAiToolDto>>? MapToAiToolDto(IList<AITool>? chatOptionsTools)
     {
         if (chatOptionsTools is null)
         {
@@ -262,13 +262,13 @@ public sealed class AiChatCompletionMapper(ILogger<AiChatCompletionMapper> logge
         }
 
         var toolsByServer =
-            new Dictionary<string, IList<AiToolDto>> { ["default"] = [.. chatOptionsTools.Select(MapToAiToolDto)] };
+            new Dictionary<string, IList<AbstractAiToolDto>> { ["default"] = [.. chatOptionsTools.Select(MapToAiToolDto)] };
         return toolsByServer;
     }
 
-    private AiToolDto MapToAiToolDto(AITool tool)
+    private AbstractAiToolDto MapToAiToolDto(AITool tool)
     {
-        return new AiToolDto(tool.Name);
+        return new AiToolDto(tool.Name, tool.Description);
     }
 
     private ChatToolModeDto? MapToChatToolModeDto(ChatToolMode? toolMode)

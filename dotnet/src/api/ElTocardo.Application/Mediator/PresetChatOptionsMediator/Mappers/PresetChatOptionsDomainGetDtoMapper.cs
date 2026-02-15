@@ -30,7 +30,7 @@ public class PresetChatOptionsDomainGetDtoMapper : AbstractDomainGetDtoMapper<Pr
             entity.AllowMultipleToolCalls,
             entity.ToolMode is not null ? JsonSerializer.Deserialize<ChatToolModeDto>(entity.ToolMode) : null,
             entity.Tools is not null
-                ? JsonSerializer.Deserialize<IDictionary<string, IList<AiToolDto>>>(entity.Tools)
+                ? JsonSerializer.Deserialize<IDictionary<string, IList<AbstractAiToolDto>>>(entity.Tools)
                 : null
         );
 

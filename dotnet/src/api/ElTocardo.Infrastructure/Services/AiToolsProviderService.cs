@@ -11,7 +11,7 @@ public sealed class AiToolsProviderService(
     IQueryHandler<GetMcpServerByNameQuery, McpServerConfigurationItemDto> getByNameQueryHandler,
     ClientTransportFactoryService clientTransportFactoryService)
 {
-    public async Task<IList<AITool>> GetAiToolsAsync(IDictionary<string, IList<AiToolDto>> aiToolDtosByServer,
+    public async Task<IList<AITool>> GetAiToolsAsync(IDictionary<string, IList<AbstractAiToolDto>> aiToolDtosByServer,
         CancellationToken cancellationToken)
     {
         var aiTools = new List<AITool>();
@@ -23,7 +23,7 @@ public sealed class AiToolsProviderService(
         return aiTools;
     }
 
-    private async Task<IEnumerable<AITool>> GetAiToolsAsync(string server, IList<AiToolDto> aiToolDtos,
+    private async Task<IEnumerable<AITool>> GetAiToolsAsync(string server, IList<AbstractAiToolDto> aiToolDtos,
         CancellationToken cancellationToken)
     {
         var mcpServerConfigurationItemDto =

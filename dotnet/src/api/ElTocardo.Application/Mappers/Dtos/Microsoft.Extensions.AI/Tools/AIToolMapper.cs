@@ -4,19 +4,37 @@ using Microsoft.Extensions.Logging;
 
 namespace ElTocardo.Application.Mappers.Dtos.Microsoft.Extensions.AI.Tools;
 
-public class AIToolMapper(ILogger<AIToolMapper> logger) : IDomainEntityMapper<AITool, AiToolDto>
+public class AIToolMapper(
+    ILogger<AIToolMapper> logger,
+    IDomainEntityMapper<HostedFileSearchTool, HostedFileSearchToolDto> hostedFileSearchToolMapper,
+    IDomainEntityMapper<HostedWebSearchTool, HostedWebSearchToolDto> hostedWebSearchToolMapper
+) : IDomainEntityMapper<AITool, AbstractAiToolDto>
 {
-
-    public AiToolDto ToApplication(AITool domainItem)
+    public AbstractAiToolDto ToApplication(AITool domainItem)
     {
-        var notImplementedException = new NotImplementedException();
-        logger.LogError(notImplementedException, "To Do");
-        throw notImplementedException;
+        switch (domainItem)
+        {
+            case HostedFileSearchTool hostedFileSearchTool:
+                return hostedFileSearchToolMapper.ToApplication(hostedFileSearchTool);
+            case HostedWebSearchTool hostedWebSearchTool:
+                return hostedWebSearchToolMapper.ToApplication(hostedWebSearchTool);
+            default:
+                return new AiToolDto(domainItem.Name, domainItem.Description);
+        }
     }
-    public AITool ToDomain(AiToolDto applicationItem)
+
+    public AITool ToDomain(AbstractAiToolDto applicationItem)
     {
-        var notImplementedException = new NotImplementedException();
-        logger.LogError(notImplementedException, "To Do");
-        throw notImplementedException;
+        switch (applicationItem)
+        {
+            case HostedFileSearchToolDto hostedFileSearchTool:
+                return hostedFileSearchToolMapper.ToDomain(hostedFileSearchTool);
+            case HostedWebSearchToolDto hostedWebSearchTool:
+                return hostedWebSearchToolMapper.ToDomain(hostedWebSearchTool);
+            default:
+                var notSupportedException = new NotSupportedException($"{applicationItem.GetType()} is not supported");
+                logger.LogError(notSupportedException, "Failed {@Item}", applicationItem);
+                throw notSupportedException;
+        }
     }
 }

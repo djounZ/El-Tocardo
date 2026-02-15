@@ -148,7 +148,10 @@ public static class ServiceCollectionExtensions
                 .AddDomainEntityMapper<UsageContent, UsageContentDto, UsageContentMapper>()
 
                 // Tools
-                .AddDomainEntityMapper<AITool, AiToolDto, AIToolMapper>()
+                .AddDomainEntityMapper<HostedFileSearchTool, HostedFileSearchToolDto, HostedFileSearchToolMapper>()
+                .AddDomainEntityMapper<HostedWebSearchTool, HostedWebSearchToolDto, HostedWebSearchToolMapper>()
+                .AddDomainEntityMapper<AITool, AbstractAiToolDto, AIToolMapper>()
+
                 .AddDomainEntityMapper<UsageDetails, UsageDetailsDto, UsageDetailsMapper>()
                 ;
 

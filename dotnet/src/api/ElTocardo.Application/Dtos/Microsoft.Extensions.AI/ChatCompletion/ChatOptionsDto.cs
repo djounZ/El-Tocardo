@@ -31,5 +31,5 @@ public sealed record ChatOptionsDto(
     bool? AllowMultipleToolCalls,
     [property: JsonPropertyName("tool_mode")]
     ChatToolModeDto? ToolMode,
-    [property: JsonPropertyName("tools")] IDictionary<string, IList<AiToolDto>>? Tools
+    [property: JsonPropertyName("tools")] IDictionary<string, IList<AbstractAiToolDto>>? Tools
 );
