@@ -1,5 +1,6 @@
 using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.Tools;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
+using ElTocardo.Application.Dtos.ModelContextProtocol.Core;
 using ElTocardo.Application.Mediator.McpServerConfigurationMediator.Queries;
 using ElTocardo.Domain.Mediator.Common.Interfaces;
 using Microsoft.Extensions.AI;

@@ -1,6 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
+using ElTocardo.Application.Dtos.ModelContextProtocol.Core;
+using ElTocardo.Application.Dtos.ModelContextProtocol.Core.Protocol;
 using ElTocardo.Application.Mappers.Dtos.ModelContextProtocol;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol;

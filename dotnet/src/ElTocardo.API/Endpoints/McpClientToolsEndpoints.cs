@@ -1,5 +1,8 @@
 using ElTocardo.API.Options;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
+using ElTocardo.Application.Dtos.ModelContextProtocol.Core;
+using ElTocardo.Application.Dtos.ModelContextProtocol.Core.Client;
+using ElTocardo.Application.Dtos.ModelContextProtocol.Core.Protocol;
 using ElTocardo.Application.Services;
 
 namespace ElTocardo.API.Endpoints;

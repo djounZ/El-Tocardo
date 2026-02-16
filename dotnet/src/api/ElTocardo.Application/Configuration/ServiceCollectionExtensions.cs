@@ -6,6 +6,7 @@ using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.Contents;
 using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.Functions;
 using ElTocardo.Application.Dtos.Microsoft.Extensions.AI.Tools;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
+using ElTocardo.Application.Dtos.ModelContextProtocol.Core;
 using ElTocardo.Application.Dtos.PresetChatInstruction;
 using ElTocardo.Application.Dtos.UserExternalToken;
 using ElTocardo.Application.Mappers.Dtos;

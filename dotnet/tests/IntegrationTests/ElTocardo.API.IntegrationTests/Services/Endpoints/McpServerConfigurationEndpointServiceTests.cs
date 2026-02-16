@@ -1,5 +1,6 @@
 using ElTocardo.API.IntegrationTests.Configuration;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
+using ElTocardo.Application.Dtos.ModelContextProtocol.Core;
 using ElTocardo.Application.Services;
 using ElTocardo.Domain.Mediator.McpServerConfigurationMediator.Entities;
 using ElTocardo.Infrastructure.EntityFramework.Mediator;

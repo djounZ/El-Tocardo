@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using ElTocardo.Application.Dtos.ModelContextProtocol.Core;
 using ElTocardo.ServiceDefaults;
 using static ElTocardo.ServiceDefaults.Constants;
 

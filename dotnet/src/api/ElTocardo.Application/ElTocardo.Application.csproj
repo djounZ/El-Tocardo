@@ -9,5 +9,9 @@
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
         <PackageReference Include="ModelContextProtocol.Core" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Dtos\ModelContextProtocol.Core\Server\" />
+    </ItemGroup>
 </Project>
 

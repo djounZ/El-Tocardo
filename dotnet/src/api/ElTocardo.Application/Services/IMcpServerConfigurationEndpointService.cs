@@ -1,4 +1,5 @@
 using ElTocardo.Application.Dtos.ModelContextProtocol;
+using ElTocardo.Application.Dtos.ModelContextProtocol.Core;
 using ElTocardo.Domain.Models;
 
 namespace ElTocardo.Application.Services;

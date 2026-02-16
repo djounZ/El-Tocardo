@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
+using ElTocardo.Application.Dtos.ModelContextProtocol.Core;
 using FluentAssertions;
 
 namespace ElTocardo.Infrastructure.UnitTests.Mappers.Dtos.ModelContextProtocol;

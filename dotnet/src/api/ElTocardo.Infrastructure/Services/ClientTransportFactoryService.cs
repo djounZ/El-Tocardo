@@ -1,4 +1,5 @@
 using ElTocardo.Application.Dtos.ModelContextProtocol;
+using ElTocardo.Application.Dtos.ModelContextProtocol.Core;
 using ElTocardo.Application.Mappers.Dtos.ModelContextProtocol;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Client;

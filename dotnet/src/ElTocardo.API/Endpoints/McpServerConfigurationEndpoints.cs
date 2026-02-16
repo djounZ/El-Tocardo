@@ -1,5 +1,6 @@
 using ElTocardo.API.Options;
 using ElTocardo.Application.Dtos.ModelContextProtocol;
+using ElTocardo.Application.Dtos.ModelContextProtocol.Core;
 using ElTocardo.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
